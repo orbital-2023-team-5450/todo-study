@@ -1,20 +1,23 @@
 import './App.css';
 import Login from './routes/login';
-import Home from './routes/home';
-import { createRoutesFromElements, createBrowserRouter, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { createRoutesFromElements, createBrowserRouter, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { CssBaseline, createTheme } from '@mui/material';
 import supabase from './supabase';
 import { useState, useEffect } from 'react';
+import Dashboard from './routes/dashboard';
+import ErrorPage from './routes/errorpage';
 
 const theme = createTheme({
   palette: {
     background: {
       default: "#eee",
     }
-  }
+  },
+  spacing: 4
 });
 
 function App() {
+  const location = useLocation();
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -22,7 +25,9 @@ function App() {
     const subscription = supabase.auth.onAuthStateChange((event, session) => {
       if (session != null) {
         setIsLoggedIn(true);
-        navigate("/home");
+        if (location.pathname === "/" || location.pathname === "/login") {
+          navigate("/dashboard");
+        }
       } else {
         setIsLoggedIn(false);
         navigate("/login");
@@ -31,14 +36,15 @@ function App() {
     return () => {
       subscription.data.subscription.unsubscribe();
     };
-  }, [setIsLoggedIn, navigate]);
+  }, [setIsLoggedIn, navigate, location.pathname]);
 
   return (
     <div className="App">
       <CssBaseline />
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
       </Routes>
     </div>
   );
