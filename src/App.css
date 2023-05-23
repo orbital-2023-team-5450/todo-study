@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.error-page {
+  margin: 1.3em;
+  border-radius: 1em;
+  padding: 2em;
+  background-color: rgb(255, 188, 188);
+  color: rgb(134, 32, 32);
+
+}
+
+/* create gaps between paragraphs */
+p {
+  margin-bottom: .5em;
+}

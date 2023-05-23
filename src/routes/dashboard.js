@@ -1,7 +1,9 @@
 import { Button, Typography } from "@mui/material";
 import supabase from "../supabase";
 
-export default function Home() {
+export default function Dashboard() {
+
+    document.title = "// TODO: Study";
 
     const handleLogoutClick = () => {
         supabase.auth.signOut();
