@@ -46,6 +46,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
+          <Route path="/" element={ isLoggedIn ? <Dashboard /> : <Login /> } />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
