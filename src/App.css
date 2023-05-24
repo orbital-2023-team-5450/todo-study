@@ -37,16 +37,22 @@
   }
 }
 
+
+.todo-study-logo {
+  font-family: Inconsolata, source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+  color: #00BF63;
+}
+
 .error-page {
-  margin: 1.3em;
-  border-radius: 1em;
-  padding: 2em;
+  margin: 1.3rem;
+  border-radius: 1rem;
+  padding: 2.5rem 5rem;
   background-color: rgb(255, 188, 188);
   color: rgb(134, 32, 32);
 
 }
 
-/* create gaps between paragraphs */
-p {
-  margin-bottom: .5em;
+.auth-text {
+  font-family: 'Open Sans', sans-serif !important;
 }

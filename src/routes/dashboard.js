@@ -3,7 +3,7 @@ import supabase from "../supabase";
 
 export default function Dashboard() {
 
-    document.title = "// TODO: Study";
+    document.title = "Dashboard // TODO: Study";
 
     const handleLogoutClick = () => {
         supabase.auth.signOut();

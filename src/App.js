@@ -1,7 +1,7 @@
 import './App.css';
 import Login from './routes/login';
 import { createRoutesFromElements, createBrowserRouter, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { CssBaseline, createTheme } from '@mui/material';
+import { CssBaseline, createTheme, ThemeProvider } from '@mui/material';
 import supabase from './supabase';
 import { useState, useEffect } from 'react';
 import Dashboard from './routes/dashboard';
@@ -12,6 +12,9 @@ const theme = createTheme({
     background: {
       default: "#eee",
     }
+  },
+  typography: {
+    fontFamily: ["Open Sans", "sans-serif"].join(","),
   },
   spacing: 4
 });
@@ -40,12 +43,14 @@ function App() {
 
   return (
     <div className="App">
-      <CssBaseline />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
-      </Routes>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
+        </Routes>
+      </ThemeProvider>
     </div>
   );
 }
