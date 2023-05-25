@@ -3,7 +3,7 @@ import supabase from "../supabase";
 
 export default function Dashboard() {
 
-    document.title = "// TODO: Study";
+    document.title = "Dashboard // TODO: Study";
 
     const handleLogoutClick = () => {
         supabase.auth.signOut();
@@ -12,7 +12,7 @@ export default function Dashboard() {
     return (
         <>
             <Typography variant="h3" component="h1">
-                praise lord helix
+                Welcome back!
             </Typography>
             <Button variant="contained" onClick={handleLogoutClick}>Log out</Button>
         </>
