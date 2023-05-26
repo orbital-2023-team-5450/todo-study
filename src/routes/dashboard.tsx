@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, CssBaseline, Stack, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, CssBaseline, Stack, Typography } from "@mui/material";
 import supabase from "../supabase";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -13,6 +13,7 @@ export default function Dashboard() {
 
     const [ username, setUsername ] = useState(null);
     const [ error, setError ] = useState(null);
+    const [ loading, setLoading ] = useState(true);
     const navigate = useNavigate();
 
     const fetchInfo = async () => {
@@ -27,6 +28,7 @@ export default function Dashboard() {
                 navigate("/create-account");
             } else {
                 // user has created account
+                setLoading(false);
                 setUsername(result.data[0].user_name);
             }
         });
@@ -36,18 +38,26 @@ export default function Dashboard() {
         fetchInfo();
     }, [setUsername, setError]);
 
-    return (
-        
-        <>
-            <Typography variant="h3" component="h1">
-                { username === null ? "" : `Welcome back ${username}!`}
-            </Typography>
-            <Stack direction="row" gap={3}>
-                <Button variant="contained"> <Link to="/timer"> timer </Link></Button>
-                <Button variant="contained"> <Link to="/reminder"> reminder </Link></Button>
-                <Button variant="contained"> <Link to="/task"> task </Link></Button>
-                <Button variant="contained" onClick={handleLogoutClick}>Log out</Button>
-            </Stack> 
-        </>
-    );
+    return loading ? (
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100vh"
+            >
+                <CircularProgress size={120} />
+            </Box>
+        ) : (
+            <> 
+                <Typography variant="h3" component="h1">
+                    { username === null ? "" : `Welcome back ${username}!`}
+                </Typography>
+                <Stack direction="row" gap={3}>
+                    <Button variant="contained"> <Link to="/timer"> timer </Link></Button>
+                    <Button variant="contained"> <Link to="/reminder"> reminder </Link></Button>
+                    <Button variant="contained"> <Link to="/task"> task </Link></Button>
+                    <Button variant="contained" onClick={handleLogoutClick}>Log out</Button>
+                </Stack>
+            </> 
+        );
 }
