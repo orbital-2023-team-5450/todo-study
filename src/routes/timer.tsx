@@ -1,8 +1,7 @@
 import React from "react";
-import { Typography } from "@mui/material";
-import {Link} from "react-router-dom";
+import { Typography } from "@mui/material";;
 
-export default function timer() {
+export default function Timer() {
 
     document.title = "Timer  // TODO Study";
 

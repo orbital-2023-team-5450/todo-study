@@ -7,6 +7,9 @@ import supabase from './supabase';
 import { useState, useEffect } from 'react';
 import Dashboard from './routes/dashboard';
 import ErrorPage from './routes/errorpage';
+import Timer from './routes/timer';
+import Reminder from './routes/reminder'
+import Task from './routes/task';
 
 const theme = createTheme({
   palette: {
@@ -51,7 +54,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
-        </Routes>
+          <Route path="/timer" element={<Timer />} />
+          <Route path="/reminder" element={<Reminder />} />
+          <Route path="/task" element={<Task />} />
+        </Routes> 
       </ThemeProvider>
     </div>
   );

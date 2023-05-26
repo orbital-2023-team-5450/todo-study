@@ -18,11 +18,11 @@ export default function Dashboard() {
                 Welcome back!
             </Typography>
             <Stack direction="row" gap={3}>
-                <Typography> <Link to="/timer"> timer </Link></Typography>
-                <Typography> <Link to="/timer"> reminder </Link></Typography>
-                <Typography> <Link to="/timer"> task </Link></Typography>
+                <Button variant="contained"> <Link to="/timer"> timer </Link></Button>
+                <Button variant="contained"> <Link to="/reminder"> reminder </Link></Button>
+                <Button variant="contained"> <Link to="/task"> task </Link></Button>
                 <Button variant="contained" onClick={handleLogoutClick}>Log out</Button>
-            </Stack>    
+            </Stack> 
         </>
     );
 }
