@@ -1,7 +1,6 @@
 import React from 'react';
 import AccountSettings from '../components/accountsettings';
 import { Button, Container, Stack, Typography } from '@mui/material';
-import supabase from '../supabase';
 
 export default function CreateAccount() {
 
