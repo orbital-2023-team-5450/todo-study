@@ -1,20 +1,15 @@
 import React from 'react';
 import AccountSettings from '../components/accountsettings';
-import { Button } from '@mui/material';
+import { Button, Container, Stack, Typography } from '@mui/material';
 import supabase from '../supabase';
 
 export default function CreateAccount() {
 
     document.title = "Create New Profile // TODO: Study";
 
-    const handleLogoutClick = () => {
-        supabase.auth.signOut();
-    }
-
     return (
-        <>
+        <Container component="main" maxWidth="sm" sx={{"padding": "1em"}}>
             <AccountSettings title="Create Account" />
-            <Button variant="contained" onClick={handleLogoutClick}>Log out</Button>
-        </>
+        </Container>
     )
 }

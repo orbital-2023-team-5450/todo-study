@@ -68,10 +68,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-account" element={<CreateAccount />} />
-          <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
           <Route path="/timer" element={<Timer />} />
           <Route path="/reminder" element={<Reminder />} />
           <Route path="/task" element={<Task />} />
+          <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
         </Routes> 
       </ThemeProvider>
     </div>
