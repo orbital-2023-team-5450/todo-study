@@ -42,7 +42,7 @@ function App() {
           supabase.from('users').select().eq("user_id", user_id).then((result) => {
             if (result.error) {
               alert("Failed to redirect!");
-            } else if (result.data?.length === 0) {
+            } else if (result.data.length === 0) {
               navigate("/create-account");
             } else {
               navigate("/dashboard");

@@ -3,7 +3,6 @@ import React, { ChangeEventHandler } from 'react';
 import { TextField, Stack, Typography, MenuItem, Button, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
 import supabase from '../supabase';
-import { todo } from 'node:test';
 
 const availableThemes : {value : string, label : string}[] = [
     {
@@ -63,14 +62,14 @@ export default function AccountSettings({ title } : { title : string }) {
 
         getUserID().then((id : string) => {
             const submitInfo = {
-                user_id: id,
-                user_name: username,
-                first_name: firstName,
-                last_name: lastName,
-                avatar_url: null,
-                theme: todoTheme,
-                telegram_handle: telegram,
-                created_at: ((new Date()).toISOString()),
+                "user_id": id,
+                "user_name": username,
+                "first_name": firstName,
+                "last_name": lastName,
+                "avatar_url": null,
+                "theme": todoTheme,
+                "telegram_handle": telegram,
+                "created_at": ((new Date()).toISOString()),
             };
 
             alert(JSON.stringify(submitInfo));
