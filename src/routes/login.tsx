@@ -10,7 +10,6 @@ export default function Login() {
     document.title = "Log in or sign up // TODO: Study";
 
     async function signInWithGoogle() {
-        alert(process.env.REACT_APP_SITE_URL);
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: { redirectTo: process.env.REACT_APP_SITE_URL ?? "https://todo-study-orbital.vercel.app/" },
