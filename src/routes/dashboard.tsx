@@ -4,6 +4,10 @@ import supabase from "../supabase";
 import { Link, useNavigate } from "react-router-dom";
 import Navsides from "../components/navsides";
 import AvatarView from "../components/avatarview";
+import Bar from "../components/bar";
+import AvTimerIcon from '@mui/icons-material/AvTimer';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
 export default function Dashboard() {
 
@@ -20,7 +24,9 @@ export default function Dashboard() {
     const [ error, setError ] = useState(null);
     const [ loading, setLoading ] = useState(true);
     const navigate = useNavigate();
-    const features : string[] = ["timer", "reminder", "task"];
+    const features : {feature: string, app: JSX.Element}[] = [{feature: "timer", app: <AvTimerIcon />},
+                                                              {feature: "reminder", app: <NotificationsNoneIcon />}, 
+                                                              {feature: "task", app: <FormatListBulletedIcon />}];
 
     const fetchInfo = async () => {
         const { data: { user } } = await supabase.auth.getUser();
@@ -59,14 +65,16 @@ export default function Dashboard() {
             </Box>
         ) : (
             <> 
-                <Typography variant="h3" component="h1" marginTop={5}>
+                <CssBaseline />
+                <Bar nav={<Navsides features={features} />} 
+                     acc={<AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />}
+                     signOut={<Button variant="contained" onClick={handleLogoutClick} disableElevation>Sign out</Button>}/>
+
+                <Stack direction="column" gap={3} justifyContent="center" marginTop={5}>
+                    <Typography variant="h3" component="h1" marginTop={5}>
                     { username === null ? "" : `Welcome back ${username}!`}
-                </Typography>
-                <Stack direction="row" gap={3} justifyContent="center" marginTop={5}>
-                    <Navsides features={features} />
-                    <Button variant="contained" onClick={handleLogoutClick}>Log out</Button>
+                    </Typography>
                 </Stack>
-                <AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />
             </>
         );
 }
