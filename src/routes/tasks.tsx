@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Avatar, Box, Button, CircularProgress, CssBaseline, Stack, Typography } from "@mui/material";
-import supabase from "../supabase";
-import { Link, useNavigate } from "react-router-dom";
-import Navsides from "../components/navsides";
-import AvatarView from "../components/avatarview";
+import React, { useEffect, useState } from "react";
+import { CssBaseline, Typography } from "@mui/material";
 import Bar from "../components/bar";
-import AvTimerIcon from '@mui/icons-material/AvTimer';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import AvatarView from "../components/avatarview";
 import LoadingScreen from "../components/loadingscreen";
+import supabase from "../supabase";
+import { useNavigate } from "react-router-dom";
 
-export default function Dashboard() {
+export default function Tasks() {
 
-    document.title = "Dashboard // TODO: Study";
+    document.title = "Tasks // TODO Study";
 
     const [ username, setUsername ] = useState("");
     const [ firstName, setFirstName ] = useState("");
@@ -51,15 +47,10 @@ export default function Dashboard() {
     return loading ? (
             <LoadingScreen />
         ) : (
-            <> 
+            <>
                 <CssBaseline />
-                <Bar title="Dashboard" avatarView={<AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />} />
-
-                <Stack direction="column" gap={3} justifyContent="center" marginTop={5}>
-                    <Typography variant="h3" component="h1" marginTop={5}>
-                    { username === null ? "" : `Welcome back ${username}!`}
-                    </Typography>
-                </Stack>
+                <Bar title="Tasks" avatarView={<AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />} />
+                <Typography><strong>To be implemented:</strong> This is a task.</Typography>
             </>
         );
 }

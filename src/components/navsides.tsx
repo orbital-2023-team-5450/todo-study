@@ -5,24 +5,27 @@ import AvTimerIcon from '@mui/icons-material/AvTimer';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
 
-export default function Navsides({features} : {features : {feature: string, app: JSX.Element}[]}) {
+const features : {feature: string, app: JSX.Element}[] = [
+  {feature: "Dashboard", app: <HomeIcon />},
+  {feature: "Timer", app: <AvTimerIcon />},
+  {feature: "Reminders", app: <NotificationsNoneIcon />}, 
+  {feature: "Tasks", app: <FormatListBulletedIcon />}];
 
-    const [state, setState] = useState(false);
-
-    const toggleDrawer = () =>
-      (event: React.KeyboardEvent | React.MouseEvent) => {
-        if (
-         event.type === 'keydown' &&
-          ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
+export default function Navsides() {
+  const [state, setState] = useState(false);
+  const toggleDrawer = () =>
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+         (event as React.KeyboardEvent).key === 'Shift')
+      ) return;
       setState(!state);
     }
 
-    //list of icon on the drawer
+  //list of icon on the drawer
   const list = () => (
     <Box
       sx={{width: 250}}
@@ -33,7 +36,7 @@ export default function Navsides({features} : {features : {feature: string, app:
       <List>
         {features.map((f) => (
           <ListItem key={f.feature} disablePadding>
-            <ListItemButton href={"/" + f.feature}>
+            <ListItemButton href={"/" + f.feature.toLowerCase()}>
               <ListItemIcon>
                 <Stack direction='row' gap={5}>
                   {f.app}

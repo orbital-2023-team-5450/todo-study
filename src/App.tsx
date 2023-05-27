@@ -10,8 +10,8 @@ import ErrorPage from './routes/errorpage';
 import CreateAccount from './routes/createaccount';
 import { UserResponse } from '@supabase/supabase-js';
 import Timer from './routes/timer';
-import Reminder from './routes/reminder'
-import Task from './routes/task';
+import Reminders from './routes/reminders'
+import Tasks from './routes/tasks';
 
 const theme = createTheme({
   palette: {
@@ -69,8 +69,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/timer" element={<Timer />} />
-          <Route path="/reminder" element={<Reminder />} />
-          <Route path="/task" element={<Task />} />
+          <Route path="/reminders" element={<Reminders />} />
+          <Route path="/tasks" element={<Tasks />} />
           <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
         </Routes> 
       </ThemeProvider>
