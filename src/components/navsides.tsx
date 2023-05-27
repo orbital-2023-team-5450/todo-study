@@ -4,8 +4,9 @@ import {Stack, Box, Typography, Drawer, Button, List, Divider, ListItem, ListIte
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import MenuIcon from '@mui/icons-material/Menu';
 
-export default function Navsides({features} : {features : string[]}) {
+export default function Navsides({features} : {features : {feature: string, app: JSX.Element}[]}) {
 
     const [state, setState] = useState(false);
 
@@ -21,17 +22,6 @@ export default function Navsides({features} : {features : string[]}) {
       setState(!state);
     }
 
-    // which icon to call 
-    const whichIcon = (text : string) => {
-      if (text == 'timer') {
-        return <AvTimerIcon />;
-      } else if (text === 'reminder') {
-        return <NotificationsNoneIcon />;
-      } else {
-        return <FormatListBulletedIcon />;
-      }
-    };
-
     //list of icon on the drawer
   const list = () => (
     <Box
@@ -41,13 +31,13 @@ export default function Navsides({features} : {features : string[]}) {
       onKeyDown={toggleDrawer()}
     >
       <List>
-        {features.map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton href={"/" + text}>
+        {features.map((f) => (
+          <ListItem key={f.feature} disablePadding>
+            <ListItemButton href={"/" + f.feature}>
               <ListItemIcon>
                 <Stack direction='row' gap={5}>
-                  {whichIcon(text)}
-                  {text}
+                  {f.app}
+                  {f.feature}
                 </Stack>
               </ListItemIcon>
             </ListItemButton>
@@ -60,7 +50,7 @@ export default function Navsides({features} : {features : string[]}) {
 
   return (
     <>
-      <Button variant="contained" onClick={toggleDrawer()}> nav</Button>
+      <Button variant="contained" onClick={toggleDrawer()} disableElevation><MenuIcon /></Button>
       <Drawer
           anchor={'left'}
           open={state}
