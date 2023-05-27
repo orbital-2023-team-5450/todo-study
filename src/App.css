@@ -40,8 +40,13 @@
 
 .todo-study-logo {
   font-family: Inconsolata, source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-  monospace;
+  monospace !important;
   color: #00BF63;
+}
+
+.todo-study-logo-white {
+  font-family: Inconsolata, source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace !important;
 }
 
 .error-page {
