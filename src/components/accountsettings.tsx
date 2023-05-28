@@ -76,38 +76,38 @@ export default function AccountSettings({ title } : { title : string }) {
             } else if (telegramError) {
                 alert("Cannot create account! Ensure form is filled up properly");
                 return;
-            }
-        });
-
-        const getUserID = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            const user_id : string = (user === null) ? "" : user.id;
-            return user_id;
-        }
-
-        getUserID().then((id : string) => {
-            const submitInfo = {
-                "user_id": id,
-                "user_name": username,
-                "first_name": firstName,
-                "last_name": lastName,
-                "avatar_url": avatarUrl,
-                "theme": todoTheme,
-                "telegram_handle": telegram,
-                "created_at": ((new Date()).toISOString()),
-            };
-
-            const insertion = async () => {
-                const { error } = await supabase.from('users').insert(submitInfo);
-
-                if (error !== null) {
-                    alert("Error adding user: " + JSON.stringify(error));
-                } else {
-                    navigate("/dashboard");
+            } else {
+                const getUserID = async () => {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    const user_id : string = (user === null) ? "" : user.id;
+                    return user_id;
                 }
-            }
 
-            insertion();
+                getUserID().then((id : string) => {
+                    const submitInfo = {
+                        "user_id": id,
+                        "user_name": username,
+                        "first_name": firstName,
+                        "last_name": lastName,
+                        "avatar_url": avatarUrl,
+                        "theme": todoTheme,
+                        "telegram_handle": telegram,
+                        "created_at": ((new Date()).toISOString()),
+                    };
+
+                    const insertion = async () => {
+                        const { error } = await supabase.from('users').insert(submitInfo);
+
+                        if (error !== null) {
+                            alert("Error adding user: " + JSON.stringify(error));
+                        } else {
+                            navigate("/dashboard");
+                        }
+                    }
+
+                    insertion();
+                });
+            }
         });
 
     }
