@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,13 +12,29 @@ const handleLogoutClick = () => {
 }
 
 export default function Bar({ title, avatarView } : { title : string, avatarView: JSX.Element }) {
+  
+  const [ windowWidth, setWindowWidth ] = useState(window.innerWidth);
+
+  useEffect(() => {
+
+    const handleWindowResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    }
+  });
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{padding: "0.5rem"}}>
           <Navsides />
           <Typography variant="h5" component="code" className="todo-study-logo-white" sx={{ flexGrow: 1 }}>
-            { title } // TODO: Study
+            { title + ((windowWidth >= 600) ? " // TODO: Study" : "")}
           </Typography>
           { avatarView }
           <Button variant="contained" onClick={handleLogoutClick} disableElevation>Sign out</Button>

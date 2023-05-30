@@ -39,6 +39,7 @@ export default function Dashboard() {
                 setUsername(result.data[0].user_name);
                 setFirstName(result.data[0].first_name);
                 setLastName(result.data[0].last_name ?? "");
+                console.log(supabase.storage.from('avatars').getPublicUrl(result.data[0].avatar_url))
                 setAvatar(supabase.storage.from('avatars').getPublicUrl(result.data[0].avatar_url).data.publicUrl);
             }
         });
