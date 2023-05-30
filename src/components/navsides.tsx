@@ -7,6 +7,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AccountNav from './accountnav';
 
 const features : {feature: string, app: JSX.Element}[] = [
   {feature: "Dashboard", app: <HomeIcon />},
@@ -35,7 +36,13 @@ export default function Navsides() {
       onClick={toggleDrawer()}
       onKeyDown={toggleDrawer()}
     >
-      
+      <List>
+        <ListItem key="navHeader" disablePadding>
+          <ListItemButton href="/account-settings">
+            <AccountNav />
+          </ListItemButton>
+        </ListItem>
+      </List>
       <Divider />
       <List>
         {features.map((f) => (
@@ -63,7 +70,6 @@ export default function Navsides() {
           open={state}
           onClose={toggleDrawer()}
       >
-        <Divider />
         {list()}
       </Drawer>
     </>

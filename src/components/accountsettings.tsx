@@ -73,6 +73,7 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
                 alert("Error retrieving data!");
             } else if (result.data[0] === null || result.data[0] === undefined) {
                 // user has not created account yet
+                setLoading(false);
             } else if (loading) {
                 // user has created account. ensure images do not reload unless
                 // the page has been refreshed.
@@ -96,21 +97,21 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
         event.preventDefault();
 
         supabase.from('users').select('user_id, user_name').eq('user_name', username).then((result) => {
-            console.log(result);
+            const word : string = (insert) ? "create" : "update";
             if (result.data === null || result.data === undefined || result.error) {
                 setUsernameError("There was an error performing validation on the username.");
-                alert("Cannot create account! Ensure form is filled up properly");
+                alert(`Cannot ${word} account! Ensure form is filled up properly`);
                 return;
             } else if (insert && result.data[0] !== null && result.data[0] !== undefined) {
                 setUsernameError("The username has been taken.");
-                alert("Cannot create account! Ensure form is filled up properly");
+                alert(`Cannot ${word} account! Ensure form is filled up properly`);
                 return;
             } else if (!insert && result.data[0] !== undefined && result.data[0].user_name !== origUsername) {
                 setUsernameError("The username has been taken.");
-                alert("Cannot create account! Ensure form is filled up properly");
+                alert(`Cannot ${word} account! Ensure form is filled up properly`);
                 return;
             } else if (telegramError) {
-                alert("Cannot create account! Ensure form is filled up properly");
+                alert(`Cannot ${word} account! Ensure form is filled up properly`);
                 return;
             } else {
                 const getUserID = async () => {
@@ -156,14 +157,14 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
         });
 
     }
+
+    const handleDashboardClick = () => { navigate("/dashboard") }
     
-    const handleLogoutClick = () => {
-        supabase.auth.signOut();
-    }
+    const handleLogoutClick = () => { supabase.auth.signOut(); }
     
     return ( loading ? <LoadingScreen /> :
         <Stack gap={5} component="form" onSubmit={handleFormSubmit}>
-            <Typography variant="h4" component="h1">{ insert ? "" : ""}</Typography>
+            <Typography variant="h4" component="h1">{ insert ? "Create New Account" : "Update Account Settings"}</Typography>
             <Typography variant="h6" component="h2">Name</Typography>
             <TextField
                 required
@@ -204,8 +205,9 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
                 helperText={telegramError ? "Telegram handle must start with @ or left blank." : ""}
                 error={telegramError} />
             <Stack direction="row" gap={6}>
-                <Button variant="contained" size="large" type="submit">{ title }</Button>
-                <Button variant="contained" size="large" onClick={handleLogoutClick}>Log out</Button>
+                <Button variant="contained" size="medium" type="submit">{ title }</Button>
+                { !insert && <Button variant="contained" size="medium" onClick={handleDashboardClick}>Back to Dashboard</Button> }
+                <Button variant="contained" size="medium" onClick={handleLogoutClick}>Log out</Button>
             </Stack>
         </Stack>
     );
