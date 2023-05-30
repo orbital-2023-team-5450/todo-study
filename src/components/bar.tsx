@@ -6,12 +6,13 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import supabase from '../supabase';
 import Navsides from './navsides';
+import AvatarView from './avatarview';
 
 const handleLogoutClick = () => {
   supabase.auth.signOut();
 }
 
-export default function Bar({ title, avatarView } : { title : string, avatarView: JSX.Element }) {
+export default function Bar({ title } : { title : string }) {
   
   const [ windowWidth, setWindowWidth ] = useState(window.innerWidth);
 
@@ -36,7 +37,7 @@ export default function Bar({ title, avatarView } : { title : string, avatarView
           <Typography variant="h5" component="code" className="todo-study-logo-white" sx={{ flexGrow: 1 }}>
             { title + ((windowWidth >= 600) ? " // TODO: Study" : "")}
           </Typography>
-          { avatarView }
+          <AvatarView />
           <Button variant="contained" onClick={handleLogoutClick} disableElevation>Sign out</Button>
         </Toolbar>
       </AppBar>

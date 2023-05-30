@@ -1,10 +1,11 @@
 // account settings: for creation and editing of account settings
-import React, { ChangeEventHandler } from 'react';
+import React, { ChangeEventHandler, useEffect } from 'react';
 import { TextField, Stack, Typography, MenuItem, Button, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
 import supabase from '../supabase';
 import Avatar from './avatar';
 import { useNavigate } from 'react-router-dom';
+import LoadingScreen from './loadingscreen';
 
 const availableThemes : {value : string, label : string}[] = [
     {
@@ -17,9 +18,10 @@ const availableThemes : {value : string, label : string}[] = [
     }
 ];
 
-export default function AccountSettings({ title } : { title : string }) {
+export default function AccountSettings({ insert } : { insert : boolean }) {
     
     const [ username, setUsername ] = useState("");
+    const [ origUsername, setOrigUsername ] = useState("");
     const [ firstName, setFirstName ] = useState("");
     const [ lastName, setLastName ] = useState("");
     const [ todoTheme, setTodoTheme ] = useState("default");
@@ -27,7 +29,9 @@ export default function AccountSettings({ title } : { title : string }) {
     const [ telegram, setTelegram ] = useState("");
     const [ telegramError, setTelegramError ] = useState(false);
     const [ usernameError, setUsernameError ] = useState("");
+    const [ loading, setLoading ] = useState(true);
     const navigate = useNavigate();
+    const title = insert ? "Create account" : "Update account settings";
 
     // text field change handlers
 
@@ -60,16 +64,48 @@ export default function AccountSettings({ title } : { title : string }) {
 
     // button handlers
 
+    const fetchInfo = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        const user_id : string = (user === null) ? "" : user.id;
+
+        supabase.from('users').select().eq("user_id", user_id).then((result) => {
+            if (result.data === null || result.data === undefined || result.error) {
+                alert("Error retrieving data!");
+            } else if (result.data[0] === null || result.data[0] === undefined) {
+                // user has not created account yet
+            } else if (loading) {
+                // user has created account. ensure images do not reload unless
+                // the page has been refreshed.
+                setLoading(false);
+                setUsername(result.data[0].user_name);
+                setOrigUsername(result.data[0].user_name);
+                setFirstName(result.data[0].first_name);
+                setLastName(result.data[0].last_name ?? "");
+                setTelegram(result.data[0].telegram_handle ?? "");
+                setTodoTheme(result.data[0].theme);
+                setAvatarUrl(result.data[0].avatar_url);
+            }
+        });
+    }
+
+    useEffect(() => {
+        fetchInfo();
+    }, [fetchInfo]);
+
     const handleFormSubmit = (event : React.SyntheticEvent) => {
         event.preventDefault();
 
-        supabase.from('users').select('user_name').eq('user_name', username).then((result) => {
+        supabase.from('users').select('user_id, user_name').eq('user_name', username).then((result) => {
             console.log(result);
             if (result.data === null || result.data === undefined || result.error) {
                 setUsernameError("There was an error performing validation on the username.");
                 alert("Cannot create account! Ensure form is filled up properly");
                 return;
-            } else if (result.data[0] !== null && result.data[0] !== undefined) {
+            } else if (insert && result.data[0] !== null && result.data[0] !== undefined) {
+                setUsernameError("The username has been taken.");
+                alert("Cannot create account! Ensure form is filled up properly");
+                return;
+            } else if (!insert && result.data[0] !== undefined && result.data[0].user_name !== origUsername) {
                 setUsernameError("The username has been taken.");
                 alert("Cannot create account! Ensure form is filled up properly");
                 return;
@@ -95,17 +131,26 @@ export default function AccountSettings({ title } : { title : string }) {
                         "created_at": ((new Date()).toISOString()),
                     };
 
-                    const insertion = async () => {
-                        const { error } = await supabase.from('users').insert(submitInfo);
-
-                        if (error !== null) {
-                            alert("Error adding user: " + JSON.stringify(error));
+                    const upsertion = async () => {
+                        console.log(submitInfo);
+                        if (insert) {
+                            const { error } = await supabase.from('users').insert(submitInfo);
+                            if (error !== null) {
+                                alert("Error adding user: " + JSON.stringify(error));
+                            } else {
+                                navigate("/dashboard");
+                            }
                         } else {
-                            navigate("/dashboard");
+                            const { error } = await supabase.from('users').update(submitInfo).eq('user_id', id);
+                            if (error !== null) {
+                                alert("Error updating user: " + JSON.stringify(error));
+                            } else {
+                                navigate("/dashboard");
+                            }
                         }
                     }
 
-                    insertion();
+                    upsertion();
                 });
             }
         });
@@ -116,9 +161,9 @@ export default function AccountSettings({ title } : { title : string }) {
         supabase.auth.signOut();
     }
     
-    return (
+    return ( loading ? <LoadingScreen /> :
         <Stack gap={5} component="form" onSubmit={handleFormSubmit}>
-            <Typography variant="h4" component="h1">{title}</Typography>
+            <Typography variant="h4" component="h1">{ insert ? "" : ""}</Typography>
             <Typography variant="h6" component="h2">Name</Typography>
             <TextField
                 required

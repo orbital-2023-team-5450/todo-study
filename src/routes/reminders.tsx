@@ -49,7 +49,7 @@ export default function Reminders() {
         ) : (
             <>
                 <CssBaseline />
-                <Bar title="Reminders" avatarView={<AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />} />
+                <Bar title="Reminders" />
                 <Typography><strong>To be implemented:</strong> This is a reminder.</Typography>
             </>
         );

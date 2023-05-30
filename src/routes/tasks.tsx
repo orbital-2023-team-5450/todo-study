@@ -49,7 +49,7 @@ export default function Tasks() {
         ) : (
             <>
                 <CssBaseline />
-                <Bar title="Tasks" avatarView={<AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />} />
+                <Bar title="Tasks" />
                 <Typography><strong>To be implemented:</strong> This is a task.</Typography>
             </>
         );

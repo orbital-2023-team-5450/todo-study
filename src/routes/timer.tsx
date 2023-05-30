@@ -49,7 +49,7 @@ export default function Reminder() {
         ) : (
             <>
                 <CssBaseline />
-                <Bar title="Study Timer" avatarView={<AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />} />
+                <Bar title="Study Timer" />
                 <Typography><strong>To be implemented:</strong> This is a timer.</Typography>
             </>
         );

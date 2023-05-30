@@ -54,7 +54,7 @@ export default function Dashboard() {
         ) : (
             <> 
                 <CssBaseline />
-                <Bar title="Dashboard" avatarView={<AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />} />
+                <Bar title="Dashboard" />
 
                 <Stack direction="column" gap={3} justifyContent="center" marginTop={5}>
                     <Typography variant="h3" component="h1" marginTop={5}>

@@ -55,7 +55,7 @@ export default function Avatar({ url, size, onUpload } : { url: string, size : n
     return (
         <Stack gap={3} alignItems="center">
             {avatarUrl ? (
-                <AvatarView src={avatarUrl} username="newUser" firstName="New" lastName="User" />
+                <AvatarView src={avatarUrl} />
             ) : (
                 <Typography>No avatar uploaded.</Typography>
             )}
