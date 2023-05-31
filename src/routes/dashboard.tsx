@@ -39,6 +39,7 @@ export default function Dashboard() {
                 setUsername(result.data[0].user_name);
                 setFirstName(result.data[0].first_name);
                 setLastName(result.data[0].last_name ?? "");
+                console.log(supabase.storage.from('avatars').getPublicUrl(result.data[0].avatar_url))
                 setAvatar(supabase.storage.from('avatars').getPublicUrl(result.data[0].avatar_url).data.publicUrl);
             }
         });
@@ -53,7 +54,7 @@ export default function Dashboard() {
         ) : (
             <> 
                 <CssBaseline />
-                <Bar title="Dashboard" avatarView={<AvatarView src={avatar} username={username} firstName={firstName} lastName={lastName} />} />
+                <Bar title="Dashboard" />
 
                 <Stack direction="column" gap={3} justifyContent="center" marginTop={5}>
                     <Typography variant="h3" component="h1" marginTop={5}>

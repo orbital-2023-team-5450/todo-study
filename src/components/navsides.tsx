@@ -6,12 +6,15 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AccountNav from './accountnav';
 
 const features : {feature: string, app: JSX.Element}[] = [
   {feature: "Dashboard", app: <HomeIcon />},
   {feature: "Timer", app: <AvTimerIcon />},
   {feature: "Reminders", app: <NotificationsNoneIcon />}, 
-  {feature: "Tasks", app: <FormatListBulletedIcon />}];
+  {feature: "Tasks", app: <FormatListBulletedIcon />},
+  {feature: "Account Settings", app: <ManageAccountsIcon />}];
 
 export default function Navsides() {
   const [state, setState] = useState(false);
@@ -34,9 +37,17 @@ export default function Navsides() {
       onKeyDown={toggleDrawer()}
     >
       <List>
+        <ListItem key="navHeader" disablePadding>
+          <ListItemButton href="/account-settings">
+            <AccountNav />
+          </ListItemButton>
+        </ListItem>
+      </List>
+      <Divider />
+      <List>
         {features.map((f) => (
           <ListItem key={f.feature} disablePadding>
-            <ListItemButton href={"/" + f.feature.toLowerCase()}>
+            <ListItemButton href={"/" + f.feature.toLowerCase().replace(" ", "-")}>
               <ListItemIcon>
                 <Stack direction='row' gap={5}>
                   {f.app}
@@ -59,7 +70,6 @@ export default function Navsides() {
           open={state}
           onClose={toggleDrawer()}
       >
-        <Divider />
         {list()}
       </Drawer>
     </>

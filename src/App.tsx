@@ -12,6 +12,7 @@ import { UserResponse } from '@supabase/supabase-js';
 import Timer from './routes/timer';
 import Reminders from './routes/reminders'
 import Tasks from './routes/tasks';
+import ModifyAccount from './routes/modifyaccount';
 
 const theme = createTheme({
   palette: {
@@ -68,6 +69,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-account" element={<CreateAccount />} />
+          <Route path="/account-settings" element={<ModifyAccount />} />
           <Route path="/timer" element={<Timer />} />
           <Route path="/reminders" element={<Reminders />} />
           <Route path="/tasks" element={<Tasks />} />
