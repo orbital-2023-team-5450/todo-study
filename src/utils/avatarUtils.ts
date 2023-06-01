@@ -33,6 +33,7 @@ function darkenColor(hex : string, lum : number) : string {
 /**
  * Generates a dark colour based on the user's username.
  * 
+ * @param username The username to base the random colour on
  * @returns A dark colour in hex code.
  */
 export function randomColor(username : string) : string {
