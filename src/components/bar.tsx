@@ -5,7 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import supabase from '../supabase';
-import Navsides from './navsides';
+import NavSides from './navsides';
 import AvatarView from './avatarview';
 
 const handleLogoutClick = () => {
@@ -33,7 +33,7 @@ export default function Bar({ title } : { title : string }) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{padding: "0.5rem"}}>
-          <Navsides />
+          <NavSides />
           <Typography variant="h5" component="code" className="todo-study-logo-white" sx={{ flexGrow: 1 }}>
             { title + ((windowWidth >= 600) ? " // TODO: Study" : "")}
           </Typography>

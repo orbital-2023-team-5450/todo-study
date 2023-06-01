@@ -16,7 +16,7 @@ const features : {feature: string, app: JSX.Element}[] = [
   {feature: "Tasks", app: <FormatListBulletedIcon />},
   {feature: "Account Settings", app: <ManageAccountsIcon />}];
 
-export default function Navsides() {
+export default function NavSides() {
   const [state, setState] = useState(false);
   const toggleDrawer = () =>
     (event: React.KeyboardEvent | React.MouseEvent) => {

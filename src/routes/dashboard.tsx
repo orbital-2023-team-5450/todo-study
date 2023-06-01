@@ -9,45 +9,20 @@ import AvTimerIcon from '@mui/icons-material/AvTimer';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import LoadingScreen from "../components/loadingscreen";
+import fetchUserInfo from "../utils/fetchUserInfo";
 
 export default function Dashboard() {
 
     document.title = "Dashboard // TODO: Study";
 
-    const [ username, setUsername ] = useState("");
-    const [ firstName, setFirstName ] = useState("");
-    const [ lastName, setLastName ] = useState("");
-    const [ avatar, setAvatar ] = useState("");
+    const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
     const [ error, setError ] = useState(null);
     const [ loading, setLoading ] = useState(true);
     const navigate = useNavigate();
 
-    const fetchInfo = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        const user_id : string = (user === null) ? "" : user.id;
-          
-        supabase.from('users').select().eq("user_id", user_id).then((result) => {
-            if (result.data === null || result.data === undefined || result.error) {
-                alert("Error retrieving data!");
-            } else if (result.data[0] === null || result.data[0] === undefined) {
-                // user has not created account yet but has been directed to dashboard
-                navigate("/create-account");
-            } else if (loading) {
-                // user has created account. ensure images do not reload unless
-                // the page has been refreshed.
-                setLoading(false);
-                setUsername(result.data[0].user_name);
-                setFirstName(result.data[0].first_name);
-                setLastName(result.data[0].last_name ?? "");
-                console.log(supabase.storage.from('avatars').getPublicUrl(result.data[0].avatar_url))
-                setAvatar(supabase.storage.from('avatars').getPublicUrl(result.data[0].avatar_url).data.publicUrl);
-            }
-        });
-    }
-
     useEffect(() => {
-        fetchInfo();
-    }, [setUsername, setError, fetchInfo]);
+        fetchUserInfo(setUserData, loading, setLoading, navigate, true);
+    }, [fetchUserInfo]);
 
     return loading ? (
             <LoadingScreen />
@@ -58,7 +33,7 @@ export default function Dashboard() {
 
                 <Stack direction="column" gap={3} justifyContent="center" marginTop={5}>
                     <Typography variant="h3" component="h1" marginTop={5}>
-                    { username === null ? "" : `Welcome back ${username}!`}
+                    { userData.user_name === null ? "" : `Welcome back ${userData.user_name}!`}
                     </Typography>
                 </Stack>
             </>

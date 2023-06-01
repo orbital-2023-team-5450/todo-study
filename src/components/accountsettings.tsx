@@ -69,8 +69,10 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
         const user_id : string = (user === null) ? "" : user.id;
 
         supabase.from('users').select().eq("user_id", user_id).then((result) => {
+            
+            console.log(result.error);
             if (result.data === null || result.data === undefined || result.error) {
-                alert("Error retrieving data!");
+                console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
             } else if (result.data[0] === null || result.data[0] === undefined) {
                 // user has not created account yet
                 setLoading(false);
@@ -193,6 +195,9 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
                 size={150}
                 onUpload = {(event, url) => {
                     setAvatarUrl(url);
+                }}
+                onRemoveUpload={(event) => {
+                    setAvatarUrl("");
                 }}
             />
             <Typography variant="h6" component="h2">Telegram Integration</Typography>

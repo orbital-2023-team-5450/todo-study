@@ -3,7 +3,7 @@ import supabase from '../supabase';
 import { Button, Stack, Typography } from "@mui/material";
 import AvatarView from './avatarview';
 
-export default function Avatar({ url, size, onUpload } : { url: string, size : number, onUpload : ( event : React.ChangeEvent<HTMLInputElement> , url : string ) => void }) {
+export default function Avatar({ url, onUpload, onRemoveUpload } : { url: string, size : number, onUpload : ( event : React.ChangeEvent<HTMLInputElement> , url : string ) => void, onRemoveUpload : ( event : React.MouseEvent<HTMLButtonElement>) => void }) {
     const [avatarUrl, setAvatarUrl] = useState("");
     const [uploading, setUploading] = useState(false);
 
@@ -52,6 +52,11 @@ export default function Avatar({ url, size, onUpload } : { url: string, size : n
         }
     }
 
+    function removeAvatar(event : React.MouseEvent<HTMLButtonElement>) {
+        onRemoveUpload(event);
+        setAvatarUrl("");
+    }
+
     return (
         <Stack gap={3} alignItems="center">
             {avatarUrl ? (
@@ -59,18 +64,23 @@ export default function Avatar({ url, size, onUpload } : { url: string, size : n
             ) : (
                 <Typography>No avatar uploaded.</Typography>
             )}
-            <Button variant="contained" size="large" disabled={uploading}>
-                <label htmlFor="single">
-                    {uploading ? 'Uploading ...' : 'Upload avatar...'}
-                </label>
-                <input style={{ visibility: 'hidden', position: 'absolute' }}
-                    type="file"
-                    id="single"
-                    accept="image/*"
-                    onChange={uploadAvatar}
-                    disabled={uploading}
-                />
-            </Button>
+            <Stack direction="row" gap={3}>
+                <Button variant="contained" size="large" disabled={uploading}>
+                    <label htmlFor="single">
+                        {uploading ? 'Uploading ...' : 'Upload avatar...'}
+                    </label>
+                    <input style={{ visibility: 'hidden', position: 'absolute' }}
+                        type="file"
+                        id="single"
+                        accept="image/*"
+                        onChange={uploadAvatar}
+                        disabled={uploading}
+                    />
+                </Button>
+                <Button variant="contained" size="large" onClick={removeAvatar}>
+                    Remove Avatar
+                </Button>
+            </Stack>
         </Stack>
     );
 }
