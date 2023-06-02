@@ -2,20 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Avatar } from "@mui/material";
 import supabase from "../supabase";
 import { useNavigate } from "react-router-dom";
-
-const randomColor = () : string => {
-    let color : string = "#";
-    for (let i : number = 0; i < 6; i++) color += Math.floor(Math.random() * 10);
-    return color;
-}
-
-const nameAcronym = (firstName : string, lastName? : string) : string => {
-    if (lastName && lastName != "") {
-        return firstName.charAt(0) + lastName.charAt(0);
-    } else {
-        return firstName.charAt(0);
-    }
-}
+import { randomColor, getInitials } from "../utils/avatarUtils";
 
 export default function AvatarView( { src } : { src? : string }) {
 
@@ -31,8 +18,9 @@ export default function AvatarView( { src } : { src? : string }) {
         const user_id : string = (user === null) ? "" : user.id;
           
         supabase.from('users').select().eq("user_id", user_id).then((result) => {
+            console.log(result.error);
             if (result.data === null || result.data === undefined || result.error) {
-                alert("Error retrieving data!");
+                console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
             } else if (result.data[0] === null || result.data[0] === undefined) {
                 // user has not created account yet
                 setLoading(false);
@@ -58,8 +46,8 @@ export default function AvatarView( { src } : { src? : string }) {
     }, [setUsername, fetchInfo]);
 
     return (
-        <Avatar src={avatar} alt={`${username}'s avatar`} sx={{ width: 56, height: 56, bgcolor: randomColor }}>
-            {nameAcronym(firstName, lastName)}
+        <Avatar src={avatar} alt={`${username}'s avatar`} sx={{ width: 56, height: 56, bgcolor: randomColor(username) }}>
+            {getInitials(firstName, lastName)}
         </Avatar>
     );
 }
