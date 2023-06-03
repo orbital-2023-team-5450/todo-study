@@ -7,7 +7,8 @@ import fetchUserInfo from "../utils/fetchUserInfo";
 
 export default function AccountNav() {
 
-    const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
+    const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", 
+                                                 avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
     const [ error, setError ] = useState(null);
     const [ loading, setLoading ] = useState(true);
     const navigate = null;
