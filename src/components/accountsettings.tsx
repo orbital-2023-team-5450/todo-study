@@ -3,7 +3,7 @@ import React, { ChangeEventHandler, useEffect } from 'react';
 import { TextField, Stack, Typography, MenuItem, Button, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
 import supabase from '../supabase';
-import Avatar from './avatar';
+import AvatarForm from './AvatarForm';
 import { useNavigate } from 'react-router-dom';
 import LoadingScreen from './loadingscreen';
 
@@ -26,6 +26,8 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
     const [ lastName, setLastName ] = useState("");
     const [ todoTheme, setTodoTheme ] = useState("default");
     const [ avatarUrl, setAvatarUrl ] = useState("");
+    const [ origAvatarUrl, setOrigAvatarUrl ] = useState("");
+    const [ avatarChanged, setAvatarChanged ] = useState(false);
     const [ telegram, setTelegram ] = useState("");
     const [ telegramError, setTelegramError ] = useState(false);
     const [ usernameError, setUsernameError ] = useState("");
@@ -86,7 +88,8 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
                 setLastName(result.data[0].last_name ?? "");
                 setTelegram(result.data[0].telegram_handle ?? "");
                 setTodoTheme(result.data[0].theme);
-                setAvatarUrl(result.data[0].avatar_url);
+                setOrigAvatarUrl(result.data[0].avatar_url);
+                if (!avatarChanged) setAvatarUrl(result.data[0].avatar_url);
             }
         });
     }
@@ -163,7 +166,7 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
     const handleDashboardClick = () => { navigate("/dashboard") }
     
     const handleLogoutClick = () => { supabase.auth.signOut(); }
-    
+
     return ( loading ? <LoadingScreen /> :
         <Stack gap={5} component="form" onSubmit={handleFormSubmit}>
             <Typography variant="h4" component="h1">{ insert ? "Create New Account" : "Update Account Settings"}</Typography>
@@ -190,10 +193,12 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
                 ))}
             </TextField>
             <Typography variant="h6" component="h2">Avatar</Typography>
-            <Avatar
+            <AvatarForm
                 url={avatarUrl}
                 size={150}
+                avatarChanged={avatarChanged}
                 onUpload = {(event, url) => {
+                    setAvatarChanged(true);
                     setAvatarUrl(url);
                 }}
                 onRemoveUpload={(event) => {
