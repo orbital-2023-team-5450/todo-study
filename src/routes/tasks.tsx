@@ -6,6 +6,7 @@ import LoadingScreen from "../components/loadingscreen";
 import { useNavigate } from "react-router-dom";
 import fetchUserInfo from "../utils/fetchUserInfo";
 import TaskManager from "../components/taskmanager";
+import TaskScreen from "../components/taskscreen";
 
 export default function Tasks() {
 
@@ -27,29 +28,7 @@ export default function Tasks() {
             <Stack direction="column">
                 <CssBaseline />
                 <Bar title="Tasks" />
-
-
-                <Stack direction="row" flexGrow={1} marginTop={5}>
-                    <CssBaseline />
-                    <Container maxWidth="sm">
-                        <Box sx={{ bgcolor: '#cff8fc', height: '85vh', borderRadius: '16px', '&:hover': {backgroundColor: 'primary.main', 
-                                                                                    opacity: [0.9, 0.8, 0.7],} }}> 
-                            <Typography variant="h2"> dk wat to put yet</Typography>
-                        </Box>
-                    </Container>
-                    <Container maxWidth="sm">
-                        <Box sx={{ bgcolor: '#cfe8fc', height: '85vh', borderRadius: '16px', '&:hover': {backgroundColor: 'primary.main', 
-                                                                                    opacity: [0.9, 0.8, 0.7],} }}> 
-                            <TaskManager taskType={"Due soon"}/>
-                        </Box>
-                    </Container>
-                    <Container maxWidth="sm">
-                        <Box sx={{ bgcolor: '#cfe8ff', height: '85vh', borderRadius: '16px', '&:hover': {backgroundColor: 'primary.main', 
-                                                                                    opacity: [0.9, 0.8, 0.7],} }}> 
-                        <TaskManager taskType={"Future assignment"}/>
-                        </Box>
-                    </Container>
-                </Stack>
+                <TaskScreen />
             </Stack>
         );
 }
