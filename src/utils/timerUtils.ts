@@ -1,3 +1,39 @@
+import supabase from "../supabase";
+
+export type TimerSettings = {
+    user_id: string,
+    use_milliseconds: boolean,
+    low_time_warning: boolean,
+};
+
+export async function fetchTimerSettings(setData : React.Dispatch<React.SetStateAction<any>>) {
+    const { data: { user } } = await supabase.auth.getUser();
+    const user_id : string = (user === null) ? "" : user.id;
+      
+    supabase.from('users_timer_config').select().eq("user_id", user_id).then(async (result) => {
+        console.log(result.error);
+        if (result.data === null || result.data === undefined || result.error) {
+            console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
+        } else if (result.data[0] === null || result.data[0] === undefined) {
+            // user has not set up timer data yet. insert default timer settings.
+            const submitInfo : TimerSettings = {
+                user_id: user_id,
+                use_milliseconds: false,
+                low_time_warning: true,
+            }
+
+            const { error } = await supabase.from('users_timer_config').insert(submitInfo);
+            if (error !== null) {
+                alert("Error updating timer information: " + JSON.stringify(error));
+            }
+            setData(submitInfo);
+        } else {
+            // user has set up timer data.
+            setData(result.data[0]);
+        }
+    });
+}
+
 /**
  * Converts the number of hours/minutes/seconds to a string with padded zeros.
  * @param time The number of hours/minutes/seconds.
