@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Stack, Typography, Button } from "@mui/material"
-import { getTotalTimeFromCycles, timerToString } from '../utils/timerUtils';
+import { WorkRestCycle, getTotalTimeFromCycles, timerToString } from '../utils/timerUtils';
 import { useTimer } from '../hooks/useTimer';
 import TimeUpDialog from './dialogs/TimeUpDialog';
 import TimerConfigDialog from './dialogs/TimerConfigDialog';
 
 
-export default function TimerView({ pattern, showMs, onChange } : { pattern : { work : number, rest : number, cycles : number }, showMs : boolean, onChange : () => void }) {
+export default function TimerView({ pattern, showMs, onChange } : { pattern : WorkRestCycle, showMs : boolean, onChange : () => void }) {
 
     const [ dialogOpen, setDialogOpen ] = useState(false);
     const [ timerConfigOpen, setTimerConfigOpen ] = useState(false);
@@ -62,7 +62,7 @@ export default function TimerView({ pattern, showMs, onChange } : { pattern : { 
                 <Button onClick={ handleTimerConfigOpen } variant="outlined">Configure Timer</Button>
             </Stack>
             <TimeUpDialog open={dialogOpen} handleClose={ handleTimeUpDialogClose } />
-            <TimerConfigDialog open={timerConfigOpen} handleClose={handleConfigDialogClose} onChange={onChange} />
+            <TimerConfigDialog open={timerConfigOpen} handleClose={handleConfigDialogClose} onChange={onChange} timerRunning={isRunning} />
         </Stack>
     );
 }
