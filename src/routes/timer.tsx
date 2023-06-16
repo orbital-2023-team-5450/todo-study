@@ -8,7 +8,7 @@ import { fetchTimerSettings, TimerSettings, fetchTimerTemplateFromId, FullWorkRe
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import TimerView from "../components/TimerView";
+import TimerView from "../components/timer/TimerView";
 
 export default function Reminder() {
 

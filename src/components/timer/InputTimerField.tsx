@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Typography, TextField, Stack } from "@mui/material";
-import { timerToString } from "../utils/timerUtils";
-import { createTextEventHandler } from "../utils/textInputUtils";
+import { timerToString } from "../../utils/timerUtils";
+import { createTextEventHandler } from "../../utils/textInputUtils";
 
 export default function InputTimerField({ title, setValue } : { title : string, setValue : (arg : number) => void }) {
 

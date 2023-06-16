@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, FormGroup, FormControlLabel, Stack, Switch, Typography } from "@mui/material";
-import { fetchTimerSettings, fetchTimerTemplateFromId, FullWorkRestCycle, TimerSettings } from "../../utils/timerUtils";
-import supabase from "../../supabase";
+import { fetchTimerSettings, fetchTimerTemplateFromId, FullWorkRestCycle, TimerSettings } from "../../../utils/timerUtils";
+import supabase from "../../../supabase";
 import CreateTemplateDialog from "./CreateTemplateDialog";
 import SelectTemplateDialog from "./SelectTemplateDialog";
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Button } from "@mui/material";
-import { FullWorkRestCycle, TimerSettings, fetchTimerSettings, timerToString } from "../utils/timerUtils";
-import supabase from "../supabase";
-import { getUsernameFromId } from "../utils/fetchUserInfo";
-import LoadingScreen from "./loadingscreen";
+import { Card, Typography, Button, Grid, Box } from "@mui/material";
+import { FullWorkRestCycle, TimerSettings, fetchTimerSettings, timerToString } from "../../utils/timerUtils";
+import supabase from "../../supabase";
+import { getUsernameFromId } from "../../utils/fetchUserInfo";
+import LoadingScreen from "../loadingscreen";
 
 export default function TimerTemplateCard({ template, onChange } : { template : FullWorkRestCycle, onChange : () => void }) {
 
@@ -40,14 +40,15 @@ export default function TimerTemplateCard({ template, onChange } : { template : 
 
     return !loading ? (
         <Card sx={{"padding": 2}}>
-            <Typography variant="h6" component="h1">{template.title}</Typography>
+            <Box component="div" display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="h6" component="h1">{template.title}</Typography>
+                { (settings.timer_template_id !== template.timer_template_id) ?
+                    <Button onClick={() => select(template.timer_template_id)}>Select</Button> :
+                    <Button disabled>Selected</Button> }
+            </Box>
             <Typography variant="body1" component="p">
                 {template.description}
             </Typography>
-            <Typography variant="caption" component="p">by {name}</Typography>
-            <Typography variant="caption" component="p">ID: {template.timer_template_id} | Work: { timerToString(template.work, false, false) } | Rest: { timerToString(template.rest, false, false) } | Cycles: {template.cycles}</Typography>
-            { (settings.timer_template_id !== template.timer_template_id) ?
-                <Button onClick={() => select(template.timer_template_id)}>Select</Button> :
-                <Button disabled>Selected</Button> }
+            <Typography variant="caption" component="p">{name === "brein62" ? "Default" : `by ${name}`} | Work: { timerToString(template.work, false, false) } &sdot; Rest: { timerToString(template.rest, false, false) } &sdot; Cycles: {template.cycles}</Typography>
         </Card> ) : <LoadingScreen />;
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Stack, Typography, Button } from "@mui/material"
-import { WorkRestCycle, getTotalTimeFromCycles, timerToString } from '../utils/timerUtils';
-import { useTimer } from '../hooks/useTimer';
+import { WorkRestCycle, getTotalTimeFromCycles, timerToString } from '../../utils/timerUtils';
+import { useTimer } from '../../hooks/useTimer';
 import TimeUpDialog from './dialogs/TimeUpDialog';
 import TimerConfigDialog from './dialogs/TimerConfigDialog';
 

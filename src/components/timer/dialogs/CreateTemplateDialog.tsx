@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, TextField, Stack, Typography } from "@mui/material";
-import { timerToString } from "../../utils/timerUtils";
-import { createTextEventHandler } from "../../utils/textInputUtils";
+import { timerToString } from "../../../utils/timerUtils";
+import { createTextEventHandler } from "../../../utils/textInputUtils";
 import InputTimerField from "../InputTimerField";
-import supabase from "../../supabase";
+import supabase from "../../../supabase";
 
 export default function CreateTemplateDialog( { open, handleClose } : { open : boolean, handleClose : () => void }) {
 
