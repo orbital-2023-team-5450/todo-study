@@ -1,7 +1,6 @@
 type Task = {id : number, title : string, description : string, 
-    dueDate : Date, type : number, completed: boolean, 
-    userId: number, expired: boolean, deadline: string,
-    taskCollectionId: number};
+             dueDate : Date, type : number, completed: boolean, 
+             userId: number, expired: boolean, taskCollectionId: number};
 
 export default function splitTask(tasks : Task[]) {
 

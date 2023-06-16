@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from "react";
-import {Box, Button, Container, CssBaseline, Stack, Typography} from "@mui/material";
+import {Box, Button, CssBaseline, Stack, Typography} from "@mui/material";
 import supabase from "../supabase";
 import TaskManager from "./taskmanager";
 import splitTask from "./../utils/splitTask";
@@ -7,8 +7,7 @@ import TaskPopUp from "./taskpopup";
 
 type Task = {id : number, title : string, description : string, 
              dueDate : Date, type : number, completed: boolean, 
-             userId: number, expired: boolean, deadline: string,
-             taskCollectionId: number};
+             userId: number, expired: boolean, taskCollectionId: number};
 
 enum task_type { DUE_SOON, FUTURE_ASSIGNMENT };
 
@@ -17,7 +16,6 @@ export default function TaskScreen() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [futureTasks, setFutureTasks] = useState<Task[]>([]);
     const [isPopUp, setPopUp] = useState(false);
-    // const [error, setError] = useState(false);
     
     const handleNewTaskSubmit = (event : React.MouseEvent<HTMLElement>) => {
 
@@ -41,8 +39,7 @@ export default function TaskScreen() {
             } else {
                 const [now, later, expired] = splitTask(result.data as {id : number, title : string, description : string, 
                                                 dueDate : Date, type : number, completed: boolean, 
-                                                userId: number, expired: boolean, deadline: string,
-                                                taskCollectionId: number}[]);
+                                                userId: number, expired: boolean, taskCollectionId: number}[]);
                 setFutureTasks(later);
                 setTasks(now.concat(expired));
             }  
@@ -72,9 +69,6 @@ export default function TaskScreen() {
                             fetchTask={fetchTasks}
                         />
                     </Box>
-
-            {/* {error && "Error! Failed to load tasks"}
-            {!tasks && !error && "Loading..."} */}
             </Stack>
 
             <Button

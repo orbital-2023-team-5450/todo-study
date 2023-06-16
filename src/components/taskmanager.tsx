@@ -1,4 +1,4 @@
-import { Box, Button, Divider, IconButton, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import SortIcon from "@mui/icons-material/Sort";
 import React, { useState } from "react";
 import EmptyState from "./emptystate";
@@ -6,15 +6,13 @@ import TaskList from "./tasklist";
 import supabase from "../supabase";
 
 type Task = {id : number, title : string, description : string, dueDate : Date, 
-             type : number, completed: boolean, userId: number, expired: boolean, deadline: string,
-             taskCollectionId: number};
+             type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
 
 export default function TaskManager({ taskType, tasks, fetchTask } : 
                                     { taskType : number, 
                                       tasks : {id : number, title : string, description : string, 
                                                dueDate : Date, type : number, completed: boolean, 
-                                               userId: number, expired: boolean, deadline: string,
-                                               taskCollectionId: number}[], 
+                                               userId: number, expired: boolean, taskCollectionId: number}[], 
                                       fetchTask : () => void}) {
 
     const [error, setError] = useState(false);

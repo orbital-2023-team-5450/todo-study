@@ -8,8 +8,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 type Task = {id : number, title : string, description : string, dueDate : Date, 
-    type : number, completed: boolean, userId: number, expired: boolean, deadline: string,
-    taskCollectionId: number};
+             type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
 
 export default function TaskPopUp({onClose, insert, fetchTask, id} : 
                                   {id : number
@@ -21,7 +20,6 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
     const [type, setType] = useState();
     const [completed, setCompleted] = useState(false);
     const [expired, setExpired] = useState(false);
-    const [deadline, setDeadline] = useState((new Date()).toISOString());
     const [taskCollectionId, setTaskCollectionId] = useState();
     const [loading, setLoading] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
@@ -77,7 +75,6 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                     "type": type,
                     "completed": completed,
                     "expired": expired,
-                    "deadline": deadline,
                     "taskCollectionId": taskCollectionId,
                     "userId": id
                 };
