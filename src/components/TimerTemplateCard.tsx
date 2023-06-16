@@ -3,6 +3,7 @@ import { Card, Typography, Button } from "@mui/material";
 import { FullWorkRestCycle, TimerSettings, fetchTimerSettings, timerToString } from "../utils/timerUtils";
 import supabase from "../supabase";
 import { getUsernameFromId } from "../utils/fetchUserInfo";
+import LoadingScreen from "./loadingscreen";
 
 export default function TimerTemplateCard({ template, onChange } : { template : FullWorkRestCycle, onChange : () => void }) {
 
@@ -13,6 +14,8 @@ export default function TimerTemplateCard({ template, onChange } : { template : 
         timer_template_id: 1, });
 
     const [ name, setName ] = useState("");
+
+    const [ loading, setLoading ] = useState(true);
 
     async function select(id : number) {
         const submitInfo : TimerSettings = { ...settings, timer_template_id: id };
@@ -32,9 +35,10 @@ export default function TimerTemplateCard({ template, onChange } : { template : 
     useEffect(() => {
         fetchTimerSettings(setSettings);
         getUsernameFromId(template.user_id, setName);
-    }, [fetchTimerSettings, template]); 
+        setLoading(false);
+    }, [fetchTimerSettings, settings, template]); 
 
-    return (
+    return !loading ? (
         <Card sx={{"padding": 2}}>
             <Typography variant="h6" component="h1">{template.title}</Typography>
             <Typography variant="body1" component="p">
@@ -45,6 +49,5 @@ export default function TimerTemplateCard({ template, onChange } : { template : 
             { (settings.timer_template_id !== template.timer_template_id) ?
                 <Button onClick={() => select(template.timer_template_id)}>Select</Button> :
                 <Button disabled>Selected</Button> }
-        </Card>
-    );
+        </Card> ) : <LoadingScreen />;
 }

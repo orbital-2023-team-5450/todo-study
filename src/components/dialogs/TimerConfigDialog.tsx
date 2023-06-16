@@ -5,7 +5,7 @@ import supabase from "../../supabase";
 import CreateTemplateDialog from "./CreateTemplateDialog";
 import SelectTemplateDialog from "./SelectTemplateDialog";
 
-export default function TimerConfigDialog( { open, handleClose, timerRunning, onChange } : { open : boolean, handleClose : () => void, timerRunning: boolean, onChange: () => void }) {
+export default function TimerConfigDialog( { open, handleClose, timerRunning, timerPaused, onChange } : { open : boolean, handleClose : () => void, timerRunning: boolean, timerPaused: boolean, onChange: () => void }) {
 
     const [ createTemplateDialogOpen, setCreateTemplateDialogOpen ] = useState(false);
     const [ selectTemplateDialogOpen, setSelectTemplateDialogOpen ] = useState(false);
@@ -80,10 +80,16 @@ export default function TimerConfigDialog( { open, handleClose, timerRunning, on
                         <Typography variant="h6" component="h1">Timer Templates</Typography>
                         <Typography component="p">You can select the appropriate work-rest cycle for your timer usage, or create a new timer template if needed.</Typography>
                         <Typography component="p">Current timer template: <b>{ pattern.title }</b></Typography>
+                        { timerPaused ?
+                            <DialogContentText>
+                                Timer template cannot be changed while the timer is paused. Try again when the timer is restarted.
+                            </DialogContentText>
+                        :
                         <Stack gap={3} direction="row" justifyContent="center">
                             <Button variant="outlined" onClick={ handleSelectTemplateOpen }>Use existing timer template</Button>
                             <Button variant="outlined" onClick={ handleCreateTemplateOpen }>Create timer template</Button>
                         </Stack>
+                        }
                     </Stack>
                 }
             </DialogContent>

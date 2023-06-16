@@ -62,7 +62,7 @@ export default function TimerView({ pattern, showMs, onChange } : { pattern : Wo
                 <Button onClick={ handleTimerConfigOpen } variant="outlined">Configure Timer</Button>
             </Stack>
             <TimeUpDialog open={dialogOpen} handleClose={ handleTimeUpDialogClose } />
-            <TimerConfigDialog open={timerConfigOpen} handleClose={handleConfigDialogClose} onChange={onChange} timerRunning={isRunning} />
+            <TimerConfigDialog open={timerConfigOpen} handleClose={handleConfigDialogClose} onChange={onChange} timerRunning={isRunning} timerPaused={isPaused} />
         </Stack>
     );
 }
