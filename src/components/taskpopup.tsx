@@ -3,10 +3,9 @@ import dayjs from "dayjs";
 import { Box, Button, Container, Stack, TextField, Typography,} from "@mui/material";
 import supabase from "../supabase";
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
 
 type Task = {id : number, title : string, description : string, dueDate : Date, 
     type : number, completed: boolean, userId: number, expired: boolean, deadline: string,
@@ -163,15 +162,16 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                     />
 
                     <Stack direction='row'> 
-                        <Typography component="h6" variant="h6" align="left" marginTop="3vh" flexGrow={0.5}> Date </Typography>
-                        <Typography component="h6" variant="h6" align="right" marginTop="3vh"> Time </Typography>
+                        <Typography component="h6" variant="h6" align="left" marginTop="3vh" flexGrow={0.5}> 
+                            Date and Time 
+                        </Typography>
                     </Stack>
 
                     <Stack direction='row'> 
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex', flexGrow: '0.5'}}> 
                                 <DemoItem>
-                                    <DesktopDatePicker 
+                                    <DateTimePicker 
                                         defaultValue={dayjs((new Date()))} 
                                         value={dayjs(dueDate)} 
                                         onChange={(value) => {  
@@ -182,12 +182,6 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                                         }}
                                     />
                                 </DemoItem>
-                            </DemoContainer>
-                        </LocalizationProvider>
-
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DemoContainer components={['DesktopTimePicker']} sx={{display: 'flex'}}>
-                                <DesktopTimePicker />
                             </DemoContainer>
                         </LocalizationProvider>
                     </Stack>

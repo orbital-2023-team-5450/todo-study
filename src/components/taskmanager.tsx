@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import EmptyState from "./emptystate";
 import TaskList from "./tasklist";
 import supabase from "../supabase";
-import { Scrollbars } from 'react-custom-scrollbars';
 
 type Task = {id : number, title : string, description : string, dueDate : Date, 
              type : number, completed: boolean, userId: number, expired: boolean, deadline: string,
@@ -64,9 +63,15 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
     return (
         <Stack component="main" gap={2} marginTop={2} direction='column'>
           
-            <Typography variant="h4" component="h2" marginTop={7}>
-              {taskType === 0 ? "Due Soon" : "Future Assignment"}
-            </Typography> 
+            <Stack direction='row' marginLeft='3vh'> 
+                <Typography variant="h4" component="h2" marginTop={7}>
+                    {taskType === 0 ? "Due Today" : "Future Assignment"}
+                </Typography> 
+
+                {/* <IconButton>
+                    <SortIcon />
+                </IconButton> */}
+            </Stack>
             
             <Stack direction='column' component='div'> 
                 <Box component='div' 
