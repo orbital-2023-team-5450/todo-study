@@ -3,6 +3,6 @@ import { Typography } from "@mui/material";
 
 export default function EmptyState() {
     return (
-        <Typography variant="h2" component="h2"> There isnt't any task yet....</Typography>
+        <Typography variant="h3" component="h2"> There isnt't any task yet....</Typography>
     )
 }

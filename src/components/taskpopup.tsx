@@ -12,8 +12,8 @@ type Task = {id : number, title : string, description : string, dueDate : Date,
     type : number, completed: boolean, userId: number, expired: boolean, deadline: string,
     taskCollectionId: number};
 
-export default function TaskPopUp({open, onClose, insert, fetchTask, id} : 
-                                  {open: boolean, id : number
+export default function TaskPopUp({onClose, insert, fetchTask, id} : 
+                                  {id : number
                                    onClose: () => void, insert: boolean, fetchTask: () => void}) {
 
     const [title, setTitle] = useState("");
@@ -25,6 +25,7 @@ export default function TaskPopUp({open, onClose, insert, fetchTask, id} :
     const [deadline, setDeadline] = useState((new Date()).toISOString());
     const [taskCollectionId, setTaskCollectionId] = useState();
     const [loading, setLoading] = useState(true);
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const fetchInfo = async (id : number) => {
 
@@ -37,11 +38,8 @@ export default function TaskPopUp({open, onClose, insert, fetchTask, id} :
             if (result.data === null || result.data === undefined || result.error) {
                 console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
             } else if (result.data[0] === null || result.data[0] === undefined) {
-                // user has not created account yet
                 setLoading(false);
             } else if (loading) {
-                // user has created account. ensure images do not reload unless
-                // the page has been refreshed.
                 console.log("pls work");
                 setLoading(false);
                 setTitle(result.data[0].title);
@@ -60,6 +58,7 @@ export default function TaskPopUp({open, onClose, insert, fetchTask, id} :
     const submitTask = (event : React.MouseEvent<HTMLElement>) => { // make enter works as well 
 
         event.preventDefault();
+        setIsDisabled(true);
         const getUserID = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             const user_id : string = (user === null) ? "" : user.id;
@@ -106,10 +105,10 @@ export default function TaskPopUp({open, onClose, insert, fetchTask, id} :
     // reset the form 
     const reset = () => {
 
+        onClose();
         setTitle("");
         setDescription("");
         setDueDate(new Date().toISOString());
-        onClose();
     }
 
     const handleTitleTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
@@ -124,12 +123,16 @@ export default function TaskPopUp({open, onClose, insert, fetchTask, id} :
         setDescription(event.currentTarget.value);
     }
 
-    return ( open ? 
-        (<Box sx={{position: "fixed", top: 0, left: 0, width: "100%", height: "100vh", backgroundColor: "rgba(50, 50, 50, 0.9)", display: "flex",
-                    justifyContent: "center", alignItems: "center", filter: "blur"}} component="div" onClick={reset}>
-             <Box sx={{postition: "relative", padding: "32px", width: "100%", maxWidth: "640px", backgroundColor: "white"}}
-                  component="div" onClick={(e) => e.stopPropagation()}>
-
+    return ( 
+        <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", height: "100vh", backgroundColor: "rgba(50, 50, 50, 0.9)", 
+                  display: "flex", justifyContent: "center", alignItems: "center", filter: "blur"}} 
+             component="div" 
+             onClick={reset}
+        >
+             <Box sx={{position: "relative", padding: "32px", width: "100%", maxWidth: "640px", backgroundColor: "white"}}
+                  component="div" 
+                  onClick={(e) => e.stopPropagation()}
+             >
                 <Stack direction="column">
                     <Typography component="h4" variant="h4" marginBottom={3}>
                         Create new task
@@ -155,7 +158,6 @@ export default function TaskPopUp({open, onClose, insert, fetchTask, id} :
                         value={description}
                         onChange={handleDescriptionTextChange} 
                         size="medium"
-                        required
                         //helperText
                         //error
                     />
@@ -170,7 +172,7 @@ export default function TaskPopUp({open, onClose, insert, fetchTask, id} :
                             <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex', flexGrow: '0.5'}}> 
                                 <DemoItem>
                                     <DesktopDatePicker 
-                                        defaultValue={dayjs((new Date()).toISOString())} 
+                                        defaultValue={dayjs((new Date()))} 
                                         value={dayjs(dueDate)} 
                                         onChange={(value) => {  
                                             if (value == null) {
@@ -192,11 +194,19 @@ export default function TaskPopUp({open, onClose, insert, fetchTask, id} :
                     
                 </Stack>
 
-                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh'}} onClick={reset}> close </Button>
-                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh'}} onClick={submitTask}>submit</Button>
+                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh'}} 
+                         onClick={reset}
+                         disabled={isDisabled}
+                 > 
+                    close 
+                 </Button>
+                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh'}} 
+                         onClick={submitTask}
+                         disabled={isDisabled}
+                 >
+                    submit
+                 </Button>
              </Box>
-        </Box>)
-        : null
-
+        </Box>
     );
 }

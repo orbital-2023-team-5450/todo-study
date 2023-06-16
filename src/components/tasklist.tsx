@@ -1,7 +1,6 @@
-import React from "react";
-import { Typography, Card, Stack, Checkbox, IconButton } from "@mui/material";
-import { DeleteOutline } from "@mui/icons-material";
-import TaskPopUp from "./taskpopup";
+import React, { useState } from "react";
+import { Box, Card, Checkbox, Typography, Stack, IconButton } from "@mui/material";
+import { DeleteOutline, Task } from "@mui/icons-material";
 
 type Task = {id : number, title : string, description : string, dueDate : Date, 
   type : number, completed: boolean, userId: number, expired: boolean, deadline: string,
@@ -11,7 +10,7 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                                  { tasks :Task[], 
                                    onTaskChange : (i : number) => void, onTaskDelete : (i : number) => void,
                                    onTaskEdit : (i : number) => void, fetchTask: () => void}) {
-        
+
     const handleTaskChange = (id : number) => () => {
         onTaskChange(id);
     };
@@ -26,34 +25,46 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
 
       return (
         <>
-          <Stack marginTop={5}>
-            {tasks.map((task) => {
-              return (
-                <>
-                  <Card 
-                    key={task.id} 
-                    sx={{ marginLeft: 3, marginRight: 3, marginBottom: 3, 
-                          '&:hover': {backgroundColor: 'primary.main', opacity: [0.9, 0.8, 0.7]},
-                          borderRadius: '10px', }}        
-                  >
-                    <Stack direction="row" alignItems="center" >
-                      <Checkbox
-                        checked={task.completed}
-                        onChange={handleTaskChange(task.id)}
-                      />
-                      <Stack direction="column" component="div" onClick={handleTaskEdit(task.id)} flexGrow={1}>
-                        <Typography flexGrow={1}>{task.title}</Typography>
-                        <Typography> {task.dueDate + ""}</Typography>
-                      </Stack>
-                      <IconButton color="error" onClick={handleTaskDelete(task.id)}>
-                        <DeleteOutline />
-                      </IconButton>
-                    </Stack>
-                  </Card>
-                </>
-              );
-            })} 
-          </Stack>
+          <Stack marginTop={3} direction='column'>
+              {tasks.map((task) => {
+                  return (
+                    <>
+                      <Card 
+                        key={task.id} 
+                        sx={{ marginLeft: 3, marginRight: 5, marginBottom: 3, marginTop: 0.7,
+                              '&:hover': {backgroundColor: 'pink', opacity: [0.9, 0.8, 0.7]},
+                              borderRadius: '10px', height: '70px', }}        
+                      >
+                          <Stack direction="row" alignItems="center">
+                              <Checkbox
+                                checked={task.completed}
+                                onChange={handleTaskChange(task.id)}
+                                sx={{marginTop: '5px'}}
+                              />
+
+                              <Stack direction="column" 
+                                    component="div" 
+                                    onClick={handleTaskEdit(task.id)} 
+                                    flexGrow={1} 
+                                    marginTop={'5px'} 
+                              >
+                                  {task.title.length > 30 ? <Typography variant='h5'> {task.title.slice(0, 30) + "..."}</Typography> 
+                                                          : <Typography variant="h5" component='h5'>{task.title}</Typography>}
+
+                                  <Typography> 
+                                      {new Date(task.dueDate).toUTCString() + ""}
+                                  </Typography>
+                              </Stack>
+
+                              <IconButton color="error" onClick={handleTaskDelete(task.id)} sx={{marginTop: '5px'}}>
+                                  <DeleteOutline />
+                              </IconButton>
+                          </Stack>
+                      </Card>
+                    </>
+                  );
+                })} 
+          </Stack> 
         </>
       );
 }

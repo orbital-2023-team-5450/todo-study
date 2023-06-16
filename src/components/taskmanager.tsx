@@ -1,10 +1,10 @@
-import { Button, Divider, IconButton, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, IconButton, Stack, TextField, Typography } from "@mui/material";
 import SortIcon from "@mui/icons-material/Sort";
-import React, { ChangeEvent, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import EmptyState from "./emptystate";
 import TaskList from "./tasklist";
 import supabase from "../supabase";
-import TaskPopUp from "./taskpopup";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 type Task = {id : number, title : string, description : string, dueDate : Date, 
              type : number, completed: boolean, userId: number, expired: boolean, deadline: string,
@@ -19,13 +19,6 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
                                       fetchTask : () => void}) {
 
     const [error, setError] = useState(false);
-    const [isPopUp, setPopUp] = useState(false);
-  
-    const handleNewTaskSubmit = (event : React.MouseEvent<HTMLElement>) => {
-
-      event.preventDefault();
-      setPopUp(true);
-    };
   
     const handleTaskChange = (id : number) => {
 
@@ -65,39 +58,35 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
     };
 
     const handleTaskEdit = (id : number) => {
-      setPopUp(true);
-      <TaskPopUp open={isPopUp} onClose={() => setPopUp(false)} insert fetchTask={fetchTask} id={id}/>
+      // 
     }
   
     return (
-        <Stack component="main" gap={2} marginTop={2}>
-            <Typography variant="h4" component="h2" marginTop={5}>
+        <Stack component="main" gap={2} marginTop={2} direction='column'>
+          
+            <Typography variant="h4" component="h2" marginTop={7}>
               {taskType === 0 ? "Due Soon" : "Future Assignment"}
-            </Typography>
-                  
-            {tasks.length === 0 ? <EmptyState /> 
-                              : <TaskList 
-                                    tasks={tasks} 
-                                    onTaskChange={handleTaskChange} 
-                                    onTaskDelete={handleTaskDelete} 
-                                    onTaskEdit={handleTaskEdit}
-                                    fetchTask={fetchTask}
-                                /> 
-          }
-
-            <Stack component="form" direction="column" gap={1} flexGrow={1}>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    size="medium"
-                    onClick={handleNewTaskSubmit}
-                    sx={{marginLeft: "1.8vh", marginRight: "1.8vh"}}
-                >
-                    Add
-                </Button>
-
-                <TaskPopUp open={isPopUp} onClose={() => setPopUp(false)} insert fetchTask={fetchTask} id={0}/>
+            </Typography> 
+            
+            <Stack direction='column' component='div'> 
+                <Box component='div' 
+                     sx={{bgcolor: "grey", borderRadius: '16px', height: '59.5vh', overflowY: 'auto'}} 
+                     marginLeft={4} 
+                     marginRight={4} 
+                     marginTop={2}
+                > 
+                  {tasks.length !== 0 ? <TaskList 
+                                            tasks={tasks} 
+                                            onTaskChange={handleTaskChange} 
+                                            onTaskDelete={handleTaskDelete} 
+                                            onTaskEdit={handleTaskEdit}
+                                            fetchTask={fetchTask}
+                                        /> 
+                                      : <EmptyState /> 
+                    }
+                </Box>
             </Stack>
-          </Stack>   
+            
+        </Stack>   
     );
 }
