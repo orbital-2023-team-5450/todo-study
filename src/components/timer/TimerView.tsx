@@ -19,7 +19,7 @@ export default function TimerView({ pattern, showMs, onChange } : { pattern : Wo
         setDialogOpen(false);
     }
 
-    const { start, stop, reset, isRunning, isPaused, displayedTime } = useTimer(pattern, showDialog);
+    const { start, stop, reset, isRunning, isPaused, displayedTime, currentStatus } = useTimer(pattern, showDialog);
     
     function handleTimer() {
         if (isRunning) {
@@ -47,11 +47,25 @@ export default function TimerView({ pattern, showMs, onChange } : { pattern : Wo
         setTimerConfigOpen(false);
     }
 
+    const statusString = () => {
+        if (isRunning || isPaused) {
+            if (currentStatus.isWork) {
+                return "Work" + (isPaused ? " (paused)" : "");
+            } else {
+                return "Rest" + (isPaused ? " (paused)" : "");
+            }
+        } else {
+            return "Not Running";
+        }
+    }
 
     return (
         <Stack gap={3} component="section">
             <Typography variant="h1" component="h2">
                 { timerDisplay }
+            </Typography>
+            <Typography variant="body1" component="h3">
+                Status: <strong>{statusString()}</strong> | Cycle { currentStatus.cycles + 1 } of { pattern.cycles }
             </Typography>
             <Stack gap={5} direction="row" justifyContent="center">
                 <Button variant="outlined" onClick={ handleTimer }>
