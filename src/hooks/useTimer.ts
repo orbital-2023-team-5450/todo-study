@@ -54,7 +54,7 @@ export const useTimer = ( pattern : { work : number, rest : number, cycles : num
                 interval.current = undefined;
             }
         }
-    }, [currentStatus, limit, pattern, timeWhenLastStopped, startTime])
+    }, [timeWhenLastStopped, startTime])
 
     function start() {
         setIsRunning(true);
