@@ -52,7 +52,7 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
         fetchInfo(id);
     }, [fetchInfo]);
 
-    const submitTask = (event : React.MouseEvent<HTMLElement>) => { // make enter works as well 
+    const submitTask = (event : React.SyntheticEvent) => { 
 
         event.preventDefault();
         setIsDisabled(true);
@@ -95,7 +95,7 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                 }
                 upsertion();
             }
-        });        
+        });     
     }
 
     // reset the form 
@@ -126,7 +126,8 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
              onClick={reset}
         >
              <Box sx={{position: "relative", padding: "32px", width: "100%", maxWidth: "640px", backgroundColor: "white"}}
-                  component="div" 
+                  component="form"
+                  onSubmit={submitTask} 
                   onClick={(e) => e.stopPropagation()}
              >
                 <Stack direction="column">
@@ -142,8 +143,6 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                         value={title}
                         onChange={handleTitleTextChange} 
                         required
-                        // helperText
-                        //error
                     />
 
                     <Typography component="h6" variant="h6" align="left" marginTop="2vh"> Description </Typography>
@@ -154,8 +153,6 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                         value={description}
                         onChange={handleDescriptionTextChange} 
                         size="medium"
-                        //helperText
-                        //error
                     />
 
                     <Stack direction='row'> 
@@ -192,8 +189,8 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                     close 
                  </Button>
                  <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh'}} 
-                         onClick={submitTask}
                          disabled={isDisabled}
+                         type='submit'
                  >
                     submit
                  </Button>
