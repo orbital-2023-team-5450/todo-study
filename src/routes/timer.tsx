@@ -10,7 +10,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import TimerView from "../components/timer/TimerView";
 
-export default function Reminder() {
+export default function Timer() {
 
     document.title = "Study Timer // TODO Study";
 

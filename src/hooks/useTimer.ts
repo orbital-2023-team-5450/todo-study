@@ -83,5 +83,5 @@ export const useTimer = ( pattern : { work : number, rest : number, cycles : num
         onTimeUp();
     }
 
-    return { start, stop, reset, isRunning, isPaused, displayedTime };
+    return { start, stop, reset, isRunning, isPaused, displayedTime, currentStatus };
 }
