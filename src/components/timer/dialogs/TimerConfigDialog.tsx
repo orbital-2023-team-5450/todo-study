@@ -4,6 +4,7 @@ import { fetchTimerSettings, fetchTimerTemplateFromId, FullWorkRestCycle, TimerS
 import supabase from "../../../supabase";
 import CreateTemplateDialog from "./CreateTemplateDialog";
 import SelectTemplateDialog from "./SelectTemplateDialog";
+import TemplateTextDisplay from "../TemplateTextDisplay";
 
 export default function TimerConfigDialog( { open, handleClose, timerRunning, timerPaused, onChange } : { open : boolean, handleClose : () => void, timerRunning: boolean, timerPaused: boolean, onChange: () => void }) {
 
@@ -79,7 +80,7 @@ export default function TimerConfigDialog( { open, handleClose, timerRunning, ti
                         </Stack>
                         <Typography variant="h6" component="h1">Timer Templates</Typography>
                         <Typography component="p">You can select the appropriate work-rest cycle for your timer usage, or create a new timer template if needed.</Typography>
-                        <Typography component="p">Current timer template: <b>{ pattern.title }</b></Typography>
+                        <Typography component="p">Current timer template: <b>{ pattern.title }</b><br /><TemplateTextDisplay template={pattern} /></Typography>
                         { timerPaused ?
                             <DialogContentText>
                                 Timer template cannot be changed while the timer is paused. Try again when the timer is restarted.

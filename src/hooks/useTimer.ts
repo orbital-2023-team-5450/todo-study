@@ -35,8 +35,6 @@ export const useTimer = ( pattern : { work : number, rest : number, cycles : num
 
     if (elapsedTime >= limit) timeUp();
 
-    console.log({...currentStatus, elapsedTime: elapsedTime});
-
     const interval = useRef<ReturnType<typeof setInterval>>();
 
     // bug (only occurs during development):
