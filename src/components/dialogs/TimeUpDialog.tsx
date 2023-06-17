@@ -15,7 +15,7 @@ export default function TimeUpDialog( { open, handleClose } : { open : boolean, 
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="timeup-dialog-description">
-                    Time has ended.
+                    Time has ended. { open.toString() }
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
