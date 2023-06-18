@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Button, Grid, Box } from "@mui/material";
-import { FullWorkRestCycle, TimerSettings, fetchTimerSettings, timerToString } from "../../utils/timerUtils";
+import { Card, Typography, Button, Box, CircularProgress } from "@mui/material";
+import { FullWorkRestCycle, TimerSettings, fetchTimerSettings } from "../../utils/timerUtils";
 import supabase from "../../supabase";
 import { getUsernameFromId } from "../../utils/fetchUserInfo";
-import LoadingScreen from "../loadingscreen";
 import TemplateTextDisplay from "./TemplateTextDisplay";
 
 export default function TimerTemplateCard({ template, onChange, onDelete } : { template : FullWorkRestCycle, onChange : () => void, onDelete : () => void }) {
@@ -46,10 +45,10 @@ export default function TimerTemplateCard({ template, onChange, onDelete } : { t
     }
 
     useEffect(() => {
-        fetchTimerSettings(setSettings);
-        getUsernameFromId(template.user_id, setName);
-        setLoading(false);
-    }, [fetchTimerSettings, settings, template]); 
+        fetchTimerSettings(setSettings)
+            .then(() => getUsernameFromId(template.user_id, setName))
+            .then(() => setLoading(false))
+    }, [settings, template]); 
 
     return !loading ? (
         <Card sx={{"padding": 2}}>
@@ -70,5 +69,12 @@ export default function TimerTemplateCard({ template, onChange, onDelete } : { t
                 {template.description}
             </Typography>
             <Typography variant="caption" component="p">{name === "brein62" ? "Default" : `by ${name}`} | <TemplateTextDisplay template={template} /></Typography>
-        </Card> ) : <LoadingScreen />;
+        </Card>
+    ) : (
+        <Card sx={{"padding" : 5}}>
+            <Box component="div" display="flex" justifyContent="center">
+                <CircularProgress size={40} />
+            </Box>
+        </Card>
+    );
 }

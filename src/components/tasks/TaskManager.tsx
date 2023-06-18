@@ -1,9 +1,8 @@
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
-import SortIcon from "@mui/icons-material/Sort";
-import React, { useState } from "react";
-import EmptyState from "./emptystate";
-import TaskList from "./tasklist";
-import supabase from "../supabase";
+import { Box, Stack, Typography } from "@mui/material";
+import React from "react";
+import EmptyState from "./EmptyState";
+import TaskList from "./TaskList";
+import supabase from "../../supabase";
 
 type Task = {id : number, title : string, description : string, dueDate : Date, 
              type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
@@ -14,15 +13,12 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
                                                dueDate : Date, type : number, completed: boolean, 
                                                userId: number, expired: boolean, taskCollectionId: number}[], 
                                       fetchTask : () => void}) {
-
-    const [error, setError] = useState(false);
   
     const handleTaskChange = (id : number) => {
 
       const task = tasks.find((task : Task) => task.id === id);
       if (task === undefined) {
         alert("There is no such task. It might not exist or it is deleted");
-        setError(true);
       } else {
         supabase
         .from("tasks")
@@ -31,7 +27,6 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
         .then((result) => {
           if (result.error !== null) {
             alert("Failed to update task!");
-            setError(true);
           } else {
             fetchTask();
           }
@@ -47,7 +42,6 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
         .then((result) => {
           if (result.error) {
             alert("Failed to delete task!");
-            setError(true);
           } else {
             fetchTask();
           }

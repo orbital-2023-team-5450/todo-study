@@ -1,23 +1,23 @@
 import * as React from 'react';
 import {useState} from 'react'
-import {Stack, Box, Typography, Drawer, Button, List, Divider, ListItem, ListItemButton, ListItemIcon} from '@mui/material'
+import {Stack, Box, Drawer, Button, List, Divider, ListItem, ListItemButton, ListItemIcon} from '@mui/material'
 import AvTimerIcon from '@mui/icons-material/AvTimer';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import AccountNav from './accountnav';
+import AccountNav from './AccountNav';
 
 const features : {feature: string, app: JSX.Element}[] = [
   {feature: "Dashboard", app: <HomeIcon />},
   {feature: "Timer", app: <AvTimerIcon />},
-  {feature: "Reminders", app: <NotificationsNoneIcon />}, 
+  {feature: "Notes", app: <EditNoteRoundedIcon />}, 
   {feature: "Tasks", app: <FormatListBulletedIcon />},
   {feature: "Account Settings", app: <ManageAccountsIcon />}];
 
 export default function NavSides() {
-  const [state, setState] = useState(false);
+  const [open, setOpen] = useState(false);
   const toggleDrawer = () =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -25,7 +25,7 @@ export default function NavSides() {
         ((event as React.KeyboardEvent).key === 'Tab' ||
          (event as React.KeyboardEvent).key === 'Shift')
       ) return;
-      setState(!state);
+      setOpen(!open);
     }
 
   //list of icon on the drawer
@@ -67,7 +67,7 @@ export default function NavSides() {
       <Button variant="contained" onClick={toggleDrawer()} disableElevation><MenuIcon /></Button>
       <Drawer
           anchor={'left'}
-          open={state}
+          open={open}
           onClose={toggleDrawer()}
       >
         {list()}

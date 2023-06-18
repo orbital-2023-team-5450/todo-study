@@ -2,15 +2,15 @@ import React from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import supabase from '../supabase';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { Button, Container, Divider, Stack, SvgIcon, Typography } from '@mui/material';
-import SvgGoogle from '../icons/googleicon';
+import { Button, Container, Divider, Stack, Typography } from '@mui/material';
+import SvgGoogle from '../icons/googleIcon';
 
 export default function Login() {
 
     document.title = "Log in or sign up // TODO: Study";
 
     async function signInWithGoogle() {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: { redirectTo: process.env.REACT_APP_SITE_URL ?? "https://todo-study-orbital.vercel.app/" },
         })
