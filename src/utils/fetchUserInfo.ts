@@ -21,7 +21,6 @@ export default async function fetchUserInfo(setData : React.Dispatch<React.SetSt
     const user_id : string = (user === null) ? "" : user.id;
       
     supabase.from('users').select().eq("user_id", user_id).then((result) => {
-        console.log(result.error);
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
         } else if (result.data[0] === null || result.data[0] === undefined) {
@@ -56,7 +55,6 @@ function getPublicAvatarUrl(filename : string) : string {
  */
 export function getUsernameFromId(id : string, setData: React.Dispatch<SetStateAction<any>>) {
     return supabase.from('users').select().eq("user_id", id).then((result) => {
-        console.log(result.error);
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
         } else if (result.data[0] === null || result.data[0] === undefined) {

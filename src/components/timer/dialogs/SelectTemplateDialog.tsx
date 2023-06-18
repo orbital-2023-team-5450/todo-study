@@ -13,7 +13,7 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
 
     useEffect(() => {
         fetchTimerTemplates(setTemplates);
-    }, [fetchTimerTemplates]);
+    }, [fetchTimerTemplates, setTemplates, templates]);
 
     return (
         <Dialog
@@ -28,7 +28,7 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
             <DialogContent>
                 <Stack gap={3}>
                     {
-                        templates.map((template) => <TimerTemplateCard template={template} onChange={onChange} />)
+                        templates.map((template) => <TimerTemplateCard template={template} onChange={onChange} onDelete={() => fetchTimerTemplates(setTemplates)} />)
                     }
                 </Stack>
             </DialogContent>

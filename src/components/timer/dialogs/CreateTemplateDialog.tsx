@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, TextField, Stack, Typography } from "@mui/material";
-import { timerToString } from "../../../utils/timerUtils";
+import { getCycleFromTemplate, isValidPattern, timerToString } from "../../../utils/timerUtils";
 import { createTextEventHandler } from "../../../utils/textInputUtils";
 import InputTimerField from "../InputTimerField";
 import supabase from "../../../supabase";
@@ -39,8 +39,18 @@ export default function CreateTemplateDialog( { open, handleClose } : { open : b
             }
         }
 
-        insert();
-        handleClose();
+        if (!Number.isInteger(parseFloat(cycles.toString())) || cycles <= 0) {
+            alert("Pattern is invalid! Ensure the number of cycles is a positive integer.");
+        } else if (work <= 0) {
+            alert("Pattern is invalid! Ensure that the amount of work done is positive!");
+        } else if (rest < 0) {
+            alert("Pattern is invalid! Rest time cannot be negative. If you don't need rest time, you can leave rest time as 0.")
+        } else if (!isValidPattern(getCycleFromTemplate({...submitInfo, timer_template_id: 0}))) {      
+            alert("Pattern is invalid! Ensure the work/rest length is at least zero and there are at least 1 cycle!");
+        } else {
+            insert();
+            handleClose();
+        }
     }
 
     return (

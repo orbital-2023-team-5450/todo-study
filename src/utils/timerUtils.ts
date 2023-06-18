@@ -28,7 +28,6 @@ export async function fetchTimerSettings(setData : React.Dispatch<React.SetState
     const user_id : string = (user === null) ? "" : user.id;
       
     supabase.from('users_timer_config').select().eq("user_id", user_id).then(async (result) => {
-        console.log(result.error);
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
         } else if (result.data[0] === null || result.data[0] === undefined) {
@@ -53,10 +52,7 @@ export async function fetchTimerSettings(setData : React.Dispatch<React.SetState
 }
 
 export async function fetchTimerTemplates(setData : React.Dispatch<React.SetStateAction<any>>) {
-    const { data: { user } } = await supabase.auth.getUser();
-    const user_id : string = (user === null) ? "" : user.id;
     supabase.from('timer_templates').select().order("timer_template_id").then(async (result) => {
-        console.log(result.error);
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
         } else if (result.data[0] === null || result.data[0] === undefined) {
@@ -71,7 +67,6 @@ export async function fetchTimerTemplates(setData : React.Dispatch<React.SetStat
 
 export async function fetchTimerTemplateFromId(id : number, setData : (arg0 : FullWorkRestCycle) => void) {
     supabase.from('timer_templates').select().eq("timer_template_id", id).then(async (result) => {
-        console.log(result.error);
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
         } else if (result.data[0] === null || result.data[0] === undefined) {
@@ -126,10 +121,18 @@ export function timerToString(timeInMs : number, isMsShown : boolean = false, is
     // negative timing doesn't exist.
     if (timeInMs < 0) timeInMs = 0;
 
+    // shows exact millisecond values if millisecond option is shown.
+    // else, follows a format similar to Apple's timer functionality which
+    // rounds the current time remaining to the nearest second. this can be
+    // simulated by increasing the displayed time by 500ms such that timings
+    // below .499 is shown rounded down and timings .500 and above is shown
+    // rounded up to the nearest second.
+    if (!isMsShown && isTimerDisplay) timeInMs += 500;
+
     const hours = Math.floor(timeInMs / 3600000);
     const minutes = Math.floor((timeInMs % 3600000) / 60000);
     const seconds = Math.floor((timeInMs % 60000) / 1000);
-    const ms = isMsShown ? timeInMs % 1000 : 0;
+    const ms = timeInMs % 1000;
 
     const msExtra = isMsShown ? "." + padTime(ms, 3) : ""; 
 
@@ -137,20 +140,30 @@ export function timerToString(timeInMs : number, isMsShown : boolean = false, is
         if (hours === 0) return padTime(minutes) + ":" + padTime(seconds) + msExtra;
         else return hours + ":" + padTime(minutes) + ":" + padTime(seconds) + msExtra;
     } else {
-        const secondsDisp = seconds + msExtra + "s";
+        let secondsDisplay;
+        if (ms === 0) {
+            secondsDisplay = seconds + "s";
+        } else if (ms % 100 === 0) {
+            secondsDisplay = seconds + "." + (ms / 100) + "s";
+        } else if (ms % 10 === 0) {
+            secondsDisplay = seconds + "." + (ms / 10) + "s";
+        } else {
+            secondsDisplay = seconds + "." + ms + "s";
+        }
+
         if (hours === 0) {
             if (minutes === 0) {
                 if (seconds === 0) return "0s";
-                else return seconds + "s";
+                else return secondsDisplay;
             } else {
-                return minutes + "min" + ((seconds === 0) ? "" : " " + seconds + "s");
+                return minutes + "min" + ((seconds === 0 && ms === 0) ? "" : " " + secondsDisplay);
             }
         } else {
             if (minutes === 0) {
                 if (seconds === 0) return hours + "h";
-                else return hours + "h 0min " + seconds + "s";
+                else return hours + "h 0min " + secondsDisplay;
             } else {
-                return hours + "h " + minutes + "min " + ((seconds === 0) ? "" : " " + seconds + "s");
+                return hours + "h " + minutes + "min " + ((seconds === 0 && ms === 0) ? "" : " " + secondsDisplay);
             }
         }
     }
@@ -192,4 +205,17 @@ export function getBreakpointsFromCycles( workRestCycle : { work : number, rest 
         result.rest.push((i + 1) * cycleLength);
     }
     return result;
+}
+
+/**
+ * Returns whether the pattern given is valid or not.
+ * 
+ * @param workRestCycle The work-rest cycle to check the validity.
+ * @returns true if work-rest cycle is valid, false otherwise.
+ */
+export function isValidPattern( workRestCycle : WorkRestCycle ) : boolean {
+    return (getCycleLength(workRestCycle) > 0)
+        && (workRestCycle.work >= 0)
+        && (workRestCycle.rest >= 0)
+        && (workRestCycle.cycles > 0);
 }
