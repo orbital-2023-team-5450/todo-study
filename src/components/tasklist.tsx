@@ -47,8 +47,18 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                                     flexGrow={1} 
                                     marginTop={'5px'} 
                               >
-                                  {task.title.length > 30 ? <Typography variant='h5'> {task.title.slice(0, 30) + "..."}</Typography> 
-                                                          : <Typography variant="h5" component='h5'>{task.title}</Typography>}
+                                  {task.title.length > 30 ? task.expired ? <Typography variant='h5' color='red'> 
+                                                                              {task.title.slice(0, 30) + "..."}
+                                                                           </Typography> 
+                                                                         : <Typography variant='h5'> 
+                                                                              {task.title.slice(0, 30) + "..."}
+                                                                           </Typography>
+                                                          : task.expired ? <Typography variant="h5" component='h5' color='red'>
+                                                                              {task.title}
+                                                                           </Typography>
+                                                                         : <Typography variant="h5" component='h5'>
+                                                                              {task.title}
+                                                                           </Typography>}
 
                                   <Typography> 
                                       {new Date(task.dueDate).toUTCString() + ""}

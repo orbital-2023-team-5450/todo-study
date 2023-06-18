@@ -68,7 +68,6 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
         const { data: { user } } = await supabase.auth.getUser();
         const user_id : string = (user === null) ? "" : user.id;
 
-
         supabase.from('users').select().eq("user_id", user_id).then((result) => {
             
             console.log(result.error);

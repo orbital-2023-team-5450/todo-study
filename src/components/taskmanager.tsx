@@ -55,7 +55,7 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
     };
 
     const handleTaskEdit = (id : number) => {
-      // 
+        // fetchTask(id);
     }
   
     return (

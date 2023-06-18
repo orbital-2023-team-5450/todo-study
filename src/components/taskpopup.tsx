@@ -24,33 +24,32 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
     const [loading, setLoading] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
 
-    const fetchInfo = async (id : number) => {
+    // const fetchInfo = async (id : number) => {
 
-        const { data: { user } } = await supabase.auth.getUser();
-        const user_id : string = (user === null) ? "" : user.id;
+    //     const { data: { user } } = await supabase.auth.getUser();
+    //     const user_id : string = (user === null) ? "" : user.id;
 
-        supabase.from('tasks').select().eq("id", id).then((result) => {
+    //     supabase.from('tasks').select().eq("id", id).then((result) => {
             
-            console.log(result.data);
-            if (result.data === null || result.data === undefined || result.error) {
-                console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
-            } else if (result.data[0] === null || result.data[0] === undefined) {
-                setLoading(false);
-            } else if (loading) {
-                console.log("pls work");
-                setLoading(false);
-                setTitle(result.data[0].title);
-                setDescription(result.data[0].description);
-                setDueDate(result.data[0].dueDate);
-                setType(result.data[0].type);
-                setCompleted(result.data[0].completed);
-            }
-        });
-    }
+    //         console.log(result.data);
+    //         if (result.data === null || result.data === undefined || result.error) {
+    //             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
+    //         } else if (result.data[0] === null || result.data[0] === undefined) {
+    //             setLoading(false);
+    //         } else if (loading) {
+    //             setLoading(false);
+    //             setTitle(result.data[0].title);
+    //             setDescription(result.data[0].description);
+    //             setDueDate(result.data[0].dueDate);
+    //             setType(result.data[0].type);
+    //             setCompleted(result.data[0].completed);
+    //         }
+    //     });
+    // }
 
-    useEffect(() => {
-        fetchInfo(id);
-    }, [fetchInfo]);
+    // useEffect(() => {
+    //     fetchInfo(id);
+    // }, [fetchInfo]);
 
     const submitTask = (event : React.SyntheticEvent) => { 
 
@@ -84,12 +83,12 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                     if (insert) {
                         const { error } = await supabase.from('tasks').insert(submitInfo);
                         if (error !== null) {
-                            alert("Error adding user: " + JSON.stringify(error));
+                            alert("Error creating task: " + JSON.stringify(error));
                         } else {}
                     } else {
                         const { error } = await supabase.from('tasks').update(submitInfo).eq('user_id', id);
                         if (error !== null) {
-                            alert("Error updating user: " + JSON.stringify(error));
+                            alert("Error updating task: " + JSON.stringify(error));
                         } else {}
                     }
                 }

@@ -63,7 +63,7 @@ export default function TaskScreen() {
                     </Box>
 
                     <Box sx={{ bgcolor: '#cfe8ff', height: '75vh', borderRadius: '16px', width: "80vh", marginLeft: '10px' }}> 
-                        <TaskManager // cover the add button
+                        <TaskManager 
                             taskType={task_type.FUTURE_ASSIGNMENT} 
                             tasks={futureTasks}
                             fetchTask={fetchTasks}
@@ -83,7 +83,5 @@ export default function TaskScreen() {
 
             {isPopUp && <TaskPopUp onClose={() => setPopUp(false)} insert fetchTask={fetchTasks} id={0}/> }
         </Stack>
-            
-
     );
 }
