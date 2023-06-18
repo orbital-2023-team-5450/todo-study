@@ -3,7 +3,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import supabase from '../supabase';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Button, Container, Divider, Stack, Typography } from '@mui/material';
-import SvgGoogle from '../icons/googleIcon';
+import SvgGoogle from '../icons/SvgGoogle';
 
 export default function Login() {
 
