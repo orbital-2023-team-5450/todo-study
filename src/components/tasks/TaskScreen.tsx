@@ -27,7 +27,6 @@ export default function TaskScreen() {
       const { data: { user } } = await supabase.auth.getUser();
       const user_id : string = (user === null) ? "" : user.id;
 
-      console.log('fetch task')
         supabase
           .from("tasks")
           .select()
@@ -47,7 +46,7 @@ export default function TaskScreen() {
       
       useEffect(() => {
         fetchTasks();
-      }, [fetchTasks]);
+      }, []);
 
     return (
 
@@ -85,8 +84,8 @@ export default function TaskScreen() {
                  <Typography variant='h6'> + Add new task </Typography>
             </Button>
 
-            <TaskPopUp open={isPopUpCreate} onClose={() => setPopUpCreate(false)} taskType={'Create'} id={-1}/> 
-            <TaskPopUp open={isPopUpUpdate} onClose={() => setPopUpUpdate(false)} taskType={'Update'} id={whichTask}/>
+            <TaskPopUp open={isPopUpCreate} onClose={() => setPopUpCreate(false)} fetchTask={fetchTasks} taskType={'Create'} id={-1}/> 
+            <TaskPopUp open={isPopUpUpdate} onClose={() => setPopUpUpdate(false)} fetchTask={fetchTasks} taskType={'Update'} id={whichTask}/>
         </Stack>
     );
 }

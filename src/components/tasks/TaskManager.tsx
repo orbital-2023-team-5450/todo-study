@@ -18,7 +18,7 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
     // const [error, setError] = useState(false);
   
     const handleTaskChange = (id : number) => {
-
+      console.log("handleTaskChange");
       const task = tasks.find((task : Task) => task.id === id);
       if (task === undefined) {
         alert("There is no such task. It might not exist or it is deleted");

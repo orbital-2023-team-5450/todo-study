@@ -7,8 +7,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-export default function TaskPopUp({ open, onClose, taskType, id } : 
-                                  { open: boolean, onClose: () => void, taskType: string, id : number}) {
+export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } : 
+                                  { open: boolean, onClose: () => void, taskType: string, id : number, fetchTask : () => void }) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -24,7 +24,7 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
 
         const { data: { user } } = await supabase.auth.getUser();
         const user_id : string = (user === null) ? "" : user.id;
-
+    
         if (id !== -1) {
             supabase.from('tasks').select().eq('userId', user_id).eq("id", id).then((result) => {
             
@@ -32,11 +32,8 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
                 if (result.data === null || result.data === undefined || result.error) {
                     console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
                 } else if (result.data[0] === null || result.data[0] === undefined) {
-                    // setLoading(false);
-                    
-                } else if (loading) {
-                    
-                    console.log("try")
+                    // this should never be reached
+                } else {
                     setLoading(false);
                     setTitle(result.data[0].title);
                     setDescription(result.data[0].description);
@@ -49,9 +46,8 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
     }
 
     useEffect(() => {
-        
         fetchInfo();
-    }, [fetchInfo]);
+    }, [open]);
 
     const submitTask = (event : React.SyntheticEvent) => { 
 
@@ -83,7 +79,7 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
 
                 const upsertion = async () => {
                     console.log(submitInfo);
-                    if (taskType == 'Create') {
+                    if (taskType === 'Create') {
                         const { error } = await supabase.from('tasks').insert(submitInfo);
                         if (error !== null) {
                             alert("Error creating task: " + JSON.stringify(error));
@@ -98,6 +94,7 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
                 upsertion();
             }
         });     
+        fetchTask();
     }
 
     // reset the form 
