@@ -1,5 +1,5 @@
 import React from 'react';
-import AccountSettings from '../components/accountsettings';
+import AccountSettings from '../components/AccountSettings';
 import { Container } from '@mui/material';
 
 export default function CreateAccount() {

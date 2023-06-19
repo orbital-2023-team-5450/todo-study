@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, FormGroup, FormControlLabel, Stack, Switch, Typography } from "@mui/material";
-import { fetchTimerSettings, fetchTimerTemplateFromId, FullWorkRestCycle, TimerSettings } from "../../../utils/timerUtils";
+import { fetchTimerSettings, fetchTimerTemplateFromId, fetchTimerTemplates, FullWorkRestCycle, TimerSettings } from "../../../utils/timerUtils";
 import supabase from "../../../supabase";
 import CreateTemplateDialog from "./CreateTemplateDialog";
 import SelectTemplateDialog from "./SelectTemplateDialog";
@@ -49,10 +49,11 @@ export default function TimerConfigDialog( { open, handleClose, timerRunning, ti
     function handleSelectTemplateOpen() { setSelectTemplateDialogOpen(true); }
     function handleSelectTemplateClose() { setSelectTemplateDialogOpen(false); }
 
+      
     useEffect(() => {
         fetchTimerSettings(setTimerSettings);
         fetchTimerTemplateFromId(timerSettings.timer_template_id, setPattern);
-    }, [fetchTimerSettings, timerSettings]);   
+    }, [timerSettings, setPattern]); 
 
     return (
         <Dialog

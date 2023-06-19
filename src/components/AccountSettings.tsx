@@ -1,11 +1,11 @@
 // account settings: for creation and editing of account settings
-import React, { ChangeEventHandler, useEffect } from 'react';
-import { TextField, Stack, Typography, MenuItem, Button, Select, SelectChangeEvent } from '@mui/material';
+import React, { useEffect } from 'react';
+import { TextField, Stack, Typography, MenuItem, Button } from '@mui/material';
 import { useState } from 'react';
 import supabase from '../supabase';
 import AvatarForm from './AvatarForm';
 import { useNavigate } from 'react-router-dom';
-import LoadingScreen from './loadingscreen';
+import LoadingScreen from './LoadingScreen';
 
 const availableThemes : {value : string, label : string}[] = [
     {
@@ -26,7 +26,6 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
     const [ lastName, setLastName ] = useState("");
     const [ todoTheme, setTodoTheme ] = useState("default");
     const [ avatarUrl, setAvatarUrl ] = useState("");
-    const [ origAvatarUrl, setOrigAvatarUrl ] = useState("");
     const [ avatarChanged, setAvatarChanged ] = useState(false);
     const [ telegram, setTelegram ] = useState("");
     const [ telegramError, setTelegramError ] = useState(false);
@@ -89,7 +88,6 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
                 setLastName(result.data[0].last_name ?? "");
                 setTelegram(result.data[0].telegram_handle ?? "");
                 setTodoTheme(result.data[0].theme);
-                setOrigAvatarUrl(result.data[0].avatar_url);
                 if (!avatarChanged) setAvatarUrl(result.data[0].avatar_url);
             }
         });

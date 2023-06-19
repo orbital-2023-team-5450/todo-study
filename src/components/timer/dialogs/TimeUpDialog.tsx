@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button } from "@mui/material";
 
 export default function TimeUpDialog( { open, handleClose } : { open : boolean, handleClose : () => void }) {

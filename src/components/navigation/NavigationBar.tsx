@@ -4,15 +4,15 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import supabase from '../supabase';
-import NavSides from './navsides';
-import AvatarView from './avatarview';
+import supabase from '../../supabase';
+import NavSides from './NavSides';
+import AvatarView from '../AvatarView';
 
 const handleLogoutClick = () => {
   supabase.auth.signOut();
 }
 
-export default function Bar({ title } : { title : string }) {
+export default function NavigationBar({ title } : { title : string }) {
   
   const [ windowWidth, setWindowWidth ] = useState(window.innerWidth);
 

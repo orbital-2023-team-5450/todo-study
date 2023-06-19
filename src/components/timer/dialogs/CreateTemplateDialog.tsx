@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, TextField, Stack, Typography } from "@mui/material";
-import { getCycleFromTemplate, isValidPattern, timerToString } from "../../../utils/timerUtils";
+import { getCycleFromTemplate, isValidPattern } from "../../../utils/timerUtils";
 import { createTextEventHandler } from "../../../utils/textInputUtils";
 import InputTimerField from "../InputTimerField";
 import supabase from "../../../supabase";

@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { Box, Button, Container, Stack, TextField, Typography,} from "@mui/material";
-import supabase from "../supabase";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import supabase from "../../supabase";
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-type Task = {id : number, title : string, description : string, dueDate : Date, 
-             type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
 
 export default function TaskPopUp({onClose, insert, fetchTask, id} : 
                                   {id : number
@@ -64,7 +61,7 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
 
         getUserID().then((id : string) => {
 
-            if (title == "") {
+            if (title === "") {
                 alert("Please set a name for the title.")
             } else {
                 reset();

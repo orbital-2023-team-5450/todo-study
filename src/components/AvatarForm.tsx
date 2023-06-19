@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import supabase from '../supabase';
 import { Button, Stack, Typography } from "@mui/material";
-import AvatarView from './avatarview';
+import AvatarView from './AvatarView';
 
 export default function AvatarForm({ url, onUpload, onRemoveUpload, avatarChanged = false } : { url: string, size : number, onUpload : ( event : React.ChangeEvent<HTMLInputElement> , url : string ) => void, onRemoveUpload : ( event : React.MouseEvent<HTMLButtonElement>) => void, avatarChanged? : boolean }) {
     const [avatarUrl, setAvatarUrl] = useState("");
