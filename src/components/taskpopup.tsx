@@ -10,9 +10,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 type Task = {id : number, title : string, description : string, dueDate : Date, 
              type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
 
-export default function TaskPopUp({onClose, insert, fetchTask, id} : 
-                                  {id : number
-                                   onClose: () => void, insert: boolean, fetchTask: () => void}) {
+export default function TaskPopUp({ open, onClose, taskType, id } : 
+                                  {id : number, open: boolean, onClose: () => void, taskType: string}) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -24,32 +23,33 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
     const [loading, setLoading] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
 
-    // const fetchInfo = async (id : number) => {
+    const fetchInfo = async () => {
 
-    //     const { data: { user } } = await supabase.auth.getUser();
-    //     const user_id : string = (user === null) ? "" : user.id;
+        const { data: { user } } = await supabase.auth.getUser();
+        const user_id : string = (user === null) ? "" : user.id;
 
-    //     supabase.from('tasks').select().eq("id", id).then((result) => {
+        supabase.from('tasks').select().eq("id", id).eq('userId', user_id).then((result) => {
             
-    //         console.log(result.data);
-    //         if (result.data === null || result.data === undefined || result.error) {
-    //             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
-    //         } else if (result.data[0] === null || result.data[0] === undefined) {
-    //             setLoading(false);
-    //         } else if (loading) {
-    //             setLoading(false);
-    //             setTitle(result.data[0].title);
-    //             setDescription(result.data[0].description);
-    //             setDueDate(result.data[0].dueDate);
-    //             setType(result.data[0].type);
-    //             setCompleted(result.data[0].completed);
-    //         }
-    //     });
-    // }
+            console.log(result.data);
+            if (result.data === null || result.data === undefined || result.error) {
+                console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
+            } else if (result.data[0] === null || result.data[0] === undefined) {
+                setLoading(false);
+            } else if (loading) {
+                
+                setLoading(false);
+                setTitle(result.data[0].title);
+                setDescription(result.data[0].description);
+                setDueDate(result.data[0].dueDate);
+                setType(result.data[0].type);
+                setCompleted(result.data[0].completed);
+            }
+        });
+    }
 
-    // useEffect(() => {
-    //     fetchInfo(id);
-    // }, [fetchInfo]);
+    useEffect(() => {
+        fetchInfo();
+    }, [fetchInfo]);
 
     const submitTask = (event : React.SyntheticEvent) => { 
 
@@ -80,13 +80,13 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
 
                 const upsertion = async () => {
                     console.log(submitInfo);
-                    if (insert) {
+                    if (taskType == 'Create') {
                         const { error } = await supabase.from('tasks').insert(submitInfo);
                         if (error !== null) {
                             alert("Error creating task: " + JSON.stringify(error));
                         } else {}
                     } else {
-                        const { error } = await supabase.from('tasks').update(submitInfo).eq('user_id', id);
+                        const { error } = await supabase.from('tasks').update(submitInfo).eq('userId', id);
                         if (error !== null) {
                             alert("Error updating task: " + JSON.stringify(error));
                         } else {}
@@ -104,6 +104,7 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
         setTitle("");
         setDescription("");
         setDueDate(new Date().toISOString());
+        setIsDisabled(false);
     }
 
     const handleTitleTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +119,7 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
         setDescription(event.currentTarget.value);
     }
 
-    return ( 
+    return ( open ? 
         <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", height: "100vh", backgroundColor: "rgba(50, 50, 50, 0.9)", 
                   display: "flex", justifyContent: "center", alignItems: "center", filter: "blur"}} 
              component="div" 
@@ -194,6 +195,6 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                     submit
                  </Button>
              </Box>
-        </Box>
+        </Box> : null
     );
 }

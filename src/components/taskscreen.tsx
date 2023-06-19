@@ -15,12 +15,14 @@ export default function TaskScreen() {
 
     const [tasks, setTasks] = useState<Task[]>([]);
     const [futureTasks, setFutureTasks] = useState<Task[]>([]);
-    const [isPopUp, setPopUp] = useState(false);
+    const [isPopUpCreate, setPopUpCreate] = useState<boolean>(false);
+    const [isPopUpUpdate, setPopUpUpdate] = useState<boolean>(false);
+    const [whichTask, setWhichTask] = useState<number>(-1);
     
     const handleNewTaskSubmit = (event : React.MouseEvent<HTMLElement>) => {
 
         event.preventDefault();
-        setPopUp(true);
+        setPopUpCreate(true);
     };
 
     const fetchTasks = async () => {
@@ -59,6 +61,8 @@ export default function TaskScreen() {
                             taskType={task_type.DUE_SOON} 
                             tasks={tasks}
                             fetchTask={fetchTasks} 
+                            popUpUpdate={setPopUpUpdate}
+                            setWhichTask={setWhichTask}
                         />
                     </Box>
 
@@ -67,6 +71,8 @@ export default function TaskScreen() {
                             taskType={task_type.FUTURE_ASSIGNMENT} 
                             tasks={futureTasks}
                             fetchTask={fetchTasks}
+                            popUpUpdate={setPopUpUpdate}
+                            setWhichTask={setWhichTask}
                         />
                     </Box>
             </Stack>
@@ -81,7 +87,8 @@ export default function TaskScreen() {
                  <Typography variant='h6'> + Add new task </Typography>
             </Button>
 
-            {isPopUp && <TaskPopUp onClose={() => setPopUp(false)} insert fetchTask={fetchTasks} id={0}/> }
+            <TaskPopUp open={isPopUpCreate} onClose={() => setPopUpCreate(false)} taskType={'Create'} id={-1}/> 
+            <TaskPopUp open={isPopUpUpdate} onClose={() => setPopUpUpdate(false)} taskType={'Update'} id={whichTask}/>
         </Stack>
     );
 }
