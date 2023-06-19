@@ -1,54 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Card, Typography, Button, Box, CircularProgress } from "@mui/material";
-import { FullWorkRestCycle, TimerSettings, fetchTimerSettings } from "../../utils/timerUtils";
-import supabase from "../../supabase";
+import { FullWorkRestCycle, TimerSettings } from "../../utils/timerUtils";
 import { getUsernameFromId } from "../../utils/fetchUserInfo";
 import TemplateTextDisplay from "./TemplateTextDisplay";
 
-export default function TimerTemplateCard({ template, onChange, onDelete } : { template : FullWorkRestCycle, onChange : () => void, onDelete : () => void }) {
-
-    const [ settings, setSettings ] = useState<TimerSettings>({ 
-        user_id: "",
-        use_milliseconds: false,
-        low_time_warning: true,
-        timer_template_id: 1, });
+export default function TimerTemplateCard({ settings, template, onSelect, onDelete } : { settings : TimerSettings, template : FullWorkRestCycle, onSelect : () => void, onDelete : () => void }) {
 
     const [ name, setName ] = useState("");
 
     const [ loading, setLoading ] = useState(true);
 
-    async function select(id : number) {
-        const submitInfo : TimerSettings = { ...settings, timer_template_id: id };
-
-        const submitChange = async () => {
-            const { error } = await supabase.from('users_timer_config').update(submitInfo).eq('user_id', settings.user_id);
-            if (error !== null) {
-                alert("Error updating timer settings: " + JSON.stringify(error));
-            }
-        };
-
-        submitChange();
-        onChange();
-        fetchTimerSettings(setSettings);
-    }
-
-    async function deleteTemplate(id : number) {
-        const deleteChange = async () => {
-            const { error } = await supabase.from('timer_templates').delete().eq('timer_template_id', id);
-            if (error !== null) {
-                alert("Error deleting timer template: " + JSON.stringify(error));
-            }
-        }
-
-        deleteChange();
-        onDelete();
-    }
-
     useEffect(() => {
-        fetchTimerSettings(setSettings)
-            .then(() => getUsernameFromId(template.user_id, setName))
-            .then(() => setLoading(false))
-    }, [settings, template]); 
+        getUsernameFromId(template.user_id, setName).then(() => setLoading(false));
+    }, [loading])
+
 
     return !loading ? (
         <Card sx={{"padding": 2}}>
@@ -57,11 +22,11 @@ export default function TimerTemplateCard({ template, onChange, onDelete } : { t
                 <Box>
                     {
                         (settings.user_id === template.user_id && settings.timer_template_id !== template.timer_template_id) ?
-                        <Button onClick={() => deleteTemplate(template.timer_template_id)}>Delete</Button> :
+                        <Button onClick={onDelete}>Delete</Button> :
                         <></>
                     }
                     { (settings.timer_template_id !== template.timer_template_id) ?
-                        <Button onClick={() => select(template.timer_template_id)}>Select</Button> :
+                        <Button onClick={onSelect}>Select</Button> :
                         <Button disabled>Selected</Button> }
                 </Box>
             </Box>
