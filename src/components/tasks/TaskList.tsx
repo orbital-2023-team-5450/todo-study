@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, Checkbox, Typography, Stack, IconButton } from "@mui/material";
-import { DeleteOutline, Task } from "@mui/icons-material";
-
-type Task = {id : number, title : string, description : string, dueDate : Date, 
-             type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
+import { DeleteOutline } from "@mui/icons-material";
+import { Task } from "../../utils/taskUtils";
 
 export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit, fetchTask } : 
-                                 { tasks :Task[], 
+                                 { tasks : Task[], 
                                    onTaskChange : (i : number) => void, onTaskDelete : (i : number) => void,
                                    onTaskEdit : (i : number) => void, fetchTask: () => void}) {
 

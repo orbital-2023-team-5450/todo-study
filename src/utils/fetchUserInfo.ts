@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SetStateAction } from "react";
 import supabase from "../supabase";
 import { NavigateFunction } from "react-router-dom";
 
@@ -21,7 +21,6 @@ export default async function fetchUserInfo(setData : React.Dispatch<React.SetSt
     const user_id : string = (user === null) ? "" : user.id;
       
     supabase.from('users').select().eq("user_id", user_id).then((result) => {
-        console.log(result.error);
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
         } else if (result.data[0] === null || result.data[0] === undefined) {
@@ -46,4 +45,24 @@ export default async function fetchUserInfo(setData : React.Dispatch<React.SetSt
  */
 function getPublicAvatarUrl(filename : string) : string {
     return supabase.storage.from('avatars').getPublicUrl(filename).data.publicUrl;
+}
+
+/**
+ * Returns the username of the account given by a specific ID.
+ * 
+ * @param id The ID to find the username for.
+ * @returns A promise containing the username.
+ */
+export function getUsernameFromId(id : string, setData: React.Dispatch<SetStateAction<any>>) {
+    return supabase.from('users').select().eq("user_id", id).then((result) => {
+        if (result.data === null || result.data === undefined || result.error) {
+            console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
+        } else if (result.data[0] === null || result.data[0] === undefined) {
+            // account doesn't exist.
+            setData("");
+        } else {
+            // account exists
+            setData(result.data[0].user_name);
+        }
+    });
 }

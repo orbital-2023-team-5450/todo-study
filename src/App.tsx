@@ -1,16 +1,15 @@
 import React from 'react';
 import './App.css';
 import Login from './routes/login';
-import { createRoutesFromElements, createBrowserRouter, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import { CssBaseline, createTheme, ThemeProvider } from '@mui/material';
 import supabase from './supabase';
 import { useState, useEffect } from 'react';
 import Dashboard from './routes/dashboard';
 import ErrorPage from './routes/errorpage';
 import CreateAccount from './routes/createaccount';
-import { UserResponse } from '@supabase/supabase-js';
 import Timer from './routes/timer';
-import Reminders from './routes/reminders'
+import Notes from './routes/notes'
 import Tasks from './routes/tasks';
 import ModifyAccount from './routes/modifyaccount';
 
@@ -71,7 +70,7 @@ function App() {
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/account-settings" element={<ModifyAccount />} />
           <Route path="/timer" element={<Timer />} />
-          <Route path="/reminders" element={<Reminders />} />
+          <Route path="/notes" element={<Notes />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
         </Routes> 

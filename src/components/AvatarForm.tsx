@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import supabase from '../supabase';
 import { Button, Stack, Typography } from "@mui/material";
-import AvatarView from './avatarview';
+import AvatarView from './AvatarView';
 
-export default function Avatar({ url, onUpload, onRemoveUpload } : { url: string, size : number, onUpload : ( event : React.ChangeEvent<HTMLInputElement> , url : string ) => void, onRemoveUpload : ( event : React.MouseEvent<HTMLButtonElement>) => void }) {
+export default function AvatarForm({ url, onUpload, onRemoveUpload, avatarChanged = false } : { url: string, size : number, onUpload : ( event : React.ChangeEvent<HTMLInputElement> , url : string ) => void, onRemoveUpload : ( event : React.MouseEvent<HTMLButtonElement>) => void, avatarChanged? : boolean }) {
     const [avatarUrl, setAvatarUrl] = useState("");
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
-        if (url !== "") downloadImage(url);
+        if (url !== "") {
+            downloadImage(url);
+        }
     }, [url]);
 
     async function downloadImage(path : string) {
@@ -57,10 +59,10 @@ export default function Avatar({ url, onUpload, onRemoveUpload } : { url: string
         setAvatarUrl("");
     }
 
-    return (
+    return (<>
         <Stack gap={3} alignItems="center">
             {avatarUrl ? (
-                <AvatarView src={avatarUrl} />
+                <AvatarView src={avatarUrl} avatarChanged={avatarChanged} />
             ) : (
                 <Typography>No avatar uploaded.</Typography>
             )}
@@ -81,6 +83,6 @@ export default function Avatar({ url, onUpload, onRemoveUpload } : { url: string
                     Remove Avatar
                 </Button>
             </Stack>
-        </Stack>
+        </Stack></>
     );
 }

@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { Box, Button, Container, Stack, TextField, Typography,} from "@mui/material";
-import supabase from "../supabase";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import supabase from "../../supabase";
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-type Task = {id : number, title : string, description : string, dueDate : Date, 
-             type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
-
 export default function TaskPopUp({ open, onClose, taskType, id } : 
-                                  {id : number, open: boolean, onClose: () => void, taskType: string}) {
+                                  { open: boolean, onClose: () => void, taskType: string, id : number}) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -28,26 +25,31 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
         const { data: { user } } = await supabase.auth.getUser();
         const user_id : string = (user === null) ? "" : user.id;
 
-        supabase.from('tasks').select().eq('userId', user_id).eq("id", id).then((result) => {
+        if (id !== -1) {
+            supabase.from('tasks').select().eq('userId', user_id).eq("id", id).then((result) => {
             
-            console.log(result.data);
-            if (result.data === null || result.data === undefined || result.error) {
-                console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
-            } else if (result.data[0] === null || result.data[0] === undefined) {
-                setLoading(false);
-            } else if (loading) {
-                
-                setLoading(false);
-                setTitle(result.data[0].title);
-                setDescription(result.data[0].description);
-                setDueDate(result.data[0].dueDate);
-                setType(result.data[0].type);
-                setCompleted(result.data[0].completed);
-            }
-        });
+                console.log(result.data);
+                if (result.data === null || result.data === undefined || result.error) {
+                    console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
+                } else if (result.data[0] === null || result.data[0] === undefined) {
+                    // setLoading(false);
+                    
+                } else if (loading) {
+                    
+                    console.log("try")
+                    setLoading(false);
+                    setTitle(result.data[0].title);
+                    setDescription(result.data[0].description);
+                    setDueDate(result.data[0].dueDate);
+                    setType(result.data[0].type);
+                    setCompleted(result.data[0].completed);
+                }
+            });
+        }  
     }
 
     useEffect(() => {
+        
         fetchInfo();
     }, [fetchInfo]);
 
@@ -63,11 +65,13 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
 
         getUserID().then((userId : string) => {
 
-            if (title == "") {
+            if (title === "") {
                 alert("Please set a name for the title.")
             } else {
                 reset();
                 const submitInfo = {
+
+                    "userId": userId,
                     "title": title,
                     "description": description,
                     "dueDate": dueDate,

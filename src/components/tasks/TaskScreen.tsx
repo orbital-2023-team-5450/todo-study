@@ -1,13 +1,10 @@
 import React, { useEffect, useState} from "react";
 import {Box, Button, CssBaseline, Stack, Typography} from "@mui/material";
-import supabase from "../supabase";
-import TaskManager from "./taskmanager";
-import splitTask from "./../utils/splitTask";
-import TaskPopUp from "./taskpopup";
-
-type Task = {id : number, title : string, description : string, 
-             dueDate : Date, type : number, completed: boolean, 
-             userId: number, expired: boolean, taskCollectionId: number};
+import supabase from "../../supabase";
+import TaskManager from "./TaskManager";
+import splitTask from "../../utils/splitTask";
+import TaskPopUp from "./TaskPopup";
+import { Task } from "../../utils/taskUtils";
 
 enum task_type { DUE_SOON, FUTURE_ASSIGNMENT };
 
@@ -30,6 +27,7 @@ export default function TaskScreen() {
       const { data: { user } } = await supabase.auth.getUser();
       const user_id : string = (user === null) ? "" : user.id;
 
+      console.log('fetch task')
         supabase
           .from("tasks")
           .select()

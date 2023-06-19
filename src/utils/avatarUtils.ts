@@ -51,7 +51,7 @@ export function randomColor(username : string) : string {
  * @returns The name's initials to be generated.
  */
 export function getInitials(firstName : string, lastName? : string) : string {
-    if (lastName && lastName != "") {
+    if (lastName && lastName !== "") {
         return firstName.charAt(0) + lastName.charAt(0);
     } else {
         return firstName.charAt(0);
