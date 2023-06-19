@@ -20,6 +20,7 @@ export default function splitTask(tasks : Task[]) {
         } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) > 1) {
             later.push(task);
         } else {
+            task.expired = true;
             expired.push(task);
         }
     });
@@ -34,6 +35,6 @@ function getDayDifference(date1 : Date, date2 : Date) {
     const time2 = date2.getTime();
   
     // Calculate the difference in days
-    const diffDays = Math.round(Math.abs((time1 - time2) / oneDay));
+    const diffDays = Math.abs((time1 - time2) / oneDay);
     return diffDays;
 }

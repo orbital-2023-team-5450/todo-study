@@ -7,9 +7,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-export default function TaskPopUp({onClose, insert, fetchTask, id} : 
-                                  {id : number
-                                   onClose: () => void, insert: boolean, fetchTask: () => void}) {
+export default function TaskPopUp({ open, onClose, taskType, id } : 
+                                  { open: boolean, onClose: () => void, taskType: string, id : number}) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -21,32 +20,37 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
     const [loading, setLoading] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
 
-    const fetchInfo = async (id : number) => {
+    const fetchInfo = async () => {
 
         const { data: { user } } = await supabase.auth.getUser();
         const user_id : string = (user === null) ? "" : user.id;
 
-        supabase.from('tasks').select().eq("id", id).then((result) => {
+        if (id !== -1) {
+            supabase.from('tasks').select().eq('userId', user_id).eq("id", id).then((result) => {
             
-            console.log(result.data);
-            if (result.data === null || result.data === undefined || result.error) {
-                console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
-            } else if (result.data[0] === null || result.data[0] === undefined) {
-                setLoading(false);
-            } else if (loading) {
-                console.log("pls work");
-                setLoading(false);
-                setTitle(result.data[0].title);
-                setDescription(result.data[0].description);
-                setDueDate(result.data[0].dueDate);
-                setType(result.data[0].type);
-                setCompleted(result.data[0].completed);
-            }
-        });
+                console.log(result.data);
+                if (result.data === null || result.data === undefined || result.error) {
+                    console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
+                } else if (result.data[0] === null || result.data[0] === undefined) {
+                    // setLoading(false);
+                    
+                } else if (loading) {
+                    
+                    console.log("try")
+                    setLoading(false);
+                    setTitle(result.data[0].title);
+                    setDescription(result.data[0].description);
+                    setDueDate(result.data[0].dueDate);
+                    setType(result.data[0].type);
+                    setCompleted(result.data[0].completed);
+                }
+            });
+        }  
     }
 
     useEffect(() => {
-        fetchInfo(id);
+        
+        fetchInfo();
     }, [fetchInfo]);
 
     const submitTask = (event : React.SyntheticEvent) => { 
@@ -59,13 +63,15 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
             return user_id;
         }
 
-        getUserID().then((id : string) => {
+        getUserID().then((userId : string) => {
 
             if (title === "") {
                 alert("Please set a name for the title.")
             } else {
                 reset();
                 const submitInfo = {
+
+                    "userId": userId,
                     "title": title,
                     "description": description,
                     "dueDate": dueDate,
@@ -73,20 +79,19 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                     "completed": completed,
                     "expired": expired,
                     "taskCollectionId": taskCollectionId,
-                    "userId": id
                 };
 
                 const upsertion = async () => {
                     console.log(submitInfo);
-                    if (insert) {
+                    if (taskType == 'Create') {
                         const { error } = await supabase.from('tasks').insert(submitInfo);
                         if (error !== null) {
-                            alert("Error adding user: " + JSON.stringify(error));
+                            alert("Error creating task: " + JSON.stringify(error));
                         } else {}
                     } else {
-                        const { error } = await supabase.from('tasks').update(submitInfo).eq('user_id', id);
+                        const { error } = await supabase.from('tasks').update(submitInfo).eq('userId', userId).eq('id', id);
                         if (error !== null) {
-                            alert("Error updating user: " + JSON.stringify(error));
+                            alert("Error updating task: " + JSON.stringify(error));
                         } else {}
                     }
                 }
@@ -102,6 +107,7 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
         setTitle("");
         setDescription("");
         setDueDate(new Date().toISOString());
+        setIsDisabled(false);
     }
 
     const handleTitleTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +122,7 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
         setDescription(event.currentTarget.value);
     }
 
-    return ( 
+    return ( open ? 
         <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", height: "100vh", backgroundColor: "rgba(50, 50, 50, 0.9)", 
                   display: "flex", justifyContent: "center", alignItems: "center", filter: "blur"}} 
              component="div" 
@@ -129,7 +135,7 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
              >
                 <Stack direction="column">
                     <Typography component="h4" variant="h4" marginBottom={3}>
-                        Create new task
+                        {taskType} new task
                     </Typography>
 
                     <Typography component="h6" variant="h6" align="left"> Title </Typography>
@@ -189,9 +195,9 @@ export default function TaskPopUp({onClose, insert, fetchTask, id} :
                          disabled={isDisabled}
                          type='submit'
                  >
-                    submit
+                    {taskType}
                  </Button>
              </Box>
-        </Box>
+        </Box> : null
     );
 }

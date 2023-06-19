@@ -7,12 +7,15 @@ import supabase from "../../supabase";
 type Task = {id : number, title : string, description : string, dueDate : Date, 
              type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
 
-export default function TaskManager({ taskType, tasks, fetchTask } : 
+export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, setWhichTask } : 
                                     { taskType : number, 
                                       tasks : {id : number, title : string, description : string, 
                                                dueDate : Date, type : number, completed: boolean, 
                                                userId: number, expired: boolean, taskCollectionId: number}[], 
-                                      fetchTask : () => void}) {
+                                      fetchTask : () => void, popUpUpdate: React.Dispatch<React.SetStateAction<boolean>>
+                                      setWhichTask: React.Dispatch<React.SetStateAction<number>>}) {
+
+    // const [error, setError] = useState(false);
   
     const handleTaskChange = (id : number) => {
 
@@ -35,6 +38,7 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
     };
   
     const handleTaskDelete = (id : number) => {
+
       supabase
         .from("tasks")
         .delete()
@@ -49,7 +53,10 @@ export default function TaskManager({ taskType, tasks, fetchTask } :
     };
 
     const handleTaskEdit = (id : number) => {
-      // 
+      
+        popUpUpdate(true);
+        setWhichTask(id);
+        fetchTask();
     }
   
     return (
