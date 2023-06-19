@@ -45,6 +45,7 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                                     component="div" 
                                     onClick={handleTaskEdit(task.id)} 
                                     flexGrow={1} 
+                                    // display='flex'
                                     marginTop={'5px'} 
                               >
                                   {task.title.length > 30 ? task.expired ? <Typography variant='h5' color='red'> 

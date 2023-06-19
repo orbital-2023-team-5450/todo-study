@@ -41,6 +41,7 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
     };
   
     const handleTaskDelete = (id : number) => {
+
       supabase
         .from("tasks")
         .delete()
@@ -56,6 +57,7 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
     };
 
     const handleTaskEdit = (id : number) => {
+      
         popUpUpdate(true);
         setWhichTask(id);
         fetchTask();

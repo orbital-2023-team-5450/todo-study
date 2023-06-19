@@ -28,7 +28,7 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
         const { data: { user } } = await supabase.auth.getUser();
         const user_id : string = (user === null) ? "" : user.id;
 
-        supabase.from('tasks').select().eq("id", id).eq('userId', user_id).then((result) => {
+        supabase.from('tasks').select().eq('userId', user_id).eq("id", id).then((result) => {
             
             console.log(result.data);
             if (result.data === null || result.data === undefined || result.error) {
@@ -61,7 +61,7 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
             return user_id;
         }
 
-        getUserID().then((id : string) => {
+        getUserID().then((userId : string) => {
 
             if (title == "") {
                 alert("Please set a name for the title.")
@@ -75,7 +75,6 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
                     "completed": completed,
                     "expired": expired,
                     "taskCollectionId": taskCollectionId,
-                    "userId": id
                 };
 
                 const upsertion = async () => {
@@ -86,7 +85,7 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
                             alert("Error creating task: " + JSON.stringify(error));
                         } else {}
                     } else {
-                        const { error } = await supabase.from('tasks').update(submitInfo).eq('userId', id);
+                        const { error } = await supabase.from('tasks').update(submitInfo).eq('userId', userId).eq('id', id);
                         if (error !== null) {
                             alert("Error updating task: " + JSON.stringify(error));
                         } else {}
@@ -132,7 +131,7 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
              >
                 <Stack direction="column">
                     <Typography component="h4" variant="h4" marginBottom={3}>
-                        Create new task
+                        {taskType} new task
                     </Typography>
 
                     <Typography component="h6" variant="h6" align="left"> Title </Typography>
@@ -192,7 +191,7 @@ export default function TaskPopUp({ open, onClose, taskType, id } :
                          disabled={isDisabled}
                          type='submit'
                  >
-                    submit
+                    {taskType}
                  </Button>
              </Box>
         </Box> : null
