@@ -21,7 +21,7 @@ export default function TextEditor() {
   }
 
   return (
-    <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh'}}>
+    <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh', marginRight: '2vh'}}>
         <Toolbar editorState={editorState} setEditorState={setEditorState}/> 
         <Stack sx={{width: '100%', border: '1px solid grey', padding: '1rem'}} component='div'> 
             <Editor editorState={editorState} 
