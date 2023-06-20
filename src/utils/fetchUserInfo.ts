@@ -53,8 +53,8 @@ function getPublicAvatarUrl(filename : string) : string {
  * @param id The ID to find the username for.
  * @returns A promise containing the username.
  */
-export function getUsernameFromId(id : string, setData: React.Dispatch<SetStateAction<any>>) {
-    return supabase.from('users').select().eq("user_id", id).then((result) => {
+export async function getUsernameFromId(id : string, setData: React.Dispatch<SetStateAction<any>>) {
+    supabase.from('users').select().eq("user_id", id).then((result) => {
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
         } else if (result.data[0] === null || result.data[0] === undefined) {
