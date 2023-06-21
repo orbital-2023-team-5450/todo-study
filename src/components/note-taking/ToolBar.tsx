@@ -147,18 +147,18 @@ export default function ToolBar({ editorState, setEditorState } :
       };
 
     return (
-        <Stack direction='row' display='flex'> 
+        <Stack direction='row' display='flex' sx={{flexWrap: 'wrap', }}> 
             { tools.map((item, index) => {
                 return (
-                <Button sx={{color: isActive(item.style, item.method)
-                                    ? "rgba(0, 0, 0, 1)" : "rgba(0, 0, 0, 0.3)", }}
-                        key={`${item.label}-${index}`}
-                        title={item.label}
-                        onClick={(e) => applyStyle(e, item.style, item.method)}
-                        onMouseDown={(e) => e.preventDefault()}
-                > 
-                    {item.icon || item.label}
-                </Button>);
+                  <Button sx={{color: isActive(item.style, item.method)
+                                      ? "rgba(0, 0, 0, 1)" : "rgba(0, 0, 0, 0.3)", }}
+                          key={`${item.label}-${index}`}
+                          title={item.label}
+                          onClick={(e) => applyStyle(e, item.style, item.method)}
+                          onMouseDown={(e) => e.preventDefault()}
+                  > 
+                      {item.icon || item.label}
+                  </Button>);
             })}
         </Stack>
     );

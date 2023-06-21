@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ContentBlock, DraftBlockType, DraftStyleMap, Editor, EditorState, RichUtils} from "draft-js";
-import { Box, Stack } from "@mui/material";
+import { ContentBlock, DraftBlockType, DraftStyleMap, Editor, EditorState, RichUtils } from "draft-js";
+import { Box, Divider, IconButton, Popover, Stack, Typography } from "@mui/material";
 import Toolbar from "./ToolBar";
 import "./textEditor.css";
+import ColorPicker from 'material-ui-color-picker'
 
 export default function TextEditor() {
 
+  const [colorPicker, setColorPicker] = useState('#FF0000');
   const [editorState, setEditorState] = useState(
     () => EditorState.createEmpty(),
   );
@@ -26,10 +28,10 @@ export default function TextEditor() {
       backgroundColor: "rgba(0, 0, 0, 0.05)",
       fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
       fontSize: 16,
-      padding: 2,
+      padding: 2, 
     },
     'HIGHLIGHT': {
-      backgroundColor: "#FFFF00",
+      backgroundColor: colorPicker,
     },
     'UPPERCASE': {
       textTransform: "uppercase",
@@ -38,13 +40,13 @@ export default function TextEditor() {
       textTransform: "lowercase",
     },
     'CODEBLOCK': {
-      fontFamily: '"fira-code", "monospace"',
+      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
       fontSize: "inherit",
       background: "#ffeff0",
       fontStyle: "italic",
       lineHeight: 1.5,
       padding: "0.3rem 0.5rem",
-      borderRadius: " 0.2rem",
+      borderRadius: "0.2rem",
     },
     'SUPERSCRIPT': {
       verticalAlign: "super",
@@ -78,7 +80,15 @@ export default function TextEditor() {
   return (
     <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh', marginRight: '2vh', height: '85vh'}}>
         <Toolbar editorState={editorState} setEditorState={setEditorState}/> 
-        <Box sx={{ width: '100%', padding: '1rem', border: 'lightgrey 1px solid', textAlign: 'left'}}> 
+        <ColorPicker
+                      name='color'
+                      defaultValue="ColorPicker"
+                      value={colorPicker} 
+                      onChange={(color) => setColorPicker(color)}
+                      style={{width: '12vh', marginLeft: '3vh'}}
+        />
+        <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
+        <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh'}}> 
             <Editor editorState={editorState} 
                     onChange={setEditorState} 
                     placeholder='Write something here'
@@ -86,7 +96,7 @@ export default function TextEditor() {
                     customStyleMap={styleMap as DraftStyleMap}
                     blockStyleFn={myBlockStyleFn as (cb: ContentBlock) => string}
             />
-        </Box>
+        </Box> 
     </Stack>
   );  
 }
