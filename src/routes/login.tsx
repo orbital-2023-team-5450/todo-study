@@ -5,6 +5,12 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 import SvgGoogle from '../icons/SvgGoogle';
 
+/**
+ * Represents the page accessed by URL /login in React Router. Contains the log in
+ * and sign up feature in // TODO: Study.
+ * 
+ * @returns A React component object representing the login/signup page.
+ */
 export default function Login() {
 
     document.title = "Log in or sign up // TODO: Study";

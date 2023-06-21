@@ -7,6 +7,12 @@ import fetchUserInfo from "../utils/fetchUserInfo";
 import { fetchTimerSettings, TimerSettings, fetchTimerTemplateFromId, FullWorkRestCycle, getCycleFromTemplate, isValidPattern } from '../utils/timerUtils';
 import TimerView from "../components/timer/TimerView";
 
+/**
+ * Represents the page accessed by URL /timer in React Router. Contains the timer
+ * feature in // TODO: Study.
+ * 
+ * @returns A React component object representing the Timer page.
+ */
 export default function Timer() {
 
     document.title = "Study Timer // TODO Study";
