@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
-import {ContentBlock, DraftBlockType, DraftStyleMap, Editor, EditorState, RichUtils} from "draft-js";
-import {Stack} from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { ContentBlock, DraftBlockType, DraftStyleMap, Editor, EditorState, RichUtils} from "draft-js";
+import { Box, Stack } from "@mui/material";
 import Toolbar from "./ToolBar";
 import "./textEditor.css";
 
@@ -29,7 +29,7 @@ export default function TextEditor() {
       padding: 2,
     },
     'HIGHLIGHT': {
-      backgroundColor: "#F7A5F7",
+      backgroundColor: "#FFFF00",
     },
     'UPPERCASE': {
       textTransform: "uppercase",
@@ -60,8 +60,6 @@ export default function TextEditor() {
 
     const type = contentBlock.getType();
     switch (type) {
-      case "unstyled":
-        return "leftAlign";
       case "blockQuote":
         return "superFancyBlockquote";
       case "leftAlign":
@@ -80,15 +78,15 @@ export default function TextEditor() {
   return (
     <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh', marginRight: '2vh', height: '85vh'}}>
         <Toolbar editorState={editorState} setEditorState={setEditorState}/> 
-        <Stack sx={{width: '100%', padding: '1rem', border: 'lightgrey 1px solid'}} component='div'> 
+        <Box sx={{ width: '100%', padding: '1rem', border: 'lightgrey 1px solid', textAlign: 'left'}}> 
             <Editor editorState={editorState} 
                     onChange={setEditorState} 
-                    // placeholder='Write something here'
+                    placeholder='Write something here'
                     handleKeyCommand={handleKeyCommand}
                     customStyleMap={styleMap as DraftStyleMap}
                     blockStyleFn={myBlockStyleFn as (cb: ContentBlock) => string}
             />
-        </Stack>
+        </Box>
     </Stack>
   );  
 }

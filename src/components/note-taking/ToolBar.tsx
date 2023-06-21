@@ -147,7 +147,7 @@ export default function ToolBar({ editorState, setEditorState } :
       };
 
     return (
-        <Stack direction='row'> 
+        <Stack direction='row' display='flex'> 
             { tools.map((item, index) => {
                 return (
                 <Button sx={{color: isActive(item.style, item.method)
