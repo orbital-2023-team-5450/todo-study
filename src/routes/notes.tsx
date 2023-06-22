@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box, CssBaseline, Divider, Stack, Typography } from "@mui/material";
+import { Box, CssBaseline, Divider, Fab, Stack, Typography } from "@mui/material";
 import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
 import { useNavigate } from "react-router-dom";
 import fetchUserInfo from "../utils/fetchUserInfo";
 import { Note } from "../utils/noteUtils";
+import AddIcon from "@mui/icons-material/Add";
 import NoteNavigation from "../components/note-taking/NoteNavigation";
 
 const TEST_NOTES : Note[] = [
@@ -64,6 +65,9 @@ export default function Notes() {
                         <Typography><strong>To be implemented:</strong> This is a reminder.</Typography>
                     </Stack>
                 </Stack>
+                <Fab color="primary" aria-label="add-note" sx={{position: 'absolute', bottom: 16, right: 16}}>
+                    <AddIcon />
+                </Fab>
             </Box>
         );
 }
