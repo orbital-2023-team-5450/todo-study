@@ -1,9 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { CssBaseline, Typography } from "@mui/material";
+import { Box, CssBaseline, Divider, Stack, Typography } from "@mui/material";
 import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
 import { useNavigate } from "react-router-dom";
 import fetchUserInfo from "../utils/fetchUserInfo";
+import { Note } from "../utils/noteUtils";
+import NoteNavigation from "../components/note-taking/NoteNavigation";
+
+const TEST_NOTES : Note[] = [
+    {
+        note_id: 1,
+        user_id: "",
+        title: "first note",
+        html_content: `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Document</title>
+        </head>
+        <body>
+            Hello world! <b>This is some bolded text. <i>This is some bold and italic text.</i></b>
+        </body>
+        </html>`,
+        created_at: "",
+        last_modified: "",
+    }, 
+    {
+        note_id: 2,
+        user_id: "",
+        title: "2nd best note",
+        html_content: "<b>this is a <pre>test</pre></b>",
+        created_at: "",
+        last_modified: "",
+    }
+]
+
+const drawerWidth = 260;
 
 export default function Notes() {
 
@@ -20,10 +53,17 @@ export default function Notes() {
     return loading ? (
             <LoadingScreen />
         ) : (
-            <>
+            <Box height="100vh" display="flex" flexDirection="column">
                 <CssBaseline />
-                <NavigationBar title="Notes" />
-                <Typography><strong>To be implemented:</strong> This is a reminder.</Typography>
-            </>
+                <Box flex={0}>
+                    <NavigationBar title="Notes" />
+                </Box>
+                <Stack width="100vw" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
+                    <NoteNavigation noteList={ TEST_NOTES } width={drawerWidth} />
+                    <Stack gap={5} width={"calc(100vw - " + drawerWidth + "px)"}>
+                        <Typography><strong>To be implemented:</strong> This is a reminder.</Typography>
+                    </Stack>
+                </Stack>
+            </Box>
         );
 }
