@@ -4,6 +4,7 @@ import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
 import { useNavigate } from "react-router-dom";
 import fetchUserInfo from "../utils/fetchUserInfo";
+import TextEditor from "../components/note-taking/TextEditor";
 
 export default function Notes() {
 
@@ -23,7 +24,7 @@ export default function Notes() {
             <>
                 <CssBaseline />
                 <NavigationBar title="Notes" />
-                <Typography><strong>To be implemented:</strong> This is a reminder.</Typography>
+                <TextEditor />
             </>
         );
 }
