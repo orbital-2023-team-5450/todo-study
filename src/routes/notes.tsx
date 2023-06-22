@@ -7,6 +7,7 @@ import fetchUserInfo from "../utils/fetchUserInfo";
 import { Note } from "../utils/noteUtils";
 import AddIcon from "@mui/icons-material/Add";
 import NoteNavigation from "../components/note-taking/NoteNavigation";
+import TextEditor from "../components/note-taking/TextEditor";
 
 const TEST_NOTES : Note[] = [
     {
@@ -62,7 +63,7 @@ export default function Notes() {
                 <Stack width="100vw" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
                     <NoteNavigation noteList={ TEST_NOTES } width={drawerWidth} />
                     <Stack gap={5} width={"calc(100vw - " + drawerWidth + "px)"}>
-                        <Typography><strong>To be implemented:</strong> This is a reminder.</Typography>
+                        <TextEditor />
                     </Stack>
                 </Stack>
                 <Fab color="primary" aria-label="add-note" sx={{position: 'absolute', bottom: 16, right: 16}}>
