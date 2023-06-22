@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import supabase from "../../supabase";
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { PickerChangeHandlerContext } from "@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types";
+import { DateTimeValidationError } from "@mui/x-date-pickers";
 
 export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } : 
                                   { open: boolean, onClose: () => void, taskType: string, id : number, fetchTask : () => void }) {
@@ -119,6 +121,14 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         setDescription(event.currentTarget.value);
     }
 
+    const handleDateTimeChange = (value: Dayjs | null, content: PickerChangeHandlerContext<DateTimeValidationError>) => {  
+
+        if (value === null || content.validationError !== null) {
+        } else {
+            setDueDate(value.toISOString());
+        }
+    }
+
     return ( open ? 
         <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", height: "100vh", backgroundColor: "rgba(50, 50, 50, 0.9)", 
                   display: "flex", justifyContent: "center", alignItems: "center", filter: "blur"}} 
@@ -168,12 +178,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                                     <DateTimePicker 
                                         defaultValue={dayjs((new Date()))} 
                                         value={dayjs(dueDate)} 
-                                        onChange={(value) => {  
-                                            if (value == null) {
-                                            } else {
-                                                setDueDate(value.toISOString());
-                                            }
-                                        }}
+                                        onChange={handleDateTimeChange}
                                     />
                                 </DemoItem>
                             </DemoContainer>
