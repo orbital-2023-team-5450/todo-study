@@ -2,6 +2,12 @@ import React from 'react';
 import AccountSettings from '../components/AccountSettings';
 import { Container } from '@mui/material';
 
+/**
+ * Represents the page accessed by URL /create-account in React Router. Contains the
+ * new account creation and customisation feature in // TODO: Study.
+ * 
+ * @returns A React component object representing the create account page.
+ */
 export default function CreateAccount() {
 
     document.title = "Create New Profile // TODO: Study";

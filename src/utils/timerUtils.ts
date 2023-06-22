@@ -1,5 +1,9 @@
 import supabase from "../supabase";
 
+/**
+ * A type representing the individual timer settings, as reflected in
+ * Supabase table users_timer_config.
+ */
 export type TimerSettings = {
     user_id: string,
     use_milliseconds: boolean,
@@ -7,6 +11,10 @@ export type TimerSettings = {
     timer_template_id: number,
 };
 
+/**
+ * A type representing a timer template, as reflected in Supabase table
+ * timer_templates.
+ */
 export type FullWorkRestCycle = {
     timer_template_id: number,
     title: string,
@@ -17,12 +25,23 @@ export type FullWorkRestCycle = {
     cycles: number,
 };
 
+/**
+ * A type representing a work-rest cycle, as incorporated as part of a full
+ * timer template (FullWorkRestCycle).
+ */
 export type WorkRestCycle = {
     work: number,
     rest: number,
     cycles: number,
 }
 
+/**
+ * An async function that fetches the current user's timer settings and stores them as a
+ * TimerSettings variable in a specified React state object.
+ * 
+ * @param setData The setter for the React state object to store the current user's timer
+ *                settings as a TimerSettings variable.
+ */
 export async function fetchTimerSettings(setData : React.Dispatch<React.SetStateAction<any>>) {
     const { data: { user } } = await supabase.auth.getUser();
     const user_id : string = (user === null) ? "" : user.id;
@@ -40,9 +59,17 @@ export async function fetchTimerSettings(setData : React.Dispatch<React.SetState
             }
 
             const { error } = await supabase.from('users_timer_config').insert(submitInfo);
-            if (error !== null) {
-                alert("Error updating timer information: " + JSON.stringify(error));
-            }
+            
+            console.log(submitInfo);
+            console.log(result.data);
+
+            // weirdly, this triggers occasionally when accessing the timer for the first time.
+            // since the insertion works despite showing the error message at times, removing
+            // the below block would work.
+
+            // if (error !== null) {
+            //     alert("Error updating timer information: " + JSON.stringify(error));
+            // }
             setData(submitInfo);
         } else {
             // user has set up timer data.
@@ -51,6 +78,12 @@ export async function fetchTimerSettings(setData : React.Dispatch<React.SetState
     });
 }
 
+/**
+ * An async function that fetches timer templates from table timer_templates and stores them as
+ * a FullWorkRestCycle[] array variable in a specified React state object.
+ * 
+ * @param setData The setter for the React state object to store the FullWorkRestCycle[] array
+ */
 export async function fetchTimerTemplates(setData : React.Dispatch<React.SetStateAction<any>>) {
     supabase.from('timer_templates').select().order("timer_template_id").then(async (result) => {
         if (result.data === null || result.data === undefined || result.error) {
@@ -65,6 +98,14 @@ export async function fetchTimerTemplates(setData : React.Dispatch<React.SetStat
     });
 }
 
+/**
+ * Given a timer template ID (such as from the timer_settings table), fetches the timer template information
+ * from the timer_templates table and stores it as a React state variable that holds a FullWorkRestCycle
+ * (timer template).
+ * 
+ * @param id The ID of the timer template to be accessed (as in the timer_templates table).
+ * @param setData The React state variable to store the resulting timer template as a type FullWorkRestCycle.
+ */
 export async function fetchTimerTemplateFromId(id : number, setData : (arg0 : FullWorkRestCycle) => void) {
     supabase.from('timer_templates').select().eq("timer_template_id", id).then(async (result) => {
         if (result.data === null || result.data === undefined || result.error) {

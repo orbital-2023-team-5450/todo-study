@@ -1,4 +1,9 @@
 import * as React from "react";
+
+/**
+ * Produces the SVG icon that contains the Google logo.
+ * @returns A React component function that produces the SVG icon that contains the Google logo.
+ */
 const SvgGoogle = () => ( 
   <svg
     xmlns="http://www.w3.org/2000/svg"

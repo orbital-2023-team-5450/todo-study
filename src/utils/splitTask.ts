@@ -1,7 +1,10 @@
-type Task = {id : number, title : string, description : string, 
-             dueDate : Date, type : number, completed: boolean, 
-             userId: number, expired: boolean, taskCollectionId: number};
+import { Task } from './taskUtils';
 
+/**
+ * TODO (max): fill up
+ * @param tasks 
+ * @returns 
+ */
 export default function splitTask(tasks : Task[]) {
 
     const now : Task[] = [];
