@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Box, CssBaseline, Divider, Fab, Stack, Typography } from "@mui/material";
+import { Box, CssBaseline, Divider, Fab, Stack, TextField, Typography } from "@mui/material";
 import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
 import { useNavigate } from "react-router-dom";
 import fetchUserInfo from "../utils/fetchUserInfo";
-import { Note } from "../utils/noteUtils";
+import { Note, fetchNotes } from "../utils/noteUtils";
 import AddIcon from "@mui/icons-material/Add";
 import NoteNavigation from "../components/note-taking/NoteNavigation";
 import TextEditor from "../components/note-taking/TextEditor";
+import MainEditor from "../components/note-taking/MainEditor";
+import supabase from "../supabase";
 
 const TEST_NOTES : Note[] = [
     {
@@ -45,30 +47,51 @@ export default function Notes() {
     document.title = "Notes // TODO Study";
 
     const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
+    const [ noteList, setNoteList ] = useState<Note[]>([]);
+    const [ mainEditorId, setMainEditorId ] = useState(-1);
     const [ loading, setLoading ] = useState(true);
     const navigate = useNavigate();
 
+    const addNote = async () => {
+        const submitInfo = {
+            user_id: userData.user_id,
+            title: "",
+            html_content: "",
+            created_at: ((new Date()).toISOString()),
+            last_modified: ((new Date()).toISOString()),
+        }
+
+        const { error } = await supabase.from('notes').insert(submitInfo);
+        console.log(error);
+    }
+
     useEffect(() => {
         fetchUserInfo(setUserData, loading, setLoading, navigate, true);
+        fetchNotes(setNoteList);
     }, [loading, navigate]);
 
     return loading ? (
             <LoadingScreen />
         ) : (
-            <Box height="100vh" display="flex" flexDirection="column">
+            <>
                 <CssBaseline />
-                <Box flex={0}>
-                    <NavigationBar title="Notes" />
-                </Box>
-                <Stack width="100vw" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
-                    <NoteNavigation noteList={ TEST_NOTES } width={drawerWidth} />
-                    <Stack gap={5} width={"calc(100vw - " + drawerWidth + "px)"}>
-                        <TextEditor />
+                <Box height="100vh" display="flex" flexDirection="column">
+                    <Box flex={0}>
+                        <NavigationBar title="Notes" />
+                    </Box>
+                    <Stack width="100vw" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
+                        <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ setMainEditorId } />
+                        <Stack component="form" gap={5} padding="1rem" width={"calc(100vw - " + drawerWidth + "px)"}>
+                            { (mainEditorId !== -1) ? 
+                                <MainEditor noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} /> :
+                                <Typography>No editor loaded yet...</Typography>
+                            }
+                        </Stack>
                     </Stack>
-                </Stack>
-                <Fab color="primary" aria-label="add-note" sx={{position: 'absolute', bottom: 16, right: 16}}>
-                    <AddIcon />
-                </Fab>
-            </Box>
+                    <Fab onClick={addNote} color="primary" aria-label="add-note" sx={{position: 'absolute', bottom: 16, right: 16}}>
+                        <AddIcon />
+                    </Fab>
+                </Box>
+            </>
         );
 }

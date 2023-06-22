@@ -4,11 +4,13 @@ import { EditorState, RichUtils } from "draft-js";
 import { Code, FormatAlignCenter, FormatAlignLeft, FormatAlignRight, FormatBold, FormatItalic, FormatStrikethrough, 
          FormatUnderlined, FormatListBulleted, FormatListNumbered, FormatQuote, Highlight, KeyboardArrowUp, KeyboardArrowDown,
          Subscript, Superscript, TextRotationNone } from '@mui/icons-material';
+import SaveIcon from '@mui/icons-material/Save';
 
 
-export default function ToolBar({ editorState, setEditorState } : 
+export default function ToolBar({ editorState, setEditorState, onSave } : 
                                 { editorState: EditorState, 
-                                  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>}) {
+                                  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>,
+                                  onSave: () => void }) {
 
     const tools = [
       {
@@ -160,6 +162,9 @@ export default function ToolBar({ editorState, setEditorState } :
                       {item.icon || item.label}
                   </Button>);
             })}
+            <Button onClick={onSave} sx={{color: "rgba(0, 0, 0, 0.7)"}}>
+              <SaveIcon /> Save
+            </Button>
         </Stack>
     );
 }

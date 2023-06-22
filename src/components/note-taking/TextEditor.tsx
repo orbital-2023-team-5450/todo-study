@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ContentBlock, DraftBlockType, DraftStyleMap, Editor, EditorState, RichUtils } from "draft-js";
+import { ContentBlock, ContentState, DraftBlockType, DraftStyleMap, Editor, EditorState, RichUtils, convertFromHTML } from "draft-js";
 import { Box, Divider, IconButton, Popover, Stack, Typography } from "@mui/material";
 import Toolbar from "./ToolBar";
 import "./textEditor.css";
-import ColorPicker from 'material-ui-color-picker'
 
-export default function TextEditor() {
+// @ts-ignore
+import { convertToHTML } from 'draft-convert';
+
+// @ts-ignore
+import ColorPicker from 'material-ui-color-picker';
+
+export default function TextEditor({ onSave, initContent } : { onSave : ( editorState : EditorState ) => void, initContent : string }) {
 
   const [colorPicker, setColorPicker] = useState('#FF0000');
-  const [editorState, setEditorState] = useState(
-    () => EditorState.createEmpty(),
-  );
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
   const handleKeyCommand = (command: string, editorState: EditorState) => {
 
@@ -77,16 +80,34 @@ export default function TextEditor() {
     }
   };
 
+  useEffect(() => {
+    if (initContent === "" || initContent === null || initContent === undefined) { 
+      console.log("done");
+      setEditorState(EditorState.createEmpty());
+    } else {
+      console.log("doner" + initContent);
+      const blocksFromHTML = convertFromHTML(initContent);
+      const initState = ContentState.createFromBlockArray(
+        blocksFromHTML.contentBlocks,
+        blocksFromHTML.entityMap,
+      );
+      setEditorState(EditorState.createWithContent(initState));
+    }
+  }, [initContent]);
+
   return (
     <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh', marginRight: '2vh', height: '85vh'}}>
-        <Toolbar editorState={editorState} setEditorState={setEditorState}/> 
+        <Toolbar editorState={editorState} setEditorState={setEditorState} onSave={() => onSave(editorState)} /> 
         <ColorPicker
                       name='color'
                       defaultValue="ColorPicker"
                       value={colorPicker} 
-                      onChange={(color) => setColorPicker(color)}
+                      onChange={(color : string) => setColorPicker(color)}
                       style={{width: '12vh', marginLeft: '3vh'}}
         />
+        <Typography>
+          {convertToHTML(editorState.getCurrentContent())}
+        </Typography>
         <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
         <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh'}}> 
             <Editor editorState={editorState} 

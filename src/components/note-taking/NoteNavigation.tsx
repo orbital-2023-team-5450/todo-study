@@ -12,7 +12,7 @@ import NoteEntry from './NoteEntry';
  * @returns A React component representing a sidebar to appear in the left side of the Notes
  *          app.
  */
-export default function NoteNavigation( { noteList, width } : { noteList : Note[], width: number } ) {
+export default function NoteNavigation( { noteList, width, edit } : { noteList : Note[], width: number, edit : ( noteId : number ) => void } ) {
     return (
         <Box
             sx={{ overflow: 'auto', width: '100%', maxWidth: width, bgcolor: 'background.paper' }}
@@ -24,8 +24,8 @@ export default function NoteNavigation( { noteList, width } : { noteList : Note[
                     noteList.map((note : Note) => {
                         return (
                             <>
-                                <ListItem key={note.title}>
-                                    <ListItemButton>
+                                <ListItem key={note.note_id}>
+                                    <ListItemButton onClick={ () => edit(note.note_id) }>
                                         <NoteEntry note={note} />
                                     </ListItemButton>
                                 </ListItem>
