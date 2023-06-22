@@ -2,6 +2,13 @@ import React from "react";
 import { Container, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
+/**
+ * Represents the page accessed by any other URL in React Router. Contains the 404 error page 
+ * which occurs when accessing any invalid URL when logged in to // TODO: Study. Contains a 
+ * link to the dashboard page for users to perform further navigation.
+ * 
+ * @returns A React component object representing the error page.
+ */
 export default function ErrorPage({ error, errorDesc } : {error : string, errorDesc: string }) {
     
     document.title = "Error" + (error ? (": " + error) : "") + " // TODO: Study";

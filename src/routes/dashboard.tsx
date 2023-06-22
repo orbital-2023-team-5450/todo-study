@@ -5,6 +5,12 @@ import LoadingScreen from "../components/LoadingScreen";
 import fetchUserInfo from "../utils/fetchUserInfo";
 import NavigationBar from "../components/navigation/NavigationBar";
 
+/**
+ * Represents the page accessed by URL / in React Router when logged in. Contains the
+ * dashboard feature to be developed in // TODO: Study.
+ * 
+ * @returns A React component object representing the dashboard page.
+ */
 export default function Dashboard() {
 
     document.title = "Dashboard // TODO: Study";
