@@ -12,7 +12,7 @@ const handleLogoutClick = () => {
   supabase.auth.signOut();
 }
 
-export default function NavigationBar({ title } : { title : string }) {
+  export default function NavigationBar({ title, children } : React.PropsWithChildren<{ title : string }> ) {
   
   const [ windowWidth, setWindowWidth ] = useState(window.innerWidth);
 
@@ -40,6 +40,7 @@ export default function NavigationBar({ title } : { title : string }) {
           <AvatarView />
           <Button variant="contained" onClick={handleLogoutClick} disableElevation>Sign out</Button>
         </Toolbar>
+        { children }
       </AppBar>
     </Box>
   );
