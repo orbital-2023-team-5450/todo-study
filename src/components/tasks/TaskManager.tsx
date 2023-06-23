@@ -3,9 +3,7 @@ import React from "react";
 import EmptyState from "./EmptyState";
 import TaskList from "./TaskList";
 import supabase from "../../supabase";
-
-type Task = {id : number, title : string, description : string, dueDate : Date, 
-             type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
+import { Task } from "../../utils/taskUtils";
 
 /**
  * A component that displays the todo-list of the feature. 

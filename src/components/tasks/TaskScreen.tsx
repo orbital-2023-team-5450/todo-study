@@ -6,6 +6,9 @@ import splitTask from "../../utils/splitTask";
 import TaskPopUp from "./TaskPopup";
 import { Task } from "../../utils/taskUtils";
 
+/*
+    The enum for the type of the tasks.
+*/
 enum task_type { DUE_SOON, FUTURE_ASSIGNMENT };
 
 /**
