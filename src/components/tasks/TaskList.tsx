@@ -56,7 +56,7 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                                                             </Typography>}
 
                                   <Typography> 
-                                      {format(new Date(task.dueDate), 'dd/MM/yyyy - eee')}
+                                      {format(new Date(task.dueDate), 'dd/MMM/yyyy, hh:mm a, eee')}
                                   </Typography>
                               </Stack>
 

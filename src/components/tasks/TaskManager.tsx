@@ -64,7 +64,7 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
           
             <Stack direction='row' marginLeft='3vh'> 
                 <Typography variant="h4" component="h2" marginTop={7}>
-                    {taskType === 0 ? "Due Today" : "Future Assignment"}
+                    {taskType === 0 ? "Due Tomorrow" : "Future Assignment"}
                 </Typography> 
 
                 {/* <IconButton>
