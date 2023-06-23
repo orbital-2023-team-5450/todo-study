@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Checkbox, Typography, Stack, IconButton } from "@mui/material";
 import { DeleteOutline } from "@mui/icons-material";
 import { Task } from "../../utils/taskUtils";
+import { format, formatDistance } from "date-fns";
 
 export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit, fetchTask } : 
                                  { tasks : Task[], 
@@ -55,7 +56,7 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                                                             </Typography>}
 
                                   <Typography> 
-                                      {new Date(task.dueDate).toUTCString() + ""}
+                                      {format(new Date(task.dueDate), 'dd/MM/yyyy - eee')}
                                   </Typography>
                               </Stack>
 
