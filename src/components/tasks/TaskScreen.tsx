@@ -63,7 +63,7 @@ export default function TaskScreen() {
                         />
                     </Box>
 
-                    <Box sx={{ bgcolor: '#cfe8ff', height: '75vh', borderRadius: '16px', width: "80vh", marginLeft: '10px' }}> 
+                    <Box sx={{ bgcolor: '#cfe8ff', height: '75vh', borderRadius: '16px', width: "80vh", marginLeft: '0.6vh' }}> 
                         <TaskManager 
                             taskType={task_type.FUTURE_ASSIGNMENT} 
                             tasks={futureTasks}
@@ -79,7 +79,7 @@ export default function TaskScreen() {
                 variant="contained"
                 size="medium"
                 onClick={handleNewTaskSubmit}
-                sx={{marginLeft: "20vh", marginRight: "21vh", marginTop: '2vh', height: '9vh', borderRadius: '10px'}}
+                sx={{marginLeft: "20vh", marginRight: "21vh", marginTop: '1.5vh', height: '9vh', borderRadius: '10px'}}
             >
                  <Typography variant='h6'> + Add new task </Typography>
             </Button>

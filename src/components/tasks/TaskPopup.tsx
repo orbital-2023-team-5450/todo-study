@@ -145,7 +145,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                         {taskType} new task
                     </Typography>
 
-                    <Typography component="h6" variant="h6" align="left"> Title </Typography>
+                    <Typography component="h6" variant="h6" align="left" marginBottom='1vh'> Title </Typography>
                     <TextField
                         type="text"
                         label="Title"
@@ -155,7 +155,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                         required
                     />
 
-                    <Typography component="h6" variant="h6" align="left" marginTop="2vh"> Description </Typography>
+                    <Typography component="h6" variant="h6" align="left" marginTop="2vh" marginBottom='1vh'> Description </Typography>
                     <TextField
                         type="text"
                         label="Description"
@@ -184,6 +184,8 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                             </DemoContainer>
                         </LocalizationProvider>
                     </Stack>
+
+                    <Typography display='flex' flexGrow={0.5} fontSize='1.5vh'> The year selected must be within 1900 to 2099 (inclusive) </Typography>
                     
                 </Stack>
 

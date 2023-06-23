@@ -31,7 +31,7 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                         sx={{ marginLeft: 3, marginRight: 5, marginBottom: 3, marginTop: 0.7,
                               '&:hover': {backgroundColor: !task.expired ? task.completed ? 'Green' : 'grey' : 'red', 
                               opacity: [0.9, 0.8, 0.7]}, borderRadius: '10px', height: '70px', 
-                              backgroundColor: !task.expired ? task.completed ? 'lightGreen' : 'white' : 'pink'}}        
+                              backgroundColor: !task.expired ? task.completed ? 'lightGreen' : 'white' : 'pink'}}  
                       >
                           <Stack direction="row" alignItems="center">
                               <Checkbox
