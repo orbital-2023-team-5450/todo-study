@@ -7,7 +7,8 @@ import { Note, fetchNoteInfoFromId, fetchNotes } from '../../utils/noteUtils';
 import { EditorState } from 'draft-js';
 
 // @ts-ignore
-import { convertToHTML } from 'draft-convert';
+import { Options, stateToHTML } from 'draft-js-export-html';
+
 import supabase from '../../supabase';
 
 export default function MainEditor( { noteId, onNoteChange } : { noteId : number, onNoteChange: () => void }) {
@@ -26,11 +27,11 @@ export default function MainEditor( { noteId, onNoteChange } : { noteId : number
         setNoteInfo({...noteInfo, title: event.currentTarget.value});
     }
 
-    async function save( editorState : EditorState ) {
+    async function save( editorState : EditorState, options : Options ) {
         const { data: { user } } = await supabase.auth.getUser();
         const user_id : string = (user === null) ? "" : user.id;
         
-        const newNoteInfo : Note = {...noteInfo, html_content: convertToHTML(editorState.getCurrentContent()), last_modified: ((new Date()).toISOString()),}
+        const newNoteInfo : Note = {...noteInfo, html_content: stateToHTML(editorState.getCurrentContent(), options ), last_modified: ((new Date()).toISOString()),}
         setNoteInfo(newNoteInfo);
         
         async function performUpdate() {

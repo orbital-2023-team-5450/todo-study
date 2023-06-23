@@ -4,13 +4,13 @@ import { Box, Divider, IconButton, Popover, Stack, Typography } from "@mui/mater
 import Toolbar from "./ToolBar";
 import "./textEditor.css";
 
-// @ts-ignore
-import { convertToHTML } from 'draft-convert';
+import { Options, stateToHTML } from 'draft-js-export-html';
+import { stateFromHTML } from "draft-js-import-html";
 
 // @ts-ignore
 import ColorPicker from 'material-ui-color-picker';
 
-export default function TextEditor({ onSave, initContent } : { onSave : ( editorState : EditorState ) => void, initContent : string }) {
+export default function TextEditor({ onSave, initContent } : { onSave : ( editorState : EditorState, options : Options ) => void, initContent : string }) {
 
   const [colorPicker, setColorPicker] = useState('#FF0000');
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
@@ -61,6 +61,14 @@ export default function TextEditor({ onSave, initContent } : { onSave : ( editor
     },
   };
 
+  const inlineStyleOptions = () => {
+    let obj : Record<string, Object> = {};
+    for (const [key, value] of Object.entries(styleMap)) {
+      obj[key] = { style : value };
+    }
+    return obj;
+  };
+
   const myBlockStyleFn = (contentBlock: ContentBlock) => {
 
     const type = contentBlock.getType();
@@ -80,24 +88,39 @@ export default function TextEditor({ onSave, initContent } : { onSave : ( editor
     }
   };
 
+  const blockStyleOptions = (contentBlock: ContentBlock) => {
+    const style = myBlockStyleFn(contentBlock);
+    return {
+      attributes : {
+        class : style
+      }
+    };
+  };
+
+  const options = {
+    inlineStyles: inlineStyleOptions(),
+    blockStyleFn: blockStyleOptions,
+  } as Options;
+
   useEffect(() => {
     if (initContent === "" || initContent === null || initContent === undefined) { 
       console.log("done");
       setEditorState(EditorState.createEmpty());
     } else {
-      console.log("doner" + initContent);
-      const blocksFromHTML = convertFromHTML(initContent);
-      const initState = ContentState.createFromBlockArray(
-        blocksFromHTML.contentBlocks,
-        blocksFromHTML.entityMap,
-      );
-      setEditorState(EditorState.createWithContent(initState));
+      setEditorState(EditorState.createWithContent(stateFromHTML(initContent)));
+      // console.log("doner" + initContent);
+      // const contentBlock = convertFromHTML(initContent);
+      // const initState = ContentState.createFromBlockArray(
+      //   contentBlock.contentBlocks,
+      //   contentBlock.entityMap,
+      // );
+      // setEditorState(EditorState.createWithContent(initState));
     }
   }, [initContent]);
 
   return (
     <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh', marginRight: '2vh', height: '85vh'}}>
-        <Toolbar editorState={editorState} setEditorState={setEditorState} onSave={() => onSave(editorState)} /> 
+        <Toolbar editorState={editorState} setEditorState={setEditorState} onSave={() => onSave(editorState, options)} /> 
         <ColorPicker
                       name='color'
                       defaultValue="ColorPicker"
@@ -106,7 +129,9 @@ export default function TextEditor({ onSave, initContent } : { onSave : ( editor
                       style={{width: '12vh', marginLeft: '3vh'}}
         />
         <Typography>
-          {convertToHTML(editorState.getCurrentContent())}
+          { 
+            stateToHTML(editorState.getCurrentContent(), options as Options)
+          }
         </Typography>
         <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
         <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh'}}> 

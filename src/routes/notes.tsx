@@ -63,6 +63,8 @@ export default function Notes() {
 
         const { error } = await supabase.from('notes').insert(submitInfo);
         console.log(error);
+        
+        fetchNotes(setNoteList);
     }
 
     useEffect(() => {

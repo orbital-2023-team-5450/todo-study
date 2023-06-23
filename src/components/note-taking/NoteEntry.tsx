@@ -14,7 +14,7 @@ export default function NoteEntry( { note } : { note : Note } ) {
     return (
         <Stack justifyContent="center">
             <Typography fontWeight="bold" variant="h5" fontSize={16} component="h1">
-                { note.title }
+                { note.title === "" ? <em>Untitled</em> : note.title }
             </Typography>
             <Typography variant="h6" fontSize={14} component="h2">
                 { TruncateHTML(note.html_content) }
