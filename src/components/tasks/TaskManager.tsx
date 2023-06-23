@@ -74,7 +74,7 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
             
             <Stack direction='column' component='div'> 
                 <Box component='div' 
-                     sx={{bgcolor: "grey", borderRadius: '16px', height: '59.5vh', overflowY: 'auto'}} 
+                     sx={{bgcolor: "white", borderRadius: '16px', height: '59.5vh', overflowY: 'auto'}} 
                      marginLeft={4} 
                      marginRight={4} 
                      marginTop={2}
