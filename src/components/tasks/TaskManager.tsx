@@ -7,6 +7,16 @@ import supabase from "../../supabase";
 type Task = {id : number, title : string, description : string, dueDate : Date, 
              type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
 
+/**
+ * A component that displays the todo-list of the feature. 
+ * 
+ * @param taskType The purpose of the task.
+ * @param tasks The list of task object.
+ * @param fetchTask A function thats is called whenever there is any change to any task to update the shown page.
+ * @param popUpUpdate A useState setter to set the existence of the dialog of the task.
+ * @param setWhichTask A useState setter to set the task that is required to be updated with its id.
+ * @returns The todo-list of the feature
+ */
 export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, setWhichTask } : 
                                     { taskType : number, 
                                       tasks : {id : number, title : string, description : string, 
@@ -14,9 +24,10 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
                                                userId: number, expired: boolean, taskCollectionId: number}[], 
                                       fetchTask : () => void, popUpUpdate: React.Dispatch<React.SetStateAction<boolean>>
                                       setWhichTask: React.Dispatch<React.SetStateAction<number>>}) {
-
-    // const [error, setError] = useState(false);
   
+    /* 
+      Handle the change of status of completed of the task in the database.
+    */
     const handleTaskChange = (id : number) => {
       console.log("handleTaskChange");
       const task = tasks.find((task : Task) => task.id === id);
@@ -37,6 +48,9 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
       }  
     };
   
+    /* 
+      Handle the deletion of the task in the database.
+    */
     const handleTaskDelete = (id : number) => {
 
       supabase
@@ -52,6 +66,9 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
         });
     };
 
+    /* 
+      Handle the change of a task in the database.
+    */
     const handleTaskEdit = (id : number) => {
       
         popUpUpdate(true);
@@ -84,7 +101,6 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
                                             onTaskChange={handleTaskChange} 
                                             onTaskDelete={handleTaskDelete} 
                                             onTaskEdit={handleTaskEdit}
-                                            fetchTask={fetchTask}
                                         /> 
                                       : <EmptyState /> 
                     }

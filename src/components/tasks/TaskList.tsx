@@ -3,19 +3,36 @@ import { Card, Checkbox, Typography, Stack, IconButton } from "@mui/material";
 import { DeleteOutline } from "@mui/icons-material";
 import { Task } from "../../utils/taskUtils";
 
-export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit, fetchTask } : 
+/**
+ * 
+ * @param tasks A list of task objects.
+ * @param onTaskChange A function that handles the task when it is completed.
+ * @param onTaskDelete A function that handles the task when it is deleted.
+ * @param onTaskEdit A function that handles the task when it is editted.
+ * @returns The list of the tasks
+ */
+export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit } : 
                                  { tasks : Task[], 
                                    onTaskChange : (i : number) => void, onTaskDelete : (i : number) => void,
-                                   onTaskEdit : (i : number) => void, fetchTask: () => void}) {
+                                   onTaskEdit : (i : number) => void }) {
 
+    /* 
+      Event handler for the checkbox. 
+    */
     const handleTaskChange = (id : number) => () => {
         onTaskChange(id);
     };
     
+    /* 
+      Event handler for the Icon button - delete icon. 
+    */
     const handleTaskDelete = (id : number) => () => {
         onTaskDelete(id);
     };
     
+    /* 
+      Event handler for text of the task. 
+    */
     const handleTaskEdit = (id : number) => () => {
         onTaskEdit(id);
     }

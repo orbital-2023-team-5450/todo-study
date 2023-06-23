@@ -7,6 +7,16 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+/**
+ * A component that is displayed to facilitate the creation and update of a task.
+ * 
+ * @param open A switch to determine if the this pop up is displayed.
+ * @param onClose A useState setter to close the pop up.
+ * @param taskType The purpose of the task.
+ * @param id The task to be changed according to the id.
+ * @param fetchTask A function thats is called whenever there is any change to any task to update the shown page.
+ * @returns A pop up for the creation and update for the task.
+ */
 export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } : 
                                   { open: boolean, onClose: () => void, taskType: string, id : number, fetchTask : () => void }) {
 
@@ -20,6 +30,10 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
     const [loading, setLoading] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
 
+    /*
+        An asyncronous function to fetch the data of the task and assign each of them
+        to the useState variable accordingly.
+    */
     const fetchInfo = async () => {
 
         const { data: { user } } = await supabase.auth.getUser();
@@ -49,6 +63,9 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         fetchInfo();
     }, [open]);
 
+    /*
+        Handle the submission or the update of the task for the button.
+    */
     const submitTask = (event : React.SyntheticEvent) => { 
 
         event.preventDefault();
@@ -97,7 +114,9 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         fetchTask();
     }
 
-    // reset the form 
+    /* 
+        Reset the form whenever a task is updated or created.
+    */ 
     const reset = () => {
 
         onClose();
@@ -107,12 +126,18 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         setIsDisabled(false);
     }
 
+    /*
+        Handle the event to assign the title of the form to the according variable.
+    */
     const handleTitleTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
 
         event.preventDefault();
         setTitle(event.currentTarget.value);
     }
 
+    /*
+        Handle the event to assign the desciption of the form to the according variable.
+    */
     const handleDescriptionTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
 
         event.preventDefault();

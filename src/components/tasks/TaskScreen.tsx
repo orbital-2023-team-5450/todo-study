@@ -8,6 +8,11 @@ import { Task } from "../../utils/taskUtils";
 
 enum task_type { DUE_SOON, FUTURE_ASSIGNMENT };
 
+/**
+ * A component that displays the whole page of todo-list feature.
+ * 
+ * @returns A todo-list page.
+ */
 export default function TaskScreen() {
 
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -16,12 +21,18 @@ export default function TaskScreen() {
     const [isPopUpUpdate, setPopUpUpdate] = useState<boolean>(false);
     const [whichTask, setWhichTask] = useState<number>(-1);
     
+    /*
+        Handle the event of submitting new task.
+    */
     const handleNewTaskSubmit = (event : React.MouseEvent<HTMLElement>) => {
 
         event.preventDefault();
         setPopUpCreate(true);
     };
 
+    /* 
+        Fetch info of the tasks from the database and sort it based on date and completed.
+    */
     const fetchTasks = async () => {
 
       const { data: { user } } = await supabase.auth.getUser();
