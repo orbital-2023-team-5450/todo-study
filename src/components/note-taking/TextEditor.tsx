@@ -1,20 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ContentBlock, ContentState, DraftBlockType, DraftStyleMap, Editor, EditorState, RichUtils, convertFromHTML } from "draft-js";
-import { Box, Divider, IconButton, Popover, Stack, Typography } from "@mui/material";
+import { ContentBlock, ContentState, DraftBlockType, DraftStyleMap, EditorState, RichUtils, convertFromHTML, convertToRaw } from "draft-js";
+import { Box, Button, Divider, IconButton, Popover, Stack, Typography } from "@mui/material";
 import Toolbar from "./ToolBar";
 import "./textEditor.css";
-
-import { Options, stateToHTML } from 'draft-js-export-html';
-import { stateFromHTML } from "draft-js-import-html";
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 // @ts-ignore
-import ColorPicker from 'material-ui-color-picker';
+import { Editor } from "react-draft-wysiwyg";
 
-export default function TextEditor({ onSave, initContent } : { onSave : ( editorState : EditorState, options : Options ) => void, initContent : string }) {
+// @ts-ignore
+import draftToHtml from 'draftjs-to-html';
+
+// @ts-ignore
+import htmltoDraft from 'html-to-draftjs';
+import SaveIcon from '@mui/icons-material/Save';
+
+export default function TextEditor({ onSave, initContent } : { onSave : ( editorState : EditorState ) => void, initContent : string }) {
 
   const [colorPicker, setColorPicker] = useState('#FF0000');
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
+/*
   const handleKeyCommand = (command: string, editorState: EditorState) => {
 
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -24,7 +30,6 @@ export default function TextEditor({ onSave, initContent } : { onSave : ( editor
     }
     return 'not-handled';
   }
-
   const styleMap = {
     
     'CODE': {
@@ -101,26 +106,25 @@ export default function TextEditor({ onSave, initContent } : { onSave : ( editor
     inlineStyles: inlineStyleOptions(),
     blockStyleFn: blockStyleOptions,
   } as Options;
+*/
 
   useEffect(() => {
     if (initContent === "" || initContent === null || initContent === undefined) { 
       console.log("done");
       setEditorState(EditorState.createEmpty());
     } else {
-      setEditorState(EditorState.createWithContent(stateFromHTML(initContent)));
-      // console.log("doner" + initContent);
-      // const contentBlock = convertFromHTML(initContent);
-      // const initState = ContentState.createFromBlockArray(
-      //   contentBlock.contentBlocks,
-      //   contentBlock.entityMap,
-      // );
-      // setEditorState(EditorState.createWithContent(initState));
+      const contentBlock = htmltoDraft(initContent);
+      const initState = ContentState.createFromBlockArray(
+        contentBlock.contentBlocks,
+        contentBlock.entityMap,
+      );
+      setEditorState(EditorState.createWithContent(initState));
     }
   }, [initContent]);
 
   return (
     <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh', marginRight: '2vh', height: '85vh'}}>
-        <Toolbar editorState={editorState} setEditorState={setEditorState} onSave={() => onSave(editorState, options)} /> 
+        {/*<Toolbar editorState={editorState} setEditorState={setEditorState} onSave={() => onSave(editorState, options)} /> 
         <ColorPicker
                       name='color'
                       defaultValue="ColorPicker"
@@ -132,16 +136,26 @@ export default function TextEditor({ onSave, initContent } : { onSave : ( editor
           { 
             stateToHTML(editorState.getCurrentContent(), options as Options)
           }
-        </Typography>
+        </Typography>*/}
+            <Button onClick={() => onSave(editorState)} sx={{color: "rgba(0, 0, 0, 0.7)"}}>
+              <SaveIcon /> Save
+            </Button>
         <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
-        <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh'}}> 
+        <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh'}}>
+          <Editor editorState={editorState}
+                  toolbarClassName="toolbarClassName"
+                  wrapperClassName="wrapperClassName"
+                  editorClassName="editorClassName"
+                  onEditorStateChange={setEditorState}
+                />
+           {/*
             <Editor editorState={editorState} 
                     onChange={setEditorState} 
                     placeholder='Write something here'
                     handleKeyCommand={handleKeyCommand}
                     customStyleMap={styleMap as DraftStyleMap}
                     blockStyleFn={myBlockStyleFn as (cb: ContentBlock) => string}
-            />
+        />*/}
         </Box> 
     </Stack>
   );  
