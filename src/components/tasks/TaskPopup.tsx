@@ -179,13 +179,14 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                                         defaultValue={dayjs((new Date()))} 
                                         value={dayjs(dueDate)} 
                                         onChange={handleDateTimeChange}
+                                        minDateTime={dayjs(new Date())}
                                     />
                                 </DemoItem>
                             </DemoContainer>
                         </LocalizationProvider>
                     </Stack>
 
-                    <Typography display='flex' flexGrow={0.5} fontSize='1.5vh'> The year selected must be within 1900 to 2099 (inclusive) </Typography>
+                    <Typography display='flex' flexGrow={0.5} fontSize='1.5vh'> The year selected must be within current year to 2099 (inclusive) </Typography>
                     
                 </Stack>
 
