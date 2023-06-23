@@ -19,7 +19,7 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
                                     { taskType : number, 
                                       tasks : {id : number, title : string, description : string, 
                                                dueDate : Date, type : number, completed: boolean, 
-                                               userId: number, expired: boolean, taskCollectionId: number}[], 
+                                               userId: string, expired: boolean, taskCollectionId: number}[], 
                                       fetchTask : () => void, popUpUpdate: React.Dispatch<React.SetStateAction<boolean>>
                                       setWhichTask: React.Dispatch<React.SetStateAction<number>>}) {
   
