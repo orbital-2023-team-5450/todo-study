@@ -4,12 +4,14 @@ import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
 import { useNavigate } from "react-router-dom";
 import fetchUserInfo from "../utils/fetchUserInfo";
-import { Note, fetchNotes } from "../utils/noteUtils";
+import { Note, deleteNote, fetchNotes } from "../utils/noteUtils";
 import AddIcon from "@mui/icons-material/Add";
 import NoteNavigation from "../components/note-taking/NoteNavigation";
 import TextEditor from "../components/note-taking/TextEditor";
 import MainEditor from "../components/note-taking/MainEditor";
 import supabase from "../supabase";
+import { Editor, EditorState } from "draft-js";
+import EmptyNoteState from "../components/note-taking/EmptyNoteState";
 
 const TEST_NOTES : Note[] = [
     {
@@ -41,6 +43,7 @@ const TEST_NOTES : Note[] = [
 ]
 
 const drawerWidth = 260;
+const widthStyle = "calc(100vw - " + drawerWidth + "px)";
 
 export default function Notes() {
 
@@ -50,6 +53,7 @@ export default function Notes() {
     const [ noteList, setNoteList ] = useState<Note[]>([]);
     const [ mainEditorId, setMainEditorId ] = useState(-1);
     const [ loading, setLoading ] = useState(true);
+    const [ toSave, setToSave ] = useState(false);
     const navigate = useNavigate();
 
     const addNote = async () => {
@@ -63,8 +67,24 @@ export default function Notes() {
 
         const { error } = await supabase.from('notes').insert(submitInfo);
         console.log(error);
-        
+
         fetchNotes(setNoteList);
+    }
+
+    const deleteNoteHandler = (id : number) => {
+        deleteNote(id).then(() => {
+            fetchNotes(setNoteList);
+            if (id === mainEditorId) {
+                setMainEditorId(-1);
+            }
+        });
+    }
+
+    const handleKeyDown = (event : React.KeyboardEvent<HTMLElement>) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+            event.preventDefault();
+            setToSave(true);
+        }
     }
 
     useEffect(() => {
@@ -77,18 +97,16 @@ export default function Notes() {
         ) : (
             <>
                 <CssBaseline />
-                <Box height="100vh" display="flex" flexDirection="column">
+                <Box sx={{overflow: 'hidden'}} onKeyDown={handleKeyDown} height="100vh" display="flex" flexDirection="column">
                     <Box flex={0}>
                         <NavigationBar title="Notes" />
                     </Box>
-                    <Stack width="100vw" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
-                        <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ setMainEditorId } />
-                        <Stack component="form" gap={5} padding="1rem" width={"calc(100vw - " + drawerWidth + "px)"}>
-                            { (mainEditorId !== -1) ? 
-                                <MainEditor noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} /> :
-                                <Typography>No editor loaded yet...</Typography>
-                            }
-                        </Stack>
+                    <Stack width="100%" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
+                        <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ setMainEditorId } onNoteDelete={ deleteNoteHandler } />
+                        { (mainEditorId !== -1) ? 
+                            <MainEditor width={widthStyle} toSave={toSave} onStartSaving={() => setToSave(true)} onDoneSaving={() => setToSave(false)} noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} /> :
+                            <EmptyNoteState width={widthStyle} />
+                        }
                     </Stack>
                     <Fab onClick={addNote} color="primary" aria-label="add-note" sx={{position: 'absolute', bottom: 16, right: 16}}>
                         <AddIcon />

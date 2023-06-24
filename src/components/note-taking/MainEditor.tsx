@@ -11,7 +11,7 @@ import draftToHtml from 'draftjs-to-html';
 
 import supabase from '../../supabase';
 
-export default function MainEditor( { noteId, onNoteChange } : { noteId : number, onNoteChange: () => void }) {
+export default function MainEditor( { noteId, width, onNoteChange, toSave, onStartSaving, onDoneSaving } : { noteId : number, width: (string | number), onNoteChange: () => void, toSave: boolean, onStartSaving : () => void, onDoneSaving : () => void } ) {
 
     const [ noteInfo, setNoteInfo ] = useState({
         note_id: 0,
@@ -43,14 +43,19 @@ export default function MainEditor( { noteId, onNoteChange } : { noteId : number
         performUpdate();
     }
 
+    const handleSubmit = ( event : React.SyntheticEvent<HTMLElement> ) => {
+        event.preventDefault();
+        onStartSaving();
+    }
+
     useEffect(() => {
         fetchNoteInfoFromId( noteId, setNoteInfo );
     }, [ noteId ])
 
     return (
-        <>
-            <TextField type="text" sx={{width:"calc(100% - 2rem)", fontSize: "1.6rem", fontWeight: "bold"}} label="Title" variant="outlined" value={noteInfo.title} onChange={handleTitleTextChange} />
-            <TextEditor initContent={ noteInfo.html_content } onSave={save}/>
-        </>
+        <Stack sx={{height: 'calc(100% - 240px)'}} component="form" gap={5} padding="1rem" width={width} onSubmit={handleSubmit}>
+            <TextField type="text" sx={{width:"100%", fontSize: "1.6rem", fontWeight: "bold"}} label="Title" variant="outlined" value={noteInfo.title} onChange={handleTitleTextChange} />
+            <TextEditor initContent={ noteInfo.html_content } toSave={toSave} onSave={save} onDoneSaving={onDoneSaving} />
+        </Stack>
     );
 }

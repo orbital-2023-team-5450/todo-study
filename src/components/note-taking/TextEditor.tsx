@@ -15,98 +15,17 @@ import draftToHtml from 'draftjs-to-html';
 import htmltoDraft from 'html-to-draftjs';
 import SaveIcon from '@mui/icons-material/Save';
 
-export default function TextEditor({ onSave, initContent } : { onSave : ( editorState : EditorState ) => void, initContent : string }) {
+export default function TextEditor({ onSave, initContent, toSave, onDoneSaving } : { onSave : ( editorState : EditorState ) => void, initContent : string, toSave : boolean, onDoneSaving: () => void } ) {
 
   const [colorPicker, setColorPicker] = useState('#FF0000');
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
-/*
-  const handleKeyCommand = (command: string, editorState: EditorState) => {
-
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-        setEditorState(newState);
-        return 'handled';
+  const handleKeyDown = (event : React.KeyboardEvent<HTMLElement>) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+      event.preventDefault();
+      onSave(editorState);
     }
-    return 'not-handled';
   }
-  const styleMap = {
-    
-    'CODE': {
-      backgroundColor: "rgba(0, 0, 0, 0.05)",
-      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-      fontSize: 16,
-      padding: 2, 
-    },
-    'HIGHLIGHT': {
-      backgroundColor: colorPicker,
-    },
-    'UPPERCASE': {
-      textTransform: "uppercase",
-    },
-    'LOWERCASE': {
-      textTransform: "lowercase",
-    },
-    'CODEBLOCK': {
-      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-      fontSize: "inherit",
-      background: "#ffeff0",
-      fontStyle: "italic",
-      lineHeight: 1.5,
-      padding: "0.3rem 0.5rem",
-      borderRadius: "0.2rem",
-    },
-    'SUPERSCRIPT': {
-      verticalAlign: "super",
-      fontSize: "80%",
-    },
-    'SUBSCRIPT': {
-      verticalAlign: "sub",
-      fontSize: "80%",
-    },
-  };
-
-  const inlineStyleOptions = () => {
-    let obj : Record<string, Object> = {};
-    for (const [key, value] of Object.entries(styleMap)) {
-      obj[key] = { style : value };
-    }
-    return obj;
-  };
-
-  const myBlockStyleFn = (contentBlock: ContentBlock) => {
-
-    const type = contentBlock.getType();
-    switch (type) {
-      case "blockQuote":
-        return "superFancyBlockquote";
-      case "leftAlign":
-        return "leftAlign";
-      case "rightAlign":
-        return "rightAlign";
-      case "centerAlign":
-        return "centerAlign";
-      case "justifyAlign":
-        return "justifyAlign";
-      default:
-        break;
-    }
-  };
-
-  const blockStyleOptions = (contentBlock: ContentBlock) => {
-    const style = myBlockStyleFn(contentBlock);
-    return {
-      attributes : {
-        class : style
-      }
-    };
-  };
-
-  const options = {
-    inlineStyles: inlineStyleOptions(),
-    blockStyleFn: blockStyleOptions,
-  } as Options;
-*/
 
   useEffect(() => {
     if (initContent === "" || initContent === null || initContent === undefined) { 
@@ -122,40 +41,26 @@ export default function TextEditor({ onSave, initContent } : { onSave : ( editor
     }
   }, [initContent]);
 
+  useEffect(() => {
+    if (toSave) {
+      onSave(editorState);
+      onDoneSaving();
+    }
+  }, [toSave]);
+
   return (
-    <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh', marginRight: '2vh', height: '85vh'}}>
-        {/*<Toolbar editorState={editorState} setEditorState={setEditorState} onSave={() => onSave(editorState, options)} /> 
-        <ColorPicker
-                      name='color'
-                      defaultValue="ColorPicker"
-                      value={colorPicker} 
-                      onChange={(color : string) => setColorPicker(color)}
-                      style={{width: '12vh', marginLeft: '3vh'}}
-        />
-        <Typography>
-          { 
-            stateToHTML(editorState.getCurrentContent(), options as Options)
-          }
-        </Typography>*/}
-            <Button onClick={() => onSave(editorState)} sx={{color: "rgba(0, 0, 0, 0.7)"}}>
-              <SaveIcon /> Save
-            </Button>
+    <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{marginLeft: 0, marginTop: 0, marginRight: '2rem', height: 'calc(100vh - 240px)'}}>
+        <Button onClick={() => onSave(editorState)} sx={{color: "rgba(0, 0, 0, 0.7)"}}>
+          <SaveIcon /> Save
+        </Button>
         <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
-        <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh'}}>
+        <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh', overflow: 'auto'}}>
           <Editor editorState={editorState}
                   toolbarClassName="toolbarClassName"
                   wrapperClassName="wrapperClassName"
                   editorClassName="editorClassName"
                   onEditorStateChange={setEditorState}
                 />
-           {/*
-            <Editor editorState={editorState} 
-                    onChange={setEditorState} 
-                    placeholder='Write something here'
-                    handleKeyCommand={handleKeyCommand}
-                    customStyleMap={styleMap as DraftStyleMap}
-                    blockStyleFn={myBlockStyleFn as (cb: ContentBlock) => string}
-        />*/}
         </Box> 
     </Stack>
   );  

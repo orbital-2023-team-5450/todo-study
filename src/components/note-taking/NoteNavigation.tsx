@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Note } from '../../utils/noteUtils';
-import { Box, Divider, Drawer, List, ListItem, ListItemButton, Typography } from '@mui/material';
+import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, Stack, Typography } from '@mui/material';
 import NoteEntry from './NoteEntry';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 /**
  * Displays a sidebar containing the list of all notes created by the user.
@@ -12,23 +13,33 @@ import NoteEntry from './NoteEntry';
  * @returns A React component representing a sidebar to appear in the left side of the Notes
  *          app.
  */
-export default function NoteNavigation( { noteList, width, edit } : { noteList : Note[], width: number, edit : ( noteId : number ) => void } ) {
+export default function NoteNavigation( { noteList, width, edit, onNoteDelete } : { noteList : Note[], width: number, edit : ( noteId : number ) => void, onNoteDelete : (id : number) => void } ) {
+    
+    const [ isBlurred, setIsBlurred ] = useState(false);
+    
     return (
         <Box
-            sx={{ overflow: 'auto', width: '100%', maxWidth: width, bgcolor: 'background.paper' }}
+            sx={{ width: '100%', maxWidth: width, bgcolor: 'background.paper' }}
             >
-            <Typography component="h1" variant="h6" fontWeight="bold" paddingTop=".5rem" paddingBottom=".5rem">Notes</Typography>
+            <Box sx={{backgroundColor: "#1976D2EE", color: "white"}}>
+                <Typography component="h1" variant="h6" fontWeight="bold" paddingTop=".5rem" paddingBottom=".5rem">Notes</Typography>
+            </Box>
             <Divider />
-            <List>
+            <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: 'calc(100vh - 120px)' }}>
                 {
                     noteList.map((note : Note) => {
                         return (
                             <>
                                 <ListItem key={note.note_id}>
-                                    <ListItemButton onClick={ () => edit(note.note_id) }>
-                                        <NoteEntry note={note} />
-                                    </ListItemButton>
-                                </ListItem>
+                                    <Box width="100%" component="div" display="flex" justifyContent="space-between" alignItems="center">
+                                        <ListItemButton onFocus={ () => setIsBlurred(false) } onBlur={ () => setIsBlurred(true) } onClick={ () => { edit(note.note_id); } }>
+                                            <NoteEntry note={note} />
+                                        </ListItemButton>
+                                        <IconButton color="error" onClick={ () => onNoteDelete(note.note_id) }>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Box>
+                                </ListItem> 
                                 <Divider />
                             </>
                         );

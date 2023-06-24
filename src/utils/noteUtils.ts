@@ -19,7 +19,7 @@ export type Note = {
  * @returns A truncated string containing the main text of the HTML document, cutting at
  *          30 characters.
  */
-export function TruncateHTML(htmlContent: string) : string {
+export function truncateHTML(htmlContent: string) : string {
     const parser = new DOMParser();
     const parsedHTML = parser.parseFromString(htmlContent, 'text/html');
     const resultText = parsedHTML.body.innerText.trim();
@@ -30,7 +30,7 @@ export async function fetchNotes(setNoteList : React.Dispatch<React.SetStateActi
     const { data: { user } } = await supabase.auth.getUser();
     const user_id : string = (user === null) ? "" : user.id;
 
-    supabase.from('notes').select().eq("user_id", user_id).then(async (result) => {
+    supabase.from('notes').select().eq("user_id", user_id).order("last_modified", { ascending: false }).then(async (result) => {
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
         } else if (result.data[0] === null || result.data[0] === undefined) {
@@ -58,4 +58,11 @@ export async function fetchNoteInfoFromId( id : number, setNoteInfo : React.Disp
             setNoteInfo(result.data[0]);
         }
     });
+}
+
+export async function deleteNote( id : number ) {
+    const { error } = await supabase.from('notes').delete().eq("note_id", id);
+    if ( error !== null ) {
+        console.log("Cannot delete note! Error: " + JSON.stringify(error));
+    }
 }
