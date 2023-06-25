@@ -11,6 +11,7 @@ export default function splitTask(tasks : Task[]) {
     const nowComplete : Task[] = [];
     const later : Task[] = [];
     const laterComplete : Task[] = [];
+    const noDue : Task[] = [];
     const expired : Task[] = [];
     let tdy = new Date();
 
@@ -34,12 +35,15 @@ export default function splitTask(tasks : Task[]) {
             } else {
                 later.push(task);
             }
+        } else if (task.dueDate === null) {
+            noDue.push(task);
         } else {
+
             task.expired = true;
             expired.push(task);
         }
     });
-    return [now.concat(nowComplete), later.concat(laterComplete), expired];
+    return [now.concat(nowComplete), later.concat(laterComplete).concat(noDue), expired];
 }
 
 function getDayDifference(date1 : Date, date2 : Date) {

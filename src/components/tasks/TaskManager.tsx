@@ -1,21 +1,15 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Sort } from "@mui/icons-material"
 import React from "react";
 import EmptyState from "./EmptyState";
 import TaskList from "./TaskList";
 import supabase from "../../supabase";
-
-type Task = {id : number, title : string, description : string, dueDate : Date, 
-             type : number, completed: boolean, userId: number, expired: boolean, taskCollectionId: number};
+import { Task } from "../../utils/taskUtils";
 
 export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, setWhichTask } : 
-                                    { taskType : number, 
-                                      tasks : {id : number, title : string, description : string, 
-                                               dueDate : Date, type : number, completed: boolean, 
-                                               userId: number, expired: boolean, taskCollectionId: number}[], 
+                                    { taskType : number, tasks : Task[], 
                                       fetchTask : () => void, popUpUpdate: React.Dispatch<React.SetStateAction<boolean>>
                                       setWhichTask: React.Dispatch<React.SetStateAction<number>>}) {
-
-    // const [error, setError] = useState(false);
   
     const handleTaskChange = (id : number) => {
       console.log("handleTaskChange");
@@ -63,13 +57,13 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
         <Stack component="main" gap={2} marginTop={2} direction='column'>
           
             <Stack direction='row' marginLeft='3vh'> 
-                <Typography variant="h4" component="h2" marginTop={7}>
+                <Typography variant="h4" component="h2" marginTop={7} display='flex' flexGrow='0.9'>
                     {taskType === 0 ? "Due Tomorrow" : "Future Assignment"}
                 </Typography> 
 
-                {/* <IconButton>
-                    <SortIcon />
-                </IconButton> */}
+                <IconButton sx={{marginTop: '4vh'}}>
+                    <Sort />
+                </IconButton>
             </Stack>
             
             <Stack direction='column' component='div'> 
