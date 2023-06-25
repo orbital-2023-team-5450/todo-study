@@ -58,7 +58,7 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
           
             <Stack direction='row' marginLeft='3vh'> 
                 <Typography variant="h4" component="h2" marginTop={7} display='flex' flexGrow='0.9'>
-                    {taskType === 0 ? "Due in a Day" : "Future Assignment"}
+                    {taskType === 0 ? "Due in a Day" : "Due soon"}
                 </Typography> 
 
                 <IconButton sx={{marginTop: '4vh'}}>
