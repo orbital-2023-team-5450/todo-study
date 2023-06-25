@@ -1,101 +1,61 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ContentBlock, DraftBlockType, DraftStyleMap, Editor, EditorState, RichUtils } from "draft-js";
-import { Box, Divider, IconButton, Popover, Stack, Typography } from "@mui/material";
-import Toolbar from "./ToolBar";
+import { ContentBlock, ContentState, DraftBlockType, DraftStyleMap, EditorState, RichUtils, convertFromHTML, convertToRaw } from "draft-js";
+import { Box, Button, Divider, IconButton, Popover, Stack, Typography } from "@mui/material";
 import "./textEditor.css";
-import ColorPicker from 'material-ui-color-picker'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-export default function TextEditor() {
+// @ts-ignore
+import { Editor } from "react-draft-wysiwyg";
 
-  const [colorPicker, setColorPicker] = useState('#FF0000');
-  const [editorState, setEditorState] = useState(
-    () => EditorState.createEmpty(),
-  );
+// @ts-ignore
+import htmltoDraft from 'html-to-draftjs';
+import SaveIcon from '@mui/icons-material/Save';
 
-  const handleKeyCommand = (command: string, editorState: EditorState) => {
+export default function TextEditor({ onSave, initContent, toSave, onDoneSaving } : { onSave : ( editorState : EditorState ) => void, initContent : string, toSave : boolean, onDoneSaving: () => void } ) {
 
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-        setEditorState(newState);
-        return 'handled';
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+
+  const handleKeyDown = (event : React.KeyboardEvent<HTMLElement>) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+      event.preventDefault();
+      onSave(editorState);
     }
-    return 'not-handled';
   }
 
-  const styleMap = {
-    
-    'CODE': {
-      backgroundColor: "rgba(0, 0, 0, 0.05)",
-      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-      fontSize: 16,
-      padding: 2, 
-    },
-    'HIGHLIGHT': {
-      backgroundColor: colorPicker,
-    },
-    'UPPERCASE': {
-      textTransform: "uppercase",
-    },
-    'LOWERCASE': {
-      textTransform: "lowercase",
-    },
-    'CODEBLOCK': {
-      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-      fontSize: "inherit",
-      background: "#ffeff0",
-      fontStyle: "italic",
-      lineHeight: 1.5,
-      padding: "0.3rem 0.5rem",
-      borderRadius: "0.2rem",
-    },
-    'SUPERSCRIPT': {
-      verticalAlign: "super",
-      fontSize: "80%",
-    },
-    'SUBSCRIPT': {
-      verticalAlign: "sub",
-      fontSize: "80%",
-    },
-  };
-
-  const myBlockStyleFn = (contentBlock: ContentBlock) => {
-
-    const type = contentBlock.getType();
-    switch (type) {
-      case "blockQuote":
-        return "superFancyBlockquote";
-      case "leftAlign":
-        return "leftAlign";
-      case "rightAlign":
-        return "rightAlign";
-      case "centerAlign":
-        return "centerAlign";
-      case "justifyAlign":
-        return "justifyAlign";
-      default:
-        break;
+  useEffect(() => {
+    if (initContent === "" || initContent === null || initContent === undefined) { 
+      console.log("done");
+      setEditorState(EditorState.createEmpty());
+    } else {
+      const contentBlock = htmltoDraft(initContent);
+      const initState = ContentState.createFromBlockArray(
+        contentBlock.contentBlocks,
+        contentBlock.entityMap,
+      );
+      setEditorState(EditorState.createWithContent(initState));
     }
-  };
+  }, [initContent]);
+
+  useEffect(() => {
+    if (toSave) {
+      onSave(editorState);
+      onDoneSaving();
+    }
+  }, [toSave]);
 
   return (
-    <Stack direction='column' display='flex' sx={{marginTop: '1vh', marginLeft: '2vh', marginRight: '2vh', height: '85vh'}}>
-        <Toolbar editorState={editorState} setEditorState={setEditorState}/> 
-        <ColorPicker
-                      name='color'
-                      defaultValue="ColorPicker"
-                      value={colorPicker} 
-                      onChange={(color) => setColorPicker(color)}
-                      style={{width: '12vh', marginLeft: '3vh'}}
-        />
+    <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{marginLeft: 0, marginTop: 0, marginRight: '2rem', height: 'calc(100vh - 240px)'}}>
+        <Button onClick={() => onSave(editorState)} sx={{color: "rgba(0, 0, 0, 0.7)"}}>
+          <SaveIcon /> Save
+        </Button>
         <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
-        <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh'}}> 
-            <Editor editorState={editorState} 
-                    onChange={setEditorState} 
-                    placeholder='Write something here'
-                    handleKeyCommand={handleKeyCommand}
-                    customStyleMap={styleMap as DraftStyleMap}
-                    blockStyleFn={myBlockStyleFn as (cb: ContentBlock) => string}
-            />
+        <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh', overflow: 'auto'}}>
+          <Editor editorState={editorState}
+                  toolbarClassName="toolbarClassName"
+                  wrapperClassName="wrapperClassName"
+                  editorClassName="editorClassName"
+                  onEditorStateChange={setEditorState}
+                />
         </Box> 
     </Stack>
   );  
