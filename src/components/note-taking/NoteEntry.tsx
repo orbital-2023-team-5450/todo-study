@@ -13,11 +13,11 @@ import { Stack, Box, Typography } from '@mui/material';
 export default function NoteEntry( { note } : { note : Note } ) {
 
     return (
-        <Stack justifyContent="center">
-            <Typography fontWeight="bold" variant="h5" fontSize={16} component="h1">
+        <Stack width="100%" justifyContent="center">
+            <Typography sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} fontWeight="bold" variant="h5" fontSize={16} component="h1">
                 { note.title === "" ? <em>Untitled</em> : note.title }
             </Typography>
-            <Typography variant="h6" fontSize={14} component="h2">
+            <Typography sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} variant="h6" fontSize={14} component="h2">
                 { truncateHTML(note.html_content) }
             </Typography>
         </Stack>

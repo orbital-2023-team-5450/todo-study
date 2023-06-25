@@ -23,7 +23,8 @@ export function truncateHTML(htmlContent: string) : string {
     const parser = new DOMParser();
     const parsedHTML = parser.parseFromString(htmlContent, 'text/html');
     const resultText = parsedHTML.body.innerText.trim();
-    return (resultText.length > 30) ? resultText.substring(0, 27) + "..." : resultText;
+    return resultText;
+    // return (resultText.length > 25) ? resultText.substring(0, 22) + "..." : resultText;
 }
 
 export async function fetchNotes(setNoteList : React.Dispatch<React.SetStateAction<any>>) {
