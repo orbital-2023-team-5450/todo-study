@@ -13,7 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
  * @returns A React component representing a sidebar to appear in the left side of the Notes
  *          app.
  */
-export default function NoteNavigation( { noteList, width, edit, onNoteDelete } : { noteList : Note[], width: number, edit : ( noteId : number ) => void, onNoteDelete : (id : number) => void } ) {
+export default function NoteNavigation( { noteList, width, edit, onNoteDelete } : { noteList : Note[], width: (string | number), edit : ( noteId : number ) => void, onNoteDelete : (id : number) => void } ) {
     
     const [ isBlurred, setIsBlurred ] = useState(false);
     

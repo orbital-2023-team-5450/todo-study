@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ContentBlock, ContentState, DraftBlockType, DraftStyleMap, EditorState, RichUtils, convertFromHTML, convertToRaw } from "draft-js";
 import { Box, Button, Divider, IconButton, Popover, Stack, Typography } from "@mui/material";
-import Toolbar from "./ToolBar";
 import "./textEditor.css";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
@@ -9,15 +8,11 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Editor } from "react-draft-wysiwyg";
 
 // @ts-ignore
-import draftToHtml from 'draftjs-to-html';
-
-// @ts-ignore
 import htmltoDraft from 'html-to-draftjs';
 import SaveIcon from '@mui/icons-material/Save';
 
 export default function TextEditor({ onSave, initContent, toSave, onDoneSaving } : { onSave : ( editorState : EditorState ) => void, initContent : string, toSave : boolean, onDoneSaving: () => void } ) {
 
-  const [colorPicker, setColorPicker] = useState('#FF0000');
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
   const handleKeyDown = (event : React.KeyboardEvent<HTMLElement>) => {
