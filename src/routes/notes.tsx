@@ -47,7 +47,7 @@ const widthStyle = "calc(100vw - " + drawerWidth + "px)";
 
 export default function Notes() {
 
-    document.title = "Notes // TODO Study";
+    document.title = "Notes // TODO: Study";
 
     const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
     const [ noteList, setNoteList ] = useState<Note[]>([]);
