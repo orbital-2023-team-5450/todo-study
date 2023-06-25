@@ -8,7 +8,10 @@ import { Task } from './taskUtils';
 export default function splitTask(tasks : Task[]) {
 
     const now : Task[] = [];
+    const nowComplete : Task[] = [];
     const later : Task[] = [];
+    const laterComplete : Task[] = [];
+    const noDue : Task[] = [];
     const expired : Task[] = [];
     let tdy = new Date();
 
@@ -19,15 +22,28 @@ export default function splitTask(tasks : Task[]) {
     tasks.map((task) => {
 
         if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) <= 1){
-            now.push(task);
+
+            if (task.completed) {
+                nowComplete.push(task);
+            } else {
+                now.push(task);
+            }
         } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) > 1) {
-            later.push(task);
+            
+            if (task.completed) {
+                laterComplete.push(task);
+            } else {
+                later.push(task);
+            }
+        } else if (task.dueDate === null) {
+            noDue.push(task);
         } else {
+
             task.expired = true;
             expired.push(task);
         }
     });
-    return [now, later, expired];
+    return [now.concat(nowComplete), later.concat(laterComplete).concat(noDue), expired];
 }
 
 function getDayDifference(date1 : Date, date2 : Date) {

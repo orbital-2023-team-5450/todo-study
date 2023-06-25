@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from "react";
-import {Box, Button, CssBaseline, Stack, Typography} from "@mui/material";
+import {Box, Button, CssBaseline, Menu, MenuItem, Stack, Typography} from "@mui/material";
 import supabase from "../../supabase";
 import TaskManager from "./TaskManager";
 import splitTask from "../../utils/splitTask";
@@ -20,7 +20,7 @@ export default function TaskScreen() {
 
         event.preventDefault();
         setPopUpCreate(true);
-    };
+    }; 
 
     const fetchTasks = async () => {
 
@@ -36,9 +36,7 @@ export default function TaskScreen() {
             if (result.data === null || result.data === undefined) {
 
             } else {
-                const [now, later, expired] = splitTask(result.data as {id : number, title : string, description : string, 
-                                                dueDate : Date, type : number, completed: boolean, 
-                                                userId: number, expired: boolean, taskCollectionId: number}[]);
+                const [now, later, expired] = splitTask(result.data as Task[]);
                 setFutureTasks(later);
                 setTasks(now.concat(expired));
             }  
@@ -51,9 +49,9 @@ export default function TaskScreen() {
     return (
 
         <Stack direction='column'> 
-            <Stack direction="row" marginTop='10px' marginLeft='20vh' marginRight='20vh'>
+            <Stack direction="row" marginTop='10px' marginLeft='20vh' marginRight='20vh' display='flex'>
                 <CssBaseline />
-                    <Box sx={{ bgcolor: '#cfe8fc', height: '75vh', borderRadius: '16px', width: "80vh", marginRight: '10px'}}> 
+                    <Box sx={{ bgcolor: 'white', height: '75vh', borderRadius: '16px', width: "80vh", marginRight: '10px'}}> 
                         <TaskManager 
                             taskType={task_type.DUE_SOON} 
                             tasks={tasks}
@@ -63,7 +61,7 @@ export default function TaskScreen() {
                         />
                     </Box>
 
-                    <Box sx={{ bgcolor: '#cfe8ff', height: '75vh', borderRadius: '16px', width: "80vh", marginLeft: '10px' }}> 
+                    <Box sx={{ bgcolor: 'white', height: '75vh', borderRadius: '16px', width: "80vh", marginLeft: '0.6vh' }}> 
                         <TaskManager 
                             taskType={task_type.FUTURE_ASSIGNMENT} 
                             tasks={futureTasks}
@@ -79,13 +77,22 @@ export default function TaskScreen() {
                 variant="contained"
                 size="medium"
                 onClick={handleNewTaskSubmit}
-                sx={{marginLeft: "20vh", marginRight: "21vh", marginTop: '2vh', height: '9vh', borderRadius: '10px'}}
+                sx={{marginLeft: "20vh", marginRight: "21vh", marginTop: '1.5vh', height: '9vh', borderRadius: '10px', 
+                     backgroundColor: '#00bf63', '&:hover': { backgroundColor: '#018547', opacity: [0.9, 0.8, 0.7]}}}
             >
                  <Typography variant='h6'> + Add new task </Typography>
             </Button>
 
-            <TaskPopUp open={isPopUpCreate} onClose={() => setPopUpCreate(false)} fetchTask={fetchTasks} taskType={'Create'} id={-1}/> 
-            <TaskPopUp open={isPopUpUpdate} onClose={() => setPopUpUpdate(false)} fetchTask={fetchTasks} taskType={'Update'} id={whichTask}/>
+            <TaskPopUp open={isPopUpCreate} 
+                       onClose={() => setPopUpCreate(false)} 
+                       fetchTask={fetchTasks} 
+                       taskType={'Create'} 
+                       id={-1}/> 
+            <TaskPopUp open={isPopUpUpdate} 
+                       onClose={() => setPopUpUpdate(false)} 
+                       fetchTask={fetchTasks} 
+                       taskType={'Update'} 
+                       id={whichTask}/>
         </Stack>
     );
 }
