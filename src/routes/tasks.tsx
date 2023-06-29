@@ -8,7 +8,7 @@ import TaskScreen from "../components/tasks/TaskScreen";
 
 export default function Tasks() {
 
-    document.title = "Tasks // TODO Study";
+    document.title = "Tasks // TODO: Study";
 
     const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
     const [ loading, setLoading ] = useState(true);

@@ -15,7 +15,7 @@ import TimerView from "../components/timer/TimerView";
  */
 export default function Timer() {
 
-    document.title = "Study Timer // TODO Study";
+    document.title = "Study Timer // TODO: Study";
 
     const POMODORO = { timer_template_id: 1, title: "Pomodoro", description: "A timer using the Pomodoro technique for 4 cycles.", user_id: "", work: 1500000, rest: 300000, cycles: 4 };
 
