@@ -3,6 +3,7 @@ import { Card, Checkbox, Typography, Stack, IconButton } from "@mui/material";
 import { DeleteOutline } from "@mui/icons-material";
 import { Task } from "../../utils/taskUtils";
 import { format, formatDistance } from "date-fns";
+import { cursorTo } from "readline";
 
 export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit, fetchTask } : 
                                  { tasks : Task[], 
@@ -31,8 +32,10 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                         key={task.id} 
                         sx={{ marginLeft: 3, marginRight: 5, marginBottom: 3, marginTop: 0.7,
                               '&:hover': {backgroundColor: !task.expired ? task.completed ? '#00cc00' : '#d9d9d9' : '#ff6680', 
-                              opacity: [0.9, 0.8, 0.7]}, borderRadius: '10px', height: '70px', 
-                              backgroundColor: !task.expired ? task.completed ? 'lightGreen' : '#f2f2f2' : 'pink'}}  
+                              opacity: [0.9, 0.8, 0.7] }, borderRadius: '10px', height: '70px', 
+                              backgroundColor: !task.expired ? task.completed ? 'lightGreen' : '#f2f2f2' : 'pink', 
+                              cursor: 'pointer'}} 
+  
                       >
                           <Stack direction="row" alignItems="center">
                               <Checkbox
