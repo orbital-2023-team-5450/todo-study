@@ -1,9 +1,10 @@
 import { Task } from './taskUtils';
 
 /**
- * TODO (max): fill up
- * @param tasks 
- * @returns 
+ * A function that sorts the tasks based on the due date and assign to 3 lists according to their status.
+ * 
+ * @param tasks A list of tasks. 
+ * @returns A tuple of 3 task lists. 
  */
 export default function splitTask(tasks : Task[]) {
 
@@ -46,6 +47,9 @@ export default function splitTask(tasks : Task[]) {
     return [now.concat(nowComplete), later.concat(laterComplete).concat(noDue), expired];
 }
 
+/*
+    Get the difference of 2 dates as day.
+*/ 
 function getDayDifference(date1 : Date, date2 : Date) {
     const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
   

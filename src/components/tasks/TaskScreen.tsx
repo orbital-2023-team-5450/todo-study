@@ -6,8 +6,16 @@ import splitTask from "../../utils/splitTask";
 import TaskPopUp from "./TaskPopup";
 import { Task } from "../../utils/taskUtils";
 
+/*
+    The enum for the type of the tasks.
+*/
 enum task_type { DUE_SOON, FUTURE_ASSIGNMENT };
 
+/**
+ * A component that displays the whole page of todo-list feature.
+ * 
+ * @returns A todo-list page.
+ */
 export default function TaskScreen() {
 
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -16,12 +24,18 @@ export default function TaskScreen() {
     const [isPopUpUpdate, setPopUpUpdate] = useState<boolean>(false);
     const [whichTask, setWhichTask] = useState<number>(-1);
     
+    /*
+        Handle the event of submitting new task.
+    */
     const handleNewTaskSubmit = (event : React.MouseEvent<HTMLElement>) => {
 
         event.preventDefault();
         setPopUpCreate(true);
     }; 
 
+    /* 
+        Fetch info of the tasks from the database and sort it based on date and completed.
+    */
     const fetchTasks = async () => {
 
       const { data: { user } } = await supabase.auth.getUser();
@@ -36,7 +50,9 @@ export default function TaskScreen() {
             if (result.data === null || result.data === undefined) {
 
             } else {
-                const [now, later, expired] = splitTask(result.data as Task[]);
+                const [now, later, expired] = splitTask(result.data as {id : number, title : string, description : string, 
+                                                dueDate : Date, type : number, completed: boolean, 
+                                                userId: string, expired: boolean, taskCollectionId: number}[]);
                 setFutureTasks(later);
                 setTasks(now.concat(expired));
             }  
