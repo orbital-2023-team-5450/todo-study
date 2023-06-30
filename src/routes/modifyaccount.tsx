@@ -8,13 +8,13 @@ import { Container } from '@mui/material';
  * 
  * @returns A React component object representing the modify account page.
  */
-export default function ModifyAccount() {
+export default function ModifyAccount({ onUpdate } : { onUpdate : () => void }) {
 
     document.title = "Update Account // TODO: Study";
 
     return (
         <Container component="main" maxWidth="sm" sx={{"padding": "1em"}}>
-            <AccountSettings insert={false} />
+            <AccountSettings insert={false} onUpdate={ onUpdate } />
         </Container>
     )
 }

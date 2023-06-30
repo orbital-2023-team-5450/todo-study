@@ -8,13 +8,13 @@ import { Container } from '@mui/material';
  * 
  * @returns A React component object representing the create account page.
  */
-export default function CreateAccount() {
+export default function CreateAccount({ onUpdate } : { onUpdate : () => void }) {
 
     document.title = "Create New Profile // TODO: Study";
 
     return (
         <Container component="main" maxWidth="sm" sx={{"padding": "1em"}}>
-            <AccountSettings insert />
+            <AccountSettings insert onUpdate={ onUpdate } />
         </Container>
     )
 }

@@ -12,8 +12,10 @@ import Timer from './routes/timer';
 import Notes from './routes/notes'
 import Tasks from './routes/tasks';
 import ModifyAccount from './routes/modifyaccount';
+import fetchUserInfo from './utils/fetchUserInfo';
+import LoadingScreen from './components/LoadingScreen';
 
-const theme = createTheme({
+const defaultTheme = {
   palette: {
     background: {
       default: "#eee",
@@ -22,13 +24,25 @@ const theme = createTheme({
   typography: {
     fontFamily: ["Open Sans", "sans-serif"].join(","),
   },
-  spacing: 4
-});
+  spacing: 4,
+};
+
+const lightTheme = createTheme(defaultTheme);
+const darkTheme = createTheme({ ...defaultTheme, palette: { mode: 'dark' } });
+
+const getTheme = ( theme : string ) => {
+  return (theme === 'dark') ? darkTheme : lightTheme;
+}
+
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
+  const [ loading, setLoading ] = useState(true);
+  const [ updated, setUpdated ] = useState(false);
+  const [ currentTheme, setCurrentTheme ] = useState(getTheme('default'));
 
   useEffect(() => {
     const subscription = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -59,16 +73,25 @@ function App() {
     };
   }, [setIsLoggedIn, navigate, location.pathname]);
 
+  useEffect(() => {
+    fetchUserInfo(setUserData, loading, setLoading, navigate, true).then((result) => {
+      if (result.data !== null && result.data !== undefined && result.data[0] !== null && result.data[0] !== undefined) {
+        setCurrentTheme(getTheme(result.data[0].theme));
+      }
+    });
+    setUpdated(false);
+  }, [loading, navigate, updated]);
+
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={currentTheme}>
         <CssBaseline />
         <Routes>
           <Route path="/" element={ isLoggedIn ? <Dashboard /> : <Login /> } />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/create-account" element={<CreateAccount />} />
-          <Route path="/account-settings" element={<ModifyAccount />} />
+          <Route path="/create-account" element={<CreateAccount onUpdate={ () => setUpdated(true) } />} />
+          <Route path="/account-settings" element={<ModifyAccount onUpdate={ () => setUpdated(true) } />} />
           <Route path="/timer" element={<Timer />} />
           <Route path="/notes" element={<Notes />} />
           <Route path="/tasks" element={<Tasks />} />

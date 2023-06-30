@@ -18,7 +18,7 @@ const availableThemes : {value : string, label : string}[] = [
     }
 ];
 
-export default function AccountSettings({ insert } : { insert : boolean }) {
+export default function AccountSettings({ insert, onUpdate } : { insert : boolean, onUpdate : () => void }) {
     
     const [ username, setUsername ] = useState("");
     const [ origUsername, setOrigUsername ] = useState("");
@@ -155,6 +155,8 @@ export default function AccountSettings({ insert } : { insert : boolean }) {
                     }
 
                     upsertion();
+                }).then(() => {
+                    onUpdate();
                 });
             }
         });
