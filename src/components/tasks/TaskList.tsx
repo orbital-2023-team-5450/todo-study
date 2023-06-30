@@ -5,7 +5,7 @@ import { Task } from "../../utils/taskUtils";
 
 /**
  * A component that displays the list of tasks in the todo-list.
- * @param {Task[]} tasks A list of task objects.
+ * @param tasks A list of task objects.
  * @param onTaskChange A function that handles the task when it is completed.
  * @param onTaskDelete A function that handles the task when it is deleted.
  * @param onTaskEdit A function that handles the task when it is editted.

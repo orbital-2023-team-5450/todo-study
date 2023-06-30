@@ -8,10 +8,9 @@ import { Task } from "../../utils/taskUtils";
 /**
  * A component that displays the todo-list of the feature. 
  * 
- * @param {Object.<number, Task[], () => void, () => void>} props 
- * @param {number} taskType The purpose of the task.
- * @param {Task[]} tasks The list of task object.
- * @param {() => void} fetchTask A function thats is called whenever there is any change to any task to update the shown page.
+ * @param taskType The purpose of the task.
+ * @param tasks The list of task object.
+ * @param fetchTask A function thats is called whenever there is any change to any task to update the shown page.
  * @param popUpUpdate A useState setter to set the existence of the dialog of the task.
  * @param setWhichTask A useState setter to set the task that is required to be updated with its id.
  * @returns The todo-list of the feature

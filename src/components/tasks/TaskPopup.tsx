@@ -10,10 +10,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 /**
  * A component that is displayed to facilitate the creation and update of a task.
  * 
- * @param {boolean} open A switch to determine if the this pop up is displayed.
+ * @param open A switch to determine if the this pop up is displayed.
  * @param onClose A useState setter to close the pop up.
  * @param taskType The purpose of the task.
- * @param {number} id The task to be changed according to the id.
+ * @param id The task to be changed according to the id.
  * @param fetchTask A function thats is called whenever there is any change to any task to update the shown page.
  * @returns A pop up for the creation and update for the task.
  */
