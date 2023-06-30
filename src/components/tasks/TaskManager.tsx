@@ -1,4 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Sort } from "@mui/icons-material"
 import React from "react";
 import EmptyState from "./EmptyState";
 import TaskList from "./TaskList";
@@ -75,18 +76,18 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
         <Stack component="main" gap={2} marginTop={2} direction='column'>
           
             <Stack direction='row' marginLeft='3vh'> 
-                <Typography variant="h4" component="h2" marginTop={7}>
-                    {taskType === 0 ? "Due Today" : "Future Assignment"}
+                <Typography variant="h4" component="h2" marginTop={7} display='flex' flexGrow='0.9'>
+                    {taskType === 0 ? "Due in a Day" : "Due soon"}
                 </Typography> 
 
-                {/* <IconButton>
-                    <SortIcon />
-                </IconButton> */}
+                <IconButton sx={{marginTop: '4vh'}}>
+                    <Sort />
+                </IconButton>
             </Stack>
             
             <Stack direction='column' component='div'> 
                 <Box component='div' 
-                     sx={{bgcolor: "grey", borderRadius: '16px', height: '59.5vh', overflowY: 'auto'}} 
+                     sx={{bgcolor: "white", borderRadius: '16px', height: '59.5vh', overflowY: 'auto'}} 
                      marginLeft={4} 
                      marginRight={4} 
                      marginTop={2}

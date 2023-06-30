@@ -194,14 +194,14 @@ export function timerToString(timeInMs : number, isMsShown : boolean = false, is
 
         if (hours === 0) {
             if (minutes === 0) {
-                if (seconds === 0) return "0s";
+                if (seconds === 0 && ms === 0) return "0s";
                 else return secondsDisplay;
             } else {
                 return minutes + "min" + ((seconds === 0 && ms === 0) ? "" : " " + secondsDisplay);
             }
         } else {
             if (minutes === 0) {
-                if (seconds === 0) return hours + "h";
+                if (seconds === 0 && ms === 0) return hours + "h";
                 else return hours + "h 0min " + secondsDisplay;
             } else {
                 return hours + "h " + minutes + "min " + ((seconds === 0 && ms === 0) ? "" : " " + secondsDisplay);

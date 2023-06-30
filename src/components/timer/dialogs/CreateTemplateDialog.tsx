@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, TextField, Stack, Typography } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, TextField, Stack, Typography, Container } from "@mui/material";
 import { getCycleFromTemplate, isValidPattern } from "../../../utils/timerUtils";
 import { createTextEventHandler } from "../../../utils/textInputUtils";
 import InputTimerField from "../InputTimerField";
@@ -17,7 +17,10 @@ export default function CreateTemplateDialog( { open, handleClose } : { open : b
     const handleDescriptionTextChange = createTextEventHandler(setDescription);
     const handleCyclesTextChange = createTextEventHandler(setCycles);
 
-    async function handleSubmit() {
+    async function handleSubmit( event : React.SyntheticEvent<HTMLElement> ) {
+        event.preventDefault();
+        
+        console.log("tr");
         const { data: { user } } = await supabase.auth.getUser();
         const user_id : string = (user === null) ? "" : user.id;
         
@@ -64,7 +67,7 @@ export default function CreateTemplateDialog( { open, handleClose } : { open : b
                 Create a timer template
             </DialogTitle>
             <DialogContent>
-                <Stack gap={5} component="form">
+                <Stack gap={5} component="form" id="timer-template-dialog-form" onSubmit={handleSubmit}>
                     <DialogContentText id="timer-template-dialog-description">
                         Timer details
                     </DialogContentText>
@@ -78,7 +81,7 @@ export default function CreateTemplateDialog( { open, handleClose } : { open : b
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} autoFocus>Cancel</Button>
-                <Button onClick={handleSubmit} autoFocus>OK</Button>
+                <Button type="submit" form="timer-template-dialog-form" autoFocus>OK</Button>
             </DialogActions>
         </Dialog>
     );

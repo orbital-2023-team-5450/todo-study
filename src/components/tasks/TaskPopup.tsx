@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import dayjs from "dayjs";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
+import { Box, Button, Icon, IconButton, Stack, TextField, Typography } from "@mui/material";
 import supabase from "../../supabase";
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { PickerChangeHandlerContext } from "@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types";
+import { DateTimeValidationError } from "@mui/x-date-pickers";
+import { Clear } from "@mui/icons-material";
 
 /**
  * A component that is displayed to facilitate the creation and update of a task.
@@ -22,12 +25,12 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [dueDate, setDueDate] = useState((new Date()).toISOString());
-    const [type, setType] = useState();
+    const [dueDate, setDueDate] = useState<string | null>(null);
+    const [type, setType] = useState<string>("");
     const [completed, setCompleted] = useState(false);
     const [expired, setExpired] = useState(false);
     const [taskCollectionId, setTaskCollectionId] = useState();
-    const [loading, setLoading] = useState(true);
+
     const [isDisabled, setIsDisabled] = useState(false);
 
     /*
@@ -48,7 +51,6 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                 } else if (result.data[0] === null || result.data[0] === undefined) {
                     // this should never be reached
                 } else {
-                    setLoading(false);
                     setTitle(result.data[0].title);
                     setDescription(result.data[0].description);
                     setDueDate(result.data[0].dueDate);
@@ -122,7 +124,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         onClose();
         setTitle("");
         setDescription("");
-        setDueDate(new Date().toISOString());
+        setDueDate(null);
         setIsDisabled(false);
     }
 
@@ -144,6 +146,23 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         setDescription(event.currentTarget.value);
     }
 
+    const handleDateTimeChange = (value: Dayjs | null, content: PickerChangeHandlerContext<DateTimeValidationError>) => {  
+
+        if (value === null || content.validationError !== null) {
+        } else {
+            setDueDate(value.toISOString());
+        }
+    }
+
+    /*
+        Handle the clear event and reset the dateTimepicker
+    */
+    const handleClear = (event : React.MouseEvent<HTMLElement>) => {
+        
+        event.preventDefault();
+        setDueDate(null);
+    }
+
     return ( open ? 
         <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", height: "100vh", backgroundColor: "rgba(50, 50, 50, 0.9)", 
                   display: "flex", justifyContent: "center", alignItems: "center", filter: "blur"}} 
@@ -160,7 +179,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                         {taskType} new task
                     </Typography>
 
-                    <Typography component="h6" variant="h6" align="left"> Title </Typography>
+                    <Typography component="h6" variant="h6" align="left" marginBottom='1vh'> Title </Typography>
                     <TextField
                         type="text"
                         label="Title"
@@ -170,7 +189,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                         required
                     />
 
-                    <Typography component="h6" variant="h6" align="left" marginTop="2vh"> Description </Typography>
+                    <Typography component="h6" variant="h6" align="left" marginTop="2vh" marginBottom='1vh'> Description </Typography>
                     <TextField
                         type="text"
                         label="Description"
@@ -188,32 +207,34 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
 
                     <Stack direction='row'> 
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex', flexGrow: '0.5'}}> 
+                            <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex'}}> 
                                 <DemoItem>
                                     <DateTimePicker 
                                         defaultValue={dayjs((new Date()))} 
                                         value={dayjs(dueDate)} 
-                                        onChange={(value) => {  
-                                            if (value == null) {
-                                            } else {
-                                                setDueDate(value.toISOString());
-                                            }
-                                        }}
+                                        onChange={handleDateTimeChange}
+                                        minDateTime={dayjs(new Date())}
                                     />
                                 </DemoItem>
                             </DemoContainer>
                         </LocalizationProvider>
+
+                        <Button onClick={handleClear} sx={{color: '#00bf63'}}> 
+                            Clear
+                        </Button>
                     </Stack>
+
+                    <Typography display='flex' flexGrow={0.5} fontSize='1.5vh'> The year selected must be within current year to 2099 (inclusive) </Typography>
                     
                 </Stack>
 
-                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh'}} 
+                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
                          onClick={reset}
                          disabled={isDisabled}
                  > 
                     close 
                  </Button>
-                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh'}} 
+                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
                          disabled={isDisabled}
                          type='submit'
                  >
