@@ -40,7 +40,7 @@ export default function NotesConfigDialog( { open, handleClose, onChange } : { o
                     <Typography variant="h6" component="h1">Configuration Settings</Typography>
                     <Stack gap={3} component="form">
                         <FormGroup>
-                            <FormControlLabel control={<Switch checked={notesSettings.autosave} onChange={handleAutosaveChange} />} label="Automatically save notes on edit (not working)" />
+                            <FormControlLabel control={<Switch checked={notesSettings.autosave} onChange={handleAutosaveChange} />} label="Automatically save notes when exiting" />
                         </FormGroup>
                     </Stack>
                 </Stack>

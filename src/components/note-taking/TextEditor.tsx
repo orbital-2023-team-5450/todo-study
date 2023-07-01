@@ -57,8 +57,8 @@ export default function TextEditor({ onSave, initContentState, toSave, onDoneSav
 
   useEffect(() => {
     fetchNotesSettings(setNotesSettings);
-  }, [])
-
+  }, []);
+  
   return (
     <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{marginLeft: 0, marginTop: 0, marginRight: '2rem', height: 'calc(100vh - 240px)'}}>
         <Button onClick={() => onSave(editorState)} sx={{color: "rgba(0, 0, 0, 0.7)"}}>
