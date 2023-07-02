@@ -1,4 +1,4 @@
-import { EditorState, RawDraftContentState, SelectionState } from "draft-js";
+import { EditorState, RawDraftContentState, SelectionState, convertToRaw } from "draft-js";
 import supabase from "../supabase";
 
 /**
@@ -16,6 +16,23 @@ export type NotesSettings = {
 export const DEFAULT_NOTES_SETTINGS = {
     user_id: "",
     autosave: false,
+}
+
+/**
+ * Generates a default note based on the ID.
+ * @param id The note ID for the default note (usually 0).
+ * @returns A default note.
+ */
+export const DEFAULT_NOTE = (id : number = 0) : Note => {
+    return {
+        note_id: id,
+        user_id: "",
+        title: "",
+        html_content: "",
+        created_at: "",
+        last_modified: "",
+        content_state: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+    }
 }
 
 /**
@@ -62,20 +79,17 @@ export async function fetchNotes(setNoteList : React.Dispatch<React.SetStateActi
 }
 
 export async function fetchNoteInfoFromId( id : number, setNoteInfo : React.Dispatch<React.SetStateAction<any>> ) {
-    supabase.from('notes').select().eq("note_id", id).then(async (result) => {
+    return supabase.from('notes').select().eq("note_id", id).then((result) => {
         if (result.data === null || result.data === undefined || result.error) {
             console.log("Error retrieving data! Error: " + JSON.stringify(result.error));
+            return DEFAULT_NOTE(0);
         } else if (result.data[0] === null || result.data[0] === undefined) {
-            setNoteInfo({
-                note_id: id,
-                user_id: "",
-                title: "",
-                html_content: "",
-                created_at: "",
-                last_modified: "",
-            });
+            const newNoteInfo = DEFAULT_NOTE(id);
+            setNoteInfo(newNoteInfo);
+            return newNoteInfo;
         } else {
             setNoteInfo(result.data[0]);
+            return result.data[0];
         }
     });
 }

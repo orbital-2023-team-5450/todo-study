@@ -12,6 +12,9 @@ import MainEditor from "../components/note-taking/MainEditor";
 import supabase from "../supabase";
 import { Editor, EditorState } from "draft-js";
 import EmptyNoteState from "../components/note-taking/EmptyNoteState";
+import NotesConfigDialog from "../components/note-taking/dialogs/NotesConfigDialog";
+import { usePrompt } from "../hooks/usePrompt";
+import NotesLeavePageDialog from "../components/note-taking/dialogs/NotesLeavePageDialog";
 /*
 const TEST_NOTES : Note[] = [
     {
@@ -54,6 +57,10 @@ export default function Notes() {
     const [ mainEditorId, setMainEditorId ] = useState(-1);
     const [ loading, setLoading ] = useState(true);
     const [ toSave, setToSave ] = useState(false);
+    const [ nextId, setNextId ] = useState(-2);
+    const [notesConfigOpen, setNotesConfigOpen] = useState(false);
+    const [ notesSettings, setNotesSettings ] = useState<NotesSettings>(DEFAULT_NOTES_SETTINGS);
+    const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const addNote = async () => {
@@ -92,10 +99,54 @@ export default function Notes() {
         }
     }
 
+    const handleEdit = ( id : number ) => {
+        // new ID is different from what is in the editor
+        if (id !== mainEditorId && mainEditorId !== -1) {
+            if (notesSettings.autosave) {
+                setToSave(true);
+                setNextId(id);
+            } else {
+                setNextId(id);
+                setShowLeavePageDialog(true);
+            }
+            // remaining will be handled by handleDoneSaving
+        } else {
+            setMainEditorId(id);
+            // do nothing...
+        }
+        fetchNotes(setNoteList);
+    }
+
+    const handleConfirm = ( id : number ) => {
+        setMainEditorId(id);
+        setNextId(-2);
+        setShowLeavePageDialog(false);
+    }
+
+    const handleCancel = () => {
+        setShowLeavePageDialog(false);
+    }
+
+    const beforeDoneSaving = () => {
+        if (nextId !== -2) {
+            console.log(mainEditorId + " " + nextId);
+            setNextId(-2);
+            setMainEditorId(nextId);
+        }
+    }
+
+    const handleDoneSaving = () => {
+        setToSave(false);
+    }
+
     useEffect(() => {
         fetchUserInfo(setUserData, loading, setLoading, navigate, true);
         fetchNotes(setNoteList);
     }, [loading, navigate]);
+
+    useEffect(() => {
+      fetchNotesSettings(setNotesSettings);
+    }, []);
 
     return loading ? (
             <LoadingScreen />
@@ -107,9 +158,9 @@ export default function Notes() {
                         <NavigationBar title="Notes" />
                     </Box>
                     <Stack width="100%" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
-                        <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ setMainEditorId } onNoteDelete={ deleteNoteHandler } />
+                        <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
                         { (mainEditorId !== -1) ? 
-                            <MainEditor width={widthStyle} toSave={toSave} onStartSaving={() => setToSave(true)} onDoneSaving={() => setToSave(false)} noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} /> :
+                            <MainEditor width={widthStyle} toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/> :
                             <EmptyNoteState width={widthStyle} onLinkClick={addNote} />
                         }
                     </Stack>
@@ -117,6 +168,8 @@ export default function Notes() {
                         <AddIcon />
                     </Fab>
                 </Box>
+                <NotesConfigDialog open={notesConfigOpen} handleClose={() => setNotesConfigOpen(false)} onChange={ () => fetchNotesSettings(setNotesSettings) } /> 
+                <NotesLeavePageDialog open={showLeavePageDialog as boolean} id={nextId} handleConfirm={ handleConfirm } handleCancel={ handleCancel } />
             </>
         );
 }
