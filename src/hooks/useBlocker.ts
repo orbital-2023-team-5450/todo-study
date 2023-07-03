@@ -11,21 +11,22 @@
 import * as React from 'react';
 import { UNSAFE_NavigationContext } from 'react-router-dom';
 import type { History, Blocker, Transition } from 'history';
+import _ from 'lodash';
 
 /**
  * Blocks users from navigating away if there are any changes made.
  * @param blocker A Blocker to handle the blocked navigation.
  * @param when A boolean indicating when to trigger the useBlocker hook.
  */
-export function useBlocker(blocker: Blocker, when = true, autosave : boolean): void {
+export function useBlocker(blocker: Blocker, when = true, autosave : boolean, handleSave : () => Promise<void>): void {
   const navigator = React.useContext(UNSAFE_NavigationContext)
     .navigator as History;
 
   React.useEffect(() => {
     if (!when) return;
-    if (autosave) console.log(when);
-
+    
     const unblock = navigator.block((tx: Transition) => {
+      
       const autoUnblockingTx = {
         ...tx,
         retry() {
@@ -34,7 +35,13 @@ export function useBlocker(blocker: Blocker, when = true, autosave : boolean): v
         },
       };
 
-      blocker(autoUnblockingTx);
+      if (autosave) {
+        handleSave().then(() => {
+          blocker(autoUnblockingTx);
+        });
+      } else {
+        blocker(autoUnblockingTx);
+      }
     });
 
     return unblock;

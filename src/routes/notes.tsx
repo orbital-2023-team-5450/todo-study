@@ -57,6 +57,7 @@ export default function Notes() {
     const [ mainEditorId, setMainEditorId ] = useState(-1);
     const [ loading, setLoading ] = useState(true);
     const [ toSave, setToSave ] = useState(false);
+    const [ toCheck, setToCheck ] = useState(false);
     const [ nextId, setNextId ] = useState(-2);
     const [notesConfigOpen, setNotesConfigOpen] = useState(false);
     const [ notesSettings, setNotesSettings ] = useState<NotesSettings>(DEFAULT_NOTES_SETTINGS);
@@ -107,7 +108,7 @@ export default function Notes() {
                 setNextId(id);
             } else {
                 setNextId(id);
-                setShowLeavePageDialog(true);
+                setToCheck(true);
             }
             // remaining will be handled by handleDoneSaving
         } else {
@@ -139,6 +140,15 @@ export default function Notes() {
         setToSave(false);
     }
 
+    const handleDoneChecking = ( trigger : boolean ) => {
+        setToCheck(false);
+        if (trigger) {
+            setShowLeavePageDialog(true);
+        } else {
+            handleConfirm(nextId);
+        }
+    }
+
     useEffect(() => {
         fetchUserInfo(setUserData, loading, setLoading, navigate, true);
         fetchNotes(setNoteList);
@@ -160,7 +170,7 @@ export default function Notes() {
                     <Stack width="100%" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
                         <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
                         { (mainEditorId !== -1) ? 
-                            <MainEditor width={widthStyle} toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/> :
+                            <MainEditor width={widthStyle} toCheck={ toCheck } onDoneChecking={ handleDoneChecking } toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/> :
                             <EmptyNoteState width={widthStyle} onLinkClick={addNote} />
                         }
                     </Stack>

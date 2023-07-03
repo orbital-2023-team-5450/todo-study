@@ -12,7 +12,7 @@ import draftToHtml from 'draftjs-to-html';
 
 import supabase from '../../supabase';
 
-export default function MainEditor( { noteId, width, onNoteChange, toSave, onStartSaving, beforeDoneSaving, onDoneSaving, onOpenSettings } : { noteId : number, width: (string | number), onNoteChange: () => void, toSave: boolean, onStartSaving : () => void, beforeDoneSaving : () => void, onDoneSaving : () => void, onOpenSettings : () => void } ) {
+export default function MainEditor( { noteId, width, onNoteChange, toSave, toCheck, onDoneChecking, onStartSaving, beforeDoneSaving, onDoneSaving, onOpenSettings } : { noteId : number, width: (string | number), onNoteChange: () => void, toSave: boolean, toCheck: boolean, onDoneChecking: (trigger : boolean) => void, onStartSaving : () => void, beforeDoneSaving : () => void, onDoneSaving : () => void, onOpenSettings : () => void } ) {
 
     const [ noteInfo, setNoteInfo ] = useState<Note>({
         note_id: 0,
@@ -28,6 +28,21 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, onSta
     const handleTitleTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         setNoteInfo({...noteInfo, title: event.currentTarget.value});
+    }
+
+    function check( editorState : EditorState ) {
+        console.log("check");
+        // Lodash's static isEqual method recursively compares values in a JavaScript object,
+        // allowing for comparing JavaScript objects by value. 
+
+        // if both content and title are equal, don't update information to database for efficiency reasons.
+        if (_.isEqual(noteInfo.content_state, convertToRaw(editorState.getCurrentContent()))
+            && noteInfo.title === origTitle
+        ) {
+            onDoneChecking(false);
+        } else {
+            onDoneChecking(true);
+        }
     }
 
     async function save( editorState : EditorState ) {
@@ -76,7 +91,7 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, onSta
     return (
         <Stack sx={{height: 'calc(100% - 240px)'}} component="form" gap={5} padding="1rem" width={width} onSubmit={handleSubmit}>
             <TextField type="text" sx={{width:"100%", fontSize: "1.6rem", fontWeight: "bold"}} label="Title" variant="outlined" value={noteInfo.title} onChange={handleTitleTextChange} />
-            <TextEditor initContentState={ noteInfo.content_state } toSave={toSave} onSave={save} beforeDoneSaving={beforeDoneSaving} onDoneSaving={onDoneSaving} onOpenSettings={ onOpenSettings } />
+            <TextEditor initContentState={ noteInfo.content_state } toSave={toSave} onSave={save} onCheck={check} toCheck={toCheck} beforeDoneSaving={beforeDoneSaving} onDoneSaving={onDoneSaving} onOpenSettings={ onOpenSettings } />
         </Stack>
     );
 }

@@ -16,11 +16,11 @@ import { DEFAULT_NOTES_SETTINGS, NotesSettings, fetchNotesSettings } from "../..
 import { usePrompt } from "../../hooks/usePrompt";
 import NotesLeavePageDialog from "./dialogs/NotesLeavePageDialog";
 
-export default function TextEditor({ onSave, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings } : { onSave : ( editorState : EditorState ) => Promise<void>, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void } ) {
+export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void } ) {
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
-  const [ showPrompt, confirmNavigation, cancelNavigation ] = usePrompt(showLeavePageDialog, false);
+  const [ showPrompt, confirmNavigation, cancelNavigation ] = usePrompt(showLeavePageDialog, true, handleLeaveSave);
 
   const handleKeyDown = (event : React.KeyboardEvent<HTMLElement>) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 's') {
@@ -34,10 +34,18 @@ export default function TextEditor({ onSave, initContentState, toSave, beforeDon
     setShowLeavePageDialog(true);
   }
 
-  const handleSave = () => {
+  async function handleLeaveSave() {
+    return await onSave(editorState);
+  }
+
+  function handleSave() {
     setShowLeavePageDialog(false);
     onSave(editorState).then(() => beforeDoneSaving());
-  };
+  }
+
+  function handleCheck() {
+    onCheck(editorState);
+  }
 
   useEffect(() => {
     if (initContentState === null || initContentState === undefined) { 
@@ -62,6 +70,12 @@ export default function TextEditor({ onSave, initContentState, toSave, beforeDon
       onDoneSaving();
     }
   }, [toSave]);
+
+  useEffect(() => {
+    if (toCheck) {
+      handleCheck();
+    }
+  }, [toCheck]);
   
   return (
     <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{marginLeft: 0, marginTop: 0, marginRight: '2rem', height: 'calc(100vh - 240px)'}}>

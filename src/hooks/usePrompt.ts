@@ -19,7 +19,7 @@ import { useBlocker } from './useBlocker';
  *          confirmNavigation, a function that handles what happens when navigation is confirmed;
  *          and cancelNavigation, a function that handles what happens when navigation is cancelled.
  */
-export function usePrompt(when: boolean, autosave : boolean): (boolean | (() => void))[] {
+export function usePrompt(when: boolean, autosave : boolean, handleSave : () => Promise<void>): (boolean | (() => void))[] {
   const navigate = useNavigate();
   const location = useLocation();
   const [showPrompt, setShowPrompt] = useState(false);
@@ -64,7 +64,7 @@ export function usePrompt(when: boolean, autosave : boolean): (boolean | (() => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [confirmedNavigation, lastLocation]);
 
-  useBlocker(handleBlockedNavigation, when, autosave);
+  useBlocker(handleBlockedNavigation, when, autosave, handleSave);
 
   return [showPrompt, confirmNavigation, cancelNavigation];
 }
