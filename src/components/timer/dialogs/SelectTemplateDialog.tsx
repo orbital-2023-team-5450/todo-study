@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField } from "@mui/material";
-import { FullWorkRestCycle, TimerSettings, fetchTimerSettings, fetchTimerTemplates } from "../../../utils/timerUtils";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import { FullWorkRestCycle, TimerSettings, fetchTimerSettings, fetchTimerTemplates, getTotalTimeFromCycles } from "../../../utils/timerUtils";
 import TimerTemplateCard from "../TimerTemplateCard";
 import supabase from "../../../supabase";
 import SearchIcon from '@mui/icons-material/Search';
 import SearchBar from "../../SearchBar";
 import { createTextEventHandler } from "../../../utils/textInputUtils";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import InputTimerField from "../InputTimerField";
 
 export default function SelectTemplateDialog( { open, handleClose, onChange } : { open : boolean, handleClose : () => void, onChange : () => void }) {
     
@@ -18,6 +20,10 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
   const [ templates, setTemplates ] = useState<FullWorkRestCycle[]>([]);
     
   const [ searchValue, setSearchValue ] = useState("");
+  const [ minWorkFilter, setMinWorkFilter ] = useState<number>(0);
+  const [ maxWorkFilter, setMaxWorkFilter ] = useState<number>(0);
+  const [ minTotalFilter, setMinTotalFilter ] = useState<number>(0);
+  const [ maxTotalFilter, setMaxTotalFilter ] = useState<number>(0);
 
   // check whether the timer has been updated (deleted/created)
   const [ updated, setUpdated ] = useState(true);
@@ -56,10 +62,25 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
 
   const handleSearchBarChange = createTextEventHandler(setSearchValue);
 
+  const getProperMinMax = ( minGiven : number, maxGiven : number ) : number[] => {
+    if (minGiven < 0 || maxGiven < 0) return [0, Infinity];
+    if (minGiven >= 0 && maxGiven === 0) return [minGiven, Infinity];
+    if (minGiven > maxGiven) return [0, Infinity];
+    return [minGiven, maxGiven];
+  };
+
   const timerFilterPredicate = (template : FullWorkRestCycle) => {
+    
+    // set minimum/maximum work and total based on user input.
+    // some user input are invalid and has to be handled here.
+    const [ minWork, maxWork ] = getProperMinMax(minWorkFilter, maxWorkFilter);
+    const [ minTotal, maxTotal ] = getProperMinMax(minTotalFilter, maxTotalFilter);
+
     return (template.title.toLowerCase().startsWith(searchValue.toLowerCase()) ||
       template.description.toLowerCase().startsWith(searchValue.toLowerCase()) ||
-      (searchValue.toLowerCase() === "default" && template.user_id === "649a8192-d12c-4459-943d-dbbd9f1bb4fa"));
+      (searchValue.toLowerCase() === "default" && template.user_id === "649a8192-d12c-4459-943d-dbbd9f1bb4fa")) &&
+      ( template.work >= minWork && template.work <= maxWork ) &&
+      ( getTotalTimeFromCycles(template) >= minTotal && getTotalTimeFromCycles(template) <= maxTotal );
   }
 
   useEffect(() => {
@@ -78,7 +99,19 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
       <DialogTitle id="select-template-dialog-title">
         Select a timer template
         <Typography component="p" marginBottom="0.5em">Note that it will take a short while for the timer to update once the timer template is selected.</Typography>
-        <SearchBar value={ searchValue } onChange={ handleSearchBarChange } />
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <SearchBar value={ searchValue } onChange={ handleSearchBarChange } />
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack gap={3} padding="0 .5em .5em .5em" component="form">
+              <InputTimerField title="Work per cycle (minimum)" setValue={ setMinWorkFilter } />
+              <InputTimerField title="Work per cycle (maximum)" setValue={ setMaxWorkFilter } />
+              <InputTimerField title="Total time in timer session (minimum)" setValue={ setMinTotalFilter } />
+              <InputTimerField title="Total time in timer session (maximum)" setValue={ setMaxTotalFilter } />
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
       </DialogTitle>
       <DialogContent>
         <Stack gap={3}>
