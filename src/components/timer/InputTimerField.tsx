@@ -3,7 +3,7 @@ import { Button, Typography, TextField, Stack } from "@mui/material";
 import { timerToString } from "../../utils/timerUtils";
 import { createTextEventHandler } from "../../utils/textInputUtils";
 
-export default function InputTimerField({ title, setValue } : { title : string, setValue : (arg : number) => void }) {
+export default function InputTimerField({ title, setValue, reset = false, setReset = null } : { title : string, setValue : (arg : number) => void, reset: boolean, setReset : (((arg : boolean) => void) | null)}) {
 
     const [ hours, setHours ] = useState<number>(0);
     const [ minutes, setMinutes ] = useState<number>(0);
@@ -20,6 +20,17 @@ export default function InputTimerField({ title, setValue } : { title : string, 
     useEffect(() => {
         setValue(totalTime);
     }, [totalTime]);
+
+    // triggers a reset of all of the fields.
+    useEffect(() => {
+        if (setReset !== null && reset) {
+            setHours(0);
+            setMinutes(0);
+            setSeconds(0);
+            setMs(0);
+            setReset( false );
+        }
+    }, [reset])
     
     return (
         <>

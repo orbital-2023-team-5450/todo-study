@@ -8,6 +8,7 @@ import SearchBar from "../../SearchBar";
 import { createTextEventHandler } from "../../../utils/textInputUtils";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import InputTimerField from "../InputTimerField";
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function SelectTemplateDialog( { open, handleClose, onChange } : { open : boolean, handleClose : () => void, onChange : () => void }) {
     
@@ -24,6 +25,20 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
   const [ maxWorkFilter, setMaxWorkFilter ] = useState<number>(0);
   const [ minTotalFilter, setMinTotalFilter ] = useState<number>(0);
   const [ maxTotalFilter, setMaxTotalFilter ] = useState<number>(0);
+  const [ reset1, setReset1 ] = useState<boolean>(false);
+  const [ reset2, setReset2 ] = useState<boolean>(false);
+  const [ reset3, setReset3 ] = useState<boolean>(false);
+  const [ reset4, setReset4 ] = useState<boolean>(false);
+
+  // if there are any validation errors in min/max (e.g. min > max).  
+  const [ errorMinMax, setErrorMinMax ] = useState<number>(0);     
+
+  const minMaxErrorMessages = [
+    "", 
+    "The minimum and maximum work time per cycle is invalid.", 
+    "The minimum and maximum total time in timer session is invalid.", 
+    "The minimum and maximum work time per cycle and total time in timer session are invalid."
+  ];   
 
   // check whether the timer has been updated (deleted/created)
   const [ updated, setUpdated ] = useState(true);
@@ -61,6 +76,9 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
   }
 
   const handleSearchBarChange = createTextEventHandler(setSearchValue);
+  const handleSearchBarSubmit = ( event : React.FormEvent<HTMLFormElement> ) => {
+    event.preventDefault();
+  }
 
   const getProperMinMax = ( minGiven : number, maxGiven : number ) : number[] => {
     if (minGiven < 0 || maxGiven < 0) return [0, Infinity];
@@ -69,6 +87,20 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
     return [minGiven, maxGiven];
   };
 
+  const getMinMaxError = ( minGiven : number, maxGiven : number ) : number => {
+    if (minGiven < 0 || maxGiven < 0) return 1;
+    if (minGiven >= 0 && maxGiven === 0) return 0;
+    if (minGiven > maxGiven) return 1;
+    return 0;
+  };
+
+  const handleClearFilters = () => {
+    setReset1(true);
+    setReset2(true);
+    setReset3(true);
+    setReset4(true);
+  }
+
   const timerFilterPredicate = (template : FullWorkRestCycle) => {
     
     // set minimum/maximum work and total based on user input.
@@ -76,8 +108,8 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
     const [ minWork, maxWork ] = getProperMinMax(minWorkFilter, maxWorkFilter);
     const [ minTotal, maxTotal ] = getProperMinMax(minTotalFilter, maxTotalFilter);
 
-    return (template.title.toLowerCase().startsWith(searchValue.toLowerCase()) ||
-      template.description.toLowerCase().startsWith(searchValue.toLowerCase()) ||
+    return (template.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+      template.description.toLowerCase().includes(searchValue.toLowerCase()) ||
       (searchValue.toLowerCase() === "default" && template.user_id === "649a8192-d12c-4459-943d-dbbd9f1bb4fa")) &&
       ( template.work >= minWork && template.work <= maxWork ) &&
       ( getTotalTimeFromCycles(template) >= minTotal && getTotalTimeFromCycles(template) <= maxTotal );
@@ -86,6 +118,15 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
   useEffect(() => {
     fetchTimerTemplates(setTemplates);
   }, [open, updated]);
+
+  useEffect(() => {
+    // indicates whether to show an error message.
+    // this matches the enum values perfectly.
+    const errorWork = getMinMaxError(minWorkFilter, maxWorkFilter);
+    const errorTotal = getMinMaxError(minTotalFilter, maxTotalFilter);
+
+    setErrorMinMax(errorTotal * 2 + errorWork);
+  }, [minWorkFilter, maxWorkFilter, minTotalFilter, maxTotalFilter]);
   
   return (
     <Dialog
@@ -101,14 +142,26 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
         <Typography component="p" marginBottom="0.5em">Note that it will take a short while for the timer to update once the timer template is selected.</Typography>
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <SearchBar value={ searchValue } onChange={ handleSearchBarChange } />
+            <SearchBar value={ searchValue } onChange={ handleSearchBarChange } onSubmit={ handleSearchBarSubmit } />
           </AccordionSummary>
           <AccordionDetails>
             <Stack gap={3} padding="0 .5em .5em .5em" component="form">
-              <InputTimerField title="Work per cycle (minimum)" setValue={ setMinWorkFilter } />
-              <InputTimerField title="Work per cycle (maximum)" setValue={ setMaxWorkFilter } />
-              <InputTimerField title="Total time in timer session (minimum)" setValue={ setMinTotalFilter } />
-              <InputTimerField title="Total time in timer session (maximum)" setValue={ setMaxTotalFilter } />
+              <Stack direction="row" display="flex" justifyContent="space-between">
+                <Typography>
+                  To only filter based on minimum time, set the maximum time to 0.
+                </Typography>
+                <Button variant="contained" color="error" onClick={ handleClearFilters }>
+                  <ClearIcon />
+                  Clear filters
+                </Button>
+              </Stack>
+              <InputTimerField title="Work per cycle (minimum)" setValue={ setMinWorkFilter } reset={ reset1 } setReset={ setReset1 } />
+              <InputTimerField title="Work per cycle (maximum)" setValue={ setMaxWorkFilter } reset={ reset2 } setReset={ setReset2 } />
+              <InputTimerField title="Total time in timer session (minimum)" setValue={ setMinTotalFilter } reset={ reset3 } setReset={ setReset3 } />
+              <InputTimerField title="Total time in timer session (maximum)" setValue={ setMaxTotalFilter } reset={ reset4 } setReset={ setReset4 } />
+              <Typography color="red">
+                { minMaxErrorMessages[errorMinMax] }
+              </Typography>
             </Stack>
           </AccordionDetails>
         </Accordion>

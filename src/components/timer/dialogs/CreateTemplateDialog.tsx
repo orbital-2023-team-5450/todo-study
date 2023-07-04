@@ -73,8 +73,8 @@ export default function CreateTemplateDialog( { open, handleClose } : { open : b
                     </DialogContentText>
                     <TextField sx={{width:"95%"}} type="text" label="Title" required variant="outlined" value={title} onChange={handleTitleTextChange} />
                     <TextField sx={{width:"95%"}} type="text" label="Description" variant="outlined" value={description} onChange={handleDescriptionTextChange} />
-                    <InputTimerField title="Work" setValue={setWork} />
-                    <InputTimerField title="Rest" setValue={setRest} />
+                    <InputTimerField title="Work" setValue={setWork} reset={false} setReset={null} />
+                    <InputTimerField title="Rest" setValue={setRest} reset={false} setReset={null} />
                     <Typography component="h1" variant="h6">Cycles</Typography>
                     <TextField sx={{width:"95%"}} type="text" label="Cycles" variant="outlined" value={cycles} onChange={handleCyclesTextChange} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
                 </Stack>
