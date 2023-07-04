@@ -7,7 +7,7 @@ export default function SearchBar({ value, onChange, onSubmit } : { value : stri
     <Paper 
       component="form"
       onSubmit={ onSubmit }
-      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: "95%" }}
+      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
     >
       <IconButton sx={{ p: '10px' }} aria-label="search">
         <SearchIcon />
