@@ -106,9 +106,12 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
         <Typography component="p" marginBottom="0.5em">Note that it will take a short while for the timer to update once the timer template is selected.</Typography>
         <Stack direction="row" display="flex" spacing={3}>
           <SearchBar value={ searchValue } onChange={ handleSearchBarChange } onSubmit={ handleSearchBarSubmit } />
-          <IconButton onClick={() => setFilterDialogOpen(true)}>
-            <FilterAltIcon />
-          </IconButton>
+          <Button variant="contained" color="primary" onClick={() => setFilterDialogOpen(true)}>
+            <Stack direction="row" spacing={1}>
+              <FilterAltIcon />
+              <Typography variant="button">Filter</Typography>
+            </Stack>
+          </Button>
         </Stack>
         <SelectTemplateFilterDialog 
           minWork={minWorkFilter} setMinWork={setMinWorkFilter}

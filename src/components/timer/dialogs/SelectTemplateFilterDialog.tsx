@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Stack, Typography, Button, FormControl, FormGroup, FormControlLabel, Switch, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Stack, Typography, Button, FormControl, FormGroup, FormControlLabel, Switch, Divider, Dialog, DialogTitle, DialogContent, DialogActions, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import InputTimerField from "../InputTimerField";
 import ClearIcon from '@mui/icons-material/Clear';
@@ -97,11 +97,14 @@ export default function SelectTemplateFilterDialog({ minWork, setMinWork, maxWor
                 />
               </FormGroup>
             </FormControl>
-            
-            <Button variant="contained" color="error" onClick={ handleClearFilters }>
-              <ClearIcon />
-              Clear filters
-            </Button>
+            <Box display="flex" alignItems="center">
+              <Button variant="contained" color="error" onClick={ handleClearFilters }>
+                <Stack direction="row" spacing={1}>
+                  <ClearIcon />
+                  <Typography variant="button">Clear filters</Typography>
+                </Stack>
+              </Button>
+            </Box>
           </Stack>
           <Divider />
           <InputTimerField title="Minimum work per cycle" setValue={ setMinWork } reset={ reset1 } setReset={ setReset1 } />
