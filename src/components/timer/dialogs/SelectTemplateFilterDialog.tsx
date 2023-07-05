@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Stack, Typography, Button, FormControl, FormGroup, FormControlLabel, Switch, Divider } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Stack, Typography, Button, FormControl, FormGroup, FormControlLabel, Switch, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import InputTimerField from "./InputTimerField";
+import InputTimerField from "../InputTimerField";
 import ClearIcon from '@mui/icons-material/Clear';
+import { error } from 'console';
 
-export function SelectTemplateFilters({ minWork, setMinWork, maxWork, setMaxWork, minTotal, setMinTotal, maxTotal, setMaxTotal } : { minWork : number, setMinWork : (arg : number) => void, maxWork : number, setMaxWork : (arg : number) => void, minTotal : number, setMinTotal : (arg : number) => void, maxTotal : number, setMaxTotal : (arg : number) => void }) {
+export default function SelectTemplateFilterDialog({ minWork, setMinWork, maxWork, setMaxWork, minTotal, setMinTotal, maxTotal, setMaxTotal, open, onClose } : { minWork : number, setMinWork : (arg : number) => void, maxWork : number, setMaxWork : (arg : number) => void, minTotal : number, setMinTotal : (arg : number) => void, maxTotal : number, setMaxTotal : (arg : number) => void, open : boolean, onClose: () => void }) {
 
   const [ reset1, setReset1 ] = useState<boolean>(false);
   const [ reset2, setReset2 ] = useState<boolean>(false);
@@ -16,8 +17,15 @@ export function SelectTemplateFilters({ minWork, setMinWork, maxWork, setMaxWork
     total: false,
   });
 
+  const getMinMaxError = ( minGiven : number, maxGiven : number ) : number => {
+    if (minGiven < 0 || maxGiven < 0) return 1;
+    if (minGiven >= 0 && maxGiven === 0) return 0;
+    if (minGiven > maxGiven) return 1;
+    return 0;
+  };
+
   // if there are any validation errors in min/max (e.g. min > max).  
-  const [ errorMinMax, setErrorMinMax ] = useState<number>(0);
+  const errorMinMax = getMinMaxError(minWork, maxWork) * 2 + getMinMaxError(minTotal, maxTotal);
 
   const handleClearFilters = () => {
     setReset1(true);
@@ -48,15 +56,12 @@ export function SelectTemplateFilters({ minWork, setMinWork, maxWork, setMaxWork
     "The minimum and maximum total time in timer session is invalid.", 
     "The minimum and maximum work time per cycle and total time in timer session are invalid."
   ];   
+  const handleSubmit = ( event : React.FormEvent<HTMLFormElement> ) => {
+    event.preventDefault();
+    onClose();
+  }
 
-  const getMinMaxError = ( minGiven : number, maxGiven : number ) : number => {
-    if (minGiven < 0 || maxGiven < 0) return 1;
-    if (minGiven >= 0 && maxGiven === 0) return 0;
-    if (minGiven > maxGiven) return 1;
-    return 0;
-  };
-
-
+  /*
   useEffect(() => {
     // indicates whether to show an error message.
     // this matches the enum values perfectly.
@@ -65,14 +70,20 @@ export function SelectTemplateFilters({ minWork, setMinWork, maxWork, setMaxWork
 
     setErrorMinMax(errorTotal * 2 + errorWork);
   }, [minWork, maxWork, minTotal, maxTotal]);
+*/
 
   return (
-    <Accordion>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle>
         Filter by...
-      </AccordionSummary>
-      <AccordionDetails>
-        <Stack gap={3} padding="0 .5em .5em .5em" component="form">
+      </DialogTitle>
+      <DialogContent>
+        <Stack gap={3} padding="0 .5em .5em .5em" component="form" onSubmit={ handleSubmit }>
           <Stack direction="row" display="flex" justifyContent="space-between">
             <FormControl component="fieldset" variant="standard">
               <FormGroup>
@@ -102,7 +113,10 @@ export function SelectTemplateFilters({ minWork, setMinWork, maxWork, setMaxWork
             { minMaxErrorMessages[errorMinMax] }
           </Typography>
         </Stack>
-      </AccordionDetails>
-    </Accordion>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} autoFocus>OK</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

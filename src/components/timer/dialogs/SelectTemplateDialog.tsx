@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField, Accordion, AccordionSummary, AccordionDetails, IconButton } from "@mui/material";
 import { FullWorkRestCycle, TimerSettings, fetchTimerSettings, fetchTimerTemplates, getTotalTimeFromCycles } from "../../../utils/timerUtils";
 import TimerTemplateCard from "../TimerTemplateCard";
 import supabase from "../../../supabase";
-import SearchIcon from '@mui/icons-material/Search';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchBar from "../../SearchBar";
 import { createTextEventHandler } from "../../../utils/textInputUtils";
-import { SelectTemplateFilters } from "../SelectTemplateFilters";
+import SelectTemplateFilterDialog from "./SelectTemplateFilterDialog";
 
 
 export default function SelectTemplateDialog( { open, handleClose, onChange } : { open : boolean, handleClose : () => void, onChange : () => void }) {
@@ -20,6 +20,8 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
   const [ templates, setTemplates ] = useState<FullWorkRestCycle[]>([]);
     
   const [ searchValue, setSearchValue ] = useState("");
+
+  const [ filterDialogOpen, setFilterDialogOpen ] = useState<boolean>(false);
 
   const [ minWorkFilter, setMinWorkFilter ] = useState<number>(0);
   const [ maxWorkFilter, setMaxWorkFilter ] = useState<number>(0);
@@ -102,12 +104,18 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
       <DialogTitle id="select-template-dialog-title">
         Select a timer template
         <Typography component="p" marginBottom="0.5em">Note that it will take a short while for the timer to update once the timer template is selected.</Typography>
-        <SearchBar value={ searchValue } onChange={ handleSearchBarChange } onSubmit={ handleSearchBarSubmit } />
-        <SelectTemplateFilters 
+        <Stack direction="row" display="flex" spacing={3}>
+          <SearchBar value={ searchValue } onChange={ handleSearchBarChange } onSubmit={ handleSearchBarSubmit } />
+          <IconButton onClick={() => setFilterDialogOpen(true)}>
+            <FilterAltIcon />
+          </IconButton>
+        </Stack>
+        <SelectTemplateFilterDialog 
           minWork={minWorkFilter} setMinWork={setMinWorkFilter}
           maxWork={maxWorkFilter} setMaxWork={setMaxWorkFilter}
           minTotal={minTotalFilter} setMinTotal={setMinTotalFilter}
-          maxTotal={maxTotalFilter} setMaxTotal={setMaxTotalFilter}/>
+          maxTotal={maxTotalFilter} setMaxTotal={setMaxTotalFilter}
+          open={filterDialogOpen} onClose={() => setFilterDialogOpen(false)} />
       </DialogTitle>
       <DialogContent>
         <Stack gap={3}>
