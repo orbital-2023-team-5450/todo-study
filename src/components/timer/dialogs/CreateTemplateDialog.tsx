@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, TextField, Stack, Typography, Container } from "@mui/material";
 import { getCycleFromTemplate, isValidPattern } from "../../../utils/timerUtils";
-import { createTextEventHandler } from "../../../utils/textInputUtils";
+import { createNumericTextEventHandler, createTextEventHandler } from "../../../utils/textInputUtils";
 import InputTimerField from "../InputTimerField";
 import supabase from "../../../supabase";
 
@@ -15,7 +15,11 @@ export default function CreateTemplateDialog( { open, handleClose } : { open : b
 
     const handleTitleTextChange = createTextEventHandler(setTitle);
     const handleDescriptionTextChange = createTextEventHandler(setDescription);
-    const handleCyclesTextChange = createTextEventHandler(setCycles);
+
+    // although 0 is not accepted as an input, it has to be left there to ensure users
+    // are able to change the number of cycles more easily in the component. further
+    // validation in this code will prevent 0 from being accepted as input.
+    const handleCyclesTextChange = createNumericTextEventHandler(setCycles, 0, Infinity);
 
     async function handleSubmit( event : React.SyntheticEvent<HTMLElement> ) {
         event.preventDefault();
