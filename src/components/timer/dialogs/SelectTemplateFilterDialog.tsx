@@ -107,11 +107,11 @@ export default function SelectTemplateFilterDialog({ minWork, setMinWork, maxWor
             </Box>
           </Stack>
           <Divider />
-          <InputTimerField title="Minimum work per cycle" setValue={ setMinWork } reset={ reset1 } setReset={ setReset1 } />
-          <InputTimerField title="Maximum work per cycle" setValue={ setMaxWork } reset={ reset2 } setReset={ setReset2 } disabled={ switchState.work } />
+          <InputTimerField title="Minimum work per cycle" value={ minWork } setValue={ setMinWork } reset={ reset1 } setReset={ setReset1 } />
+          <InputTimerField title="Maximum work per cycle" value={ maxWork } setValue={ setMaxWork } reset={ reset2 } setReset={ setReset2 } disabled={ switchState.work } />
           <Divider />
-          <InputTimerField title="Minimum total time in timer session" setValue={ setMinTotal } reset={ reset3 } setReset={ setReset3 } />
-          <InputTimerField title="Maximum total time in timer session" setValue={ setMaxTotal } reset={ reset4 } setReset={ setReset4 } disabled={ switchState.total } />
+          <InputTimerField title="Minimum total time in timer session" value={ minTotal } setValue={ setMinTotal } reset={ reset3 } setReset={ setReset3 } />
+          <InputTimerField title="Maximum total time in timer session" value={ maxTotal } setValue={ setMaxTotal } reset={ reset4 } setReset={ setReset4 } disabled={ switchState.total } />
           <Typography color="red">
             { minMaxErrorMessages[errorMinMax] }
           </Typography>

@@ -12,6 +12,8 @@ export const createTextEventHandler = (setter : (value : any) => void) => (event
  * Creates a generic React text input event handler that encapsulates the state of the value, but
  * only accepts numeric values (integers) between a specified range.
  * @param setter The setter to set the value. Usually a React state setter function.
+ * @param minRange The minimum allowed value in the textbox.
+ * @param maxRange The maximum allowed value in the textbox.
  * @returns The resulting change event generated.
  */
 export const createNumericTextEventHandler = (setter : (value : any) => void, minRange : number, maxRange : number) => (event : React.ChangeEvent<HTMLInputElement>) => {

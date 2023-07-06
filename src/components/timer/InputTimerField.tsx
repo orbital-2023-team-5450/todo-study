@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Button, Typography, TextField, Stack } from "@mui/material";
-import { timerToString } from "../../utils/timerUtils";
+import { splitTimer, timerToString } from "../../utils/timerUtils";
 import { createNumericTextEventHandler } from "../../utils/textInputUtils";
 
-export default function InputTimerField({ title, setValue, reset = false, setReset = null, disabled = false } : { title : string, setValue : (arg : number) => void, reset?: boolean, setReset? : (((arg : boolean) => void) | null), disabled? : boolean}) {
+export default function InputTimerField({ title, value, setValue, reset = false, setReset = null, disabled = false } : { title : string, value : number, setValue : (arg : number) => void, reset?: boolean, setReset? : (((arg : boolean) => void) | null), disabled? : boolean}) {
 
-    const [ hours, setHours ] = useState<number>(0);
-    const [ minutes, setMinutes ] = useState<number>(0);
-    const [ seconds, setSeconds ] = useState<number>(0);
-    const [ ms, setMs ] = useState<number>(0);
+    const [ hours, setHours ] = useState<number>(splitTimer(value).hours);
+    const [ minutes, setMinutes ] = useState<number>(splitTimer(value).minutes);
+    const [ seconds, setSeconds ] = useState<number>(splitTimer(value).seconds);
+    const [ ms, setMs ] = useState<number>(splitTimer(value).ms);
 
     const handleHoursTextChange = createNumericTextEventHandler(setHours, 0, Infinity);
     const handleMinutesTextChange = createNumericTextEventHandler(setMinutes, 0, 59);
