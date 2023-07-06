@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Stack, Typography, Button, FormControl, FormGroup, FormControlLabel, Switch, Divider, Dialog, DialogTitle, DialogContent, DialogActions, Box } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import React, { useState } from 'react';
+import { Stack, Typography, Button, FormControl, FormGroup, FormControlLabel, Switch, Divider, Dialog, DialogTitle, DialogContent, DialogActions, Box } from '@mui/material';
 import InputTimerField from "../InputTimerField";
 import ClearIcon from '@mui/icons-material/Clear';
-import { error } from 'console';
 
 export default function SelectTemplateFilterDialog({ minWork, setMinWork, maxWork, setMaxWork, minTotal, setMinTotal, maxTotal, setMaxTotal, open, onClose } : { minWork : number, setMinWork : (arg : number) => void, maxWork : number, setMaxWork : (arg : number) => void, minTotal : number, setMinTotal : (arg : number) => void, maxTotal : number, setMaxTotal : (arg : number) => void, open : boolean, onClose: () => void }) {
 
