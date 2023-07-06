@@ -84,20 +84,25 @@ export default function SelectTemplateFilterDialog({ minWork, setMinWork, maxWor
       </DialogTitle>
       <DialogContent>
         <Stack gap={3} padding="0 .5em .5em .5em" component="form" onSubmit={ handleSubmit }>
-          <Stack direction="row" display="flex" justifyContent="space-between">
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={{ xs: 1, sm: 2, md: 3 }}
+            display="flex"
+            justifyContent="space-between"
+          >
             <FormControl component="fieldset" variant="standard">
               <FormGroup>
                 <FormControlLabel
                   control={<Switch checked={ switchState.work } onChange={ handleSwitchChange } name="work" />}
-                  label="Filter based on minimum work per cycle only"
+                  label="Minimum work per cycle only"
                 />
                 <FormControlLabel
                   control={<Switch checked={ switchState.total } onChange={ handleSwitchChange } name="total" />}
-                  label="Filter based on minimum total time in timer session only"
+                  label="Minimum total time in timer session only"
                 />
               </FormGroup>
             </FormControl>
-            <Box display="flex" alignItems="center">
+            <Box display="flex" justifyContent="center" alignItems="center">
               <Button variant="contained" color="error" onClick={ handleClearFilters }>
                 <Stack direction="row" spacing={1}>
                   <ClearIcon />

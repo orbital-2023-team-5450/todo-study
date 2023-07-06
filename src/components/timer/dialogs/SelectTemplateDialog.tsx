@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField, Accordion, AccordionSummary, AccordionDetails, IconButton } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField, Accordion, AccordionSummary, AccordionDetails, IconButton, Box } from "@mui/material";
 import { FullWorkRestCycle, TimerSettings, fetchTimerSettings, fetchTimerTemplates, getTotalTimeFromCycles } from "../../../utils/timerUtils";
 import TimerTemplateCard from "../TimerTemplateCard";
 import supabase from "../../../supabase";
@@ -7,7 +7,8 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchBar from "../../SearchBar";
 import { createTextEventHandler } from "../../../utils/textInputUtils";
 import SelectTemplateFilterDialog from "./SelectTemplateFilterDialog";
-
+import EmptyTimerTemplateState from "../EmptyTimerTemplateState";
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function SelectTemplateDialog( { open, handleClose, onChange } : { open : boolean, handleClose : () => void, onChange : () => void }) {
     
@@ -68,6 +69,14 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
     event.preventDefault();
   }
 
+  const handleClearFilters = () => {
+    setSearchValue("");
+    setMinWorkFilter(0);
+    setMaxWorkFilter(0);
+    setMinTotalFilter(0);
+    setMaxTotalFilter(0);
+  }
+
   const getProperMinMax = ( minGiven : number, maxGiven : number ) : number[] => {
     if (minGiven < 0 || maxGiven < 0) return [0, Infinity];
     if (minGiven >= 0 && maxGiven === 0) return [minGiven, Infinity];
@@ -104,12 +113,24 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
       <DialogTitle id="select-template-dialog-title">
         Select a timer template
         <Typography component="p" marginBottom="0.5em">Note that it will take a short while for the timer to update once the timer template is selected.</Typography>
-        <Stack direction="row" display="flex" spacing={3}>
-          <SearchBar value={ searchValue } onChange={ handleSearchBarChange } onSubmit={ handleSearchBarSubmit } />
+        <Stack 
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={{ xs: 1, sm: 2, md: 3 }}
+          display="flex"
+        >
+          <Box flex={1}>
+            <SearchBar value={ searchValue } onChange={ handleSearchBarChange } onSubmit={ handleSearchBarSubmit } />
+          </Box>
           <Button variant="contained" color="primary" onClick={() => setFilterDialogOpen(true)}>
             <Stack direction="row" spacing={1}>
               <FilterAltIcon />
-              <Typography variant="button">Filter</Typography>
+              <Typography variant="button">Filter...</Typography>
+            </Stack>
+          </Button>
+          <Button variant="contained" color="error" onClick={handleClearFilters}>
+            <Stack direction="row" spacing={1} display="flex" alignItems="center">
+              <ClearIcon />
+              <Typography variant="button">Clear filters</Typography>
             </Stack>
           </Button>
         </Stack>
@@ -121,12 +142,16 @@ export default function SelectTemplateDialog( { open, handleClose, onChange } : 
           open={filterDialogOpen} onClose={() => setFilterDialogOpen(false)} />
       </DialogTitle>
       <DialogContent>
-        <Stack gap={3}>
-          {
-            templates.filter(timerFilterPredicate)
-              .map((template) => <TimerTemplateCard settings={settings} template={template} onSelect={() => select(template.timer_template_id)} onDelete={() => deleteTemplate(template.timer_template_id)} />)
-          }
-        </Stack>
+        { 
+          templates.filter(timerFilterPredicate).length === 0
+          ? <EmptyTimerTemplateState /> :
+          <Stack gap={3}>
+            {
+              templates.filter(timerFilterPredicate)
+                .map((template) => <TimerTemplateCard settings={settings} template={template} onSelect={() => select(template.timer_template_id)} onDelete={() => deleteTemplate(template.timer_template_id)} />)
+            }
+          </Stack>
+        }
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} autoFocus>OK</Button>

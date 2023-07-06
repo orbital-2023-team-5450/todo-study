@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Login from './routes/login';
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
-import { CssBaseline, createTheme, ThemeProvider } from '@mui/material';
+import { CssBaseline, createTheme, ThemeProvider, responsiveFontSizes } from '@mui/material';
 import supabase from './supabase';
 import { useState, useEffect } from 'react';
 import Dashboard from './routes/dashboard';
@@ -31,7 +31,7 @@ const lightTheme = createTheme(defaultTheme);
 const darkTheme = createTheme({ ...defaultTheme, palette: { mode: 'dark' } });
 
 const getTheme = ( theme : string ) => {
-  return (theme === 'dark') ? darkTheme : lightTheme;
+  return responsiveFontSizes((theme === 'dark') ? darkTheme : lightTheme);
 }
 
 
