@@ -20,10 +20,10 @@ export default function AccountNav() {
         <Stack gap={5} direction="row">
             <AvatarView />
             <Stack justifyContent="center">
-                <Typography fontWeight="bold" variant="h5" fontSize={16} component="h1">
+                <Typography fontWeight="bold" fontSize="1.2rem" component="h1">
                     { userData.first_name + (( userData.last_name === "" ) ? "" : ` ${userData.last_name}`) }
                 </Typography>
-                <Typography variant="h6" fontSize={14} component="h2">
+                <Typography component="h2">
                     { userData.user_name }
                 </Typography>
             </Stack>
