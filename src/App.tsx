@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Login from './routes/login';
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
-import { CssBaseline, createTheme, ThemeProvider } from '@mui/material';
+import { CssBaseline, createTheme, ThemeProvider, responsiveFontSizes } from '@mui/material';
 import supabase from './supabase';
 import { useState, useEffect } from 'react';
 import Dashboard from './routes/dashboard';
@@ -12,8 +12,7 @@ import Timer from './routes/timer';
 import Notes from './routes/notes'
 import Tasks from './routes/tasks';
 import ModifyAccount from './routes/modifyaccount';
-import fetchUserInfo from './utils/fetchUserInfo';
-import LoadingScreen from './components/LoadingScreen';
+import fetchUserInfo, { UserInfo } from './utils/fetchUserInfo';
 
 const defaultTheme = {
   palette: {
@@ -35,7 +34,7 @@ const lightTheme = createTheme(defaultTheme);
 const darkTheme = createTheme({ ...defaultTheme, palette: { mode: 'dark' } });
 
 const getTheme = ( theme : string ) => {
-  return (theme === 'dark') ? darkTheme : lightTheme;
+  return responsiveFontSizes((theme === 'dark') ? darkTheme : lightTheme);
 }
 
 
@@ -43,7 +42,6 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
   const [ loading, setLoading ] = useState(true);
   const [ updated, setUpdated ] = useState(false);
   const [ currentTheme, setCurrentTheme ] = useState(getTheme('default'));
@@ -78,7 +76,7 @@ function App() {
   }, [setIsLoggedIn, navigate, location.pathname]);
 
   useEffect(() => {
-    fetchUserInfo(setUserData, loading, setLoading, navigate, true).then((result) => {
+    fetchUserInfo((data : UserInfo) => {}, loading, setLoading, navigate, true).then((result) => {
       if (result.data !== null && result.data !== undefined && result.data[0] !== null && result.data[0] !== undefined) {
         setCurrentTheme(getTheme(result.data[0].theme));
       }
