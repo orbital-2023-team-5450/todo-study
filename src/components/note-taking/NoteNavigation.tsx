@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Note } from '../../utils/noteUtils';
 import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, Stack, Typography } from '@mui/material';
 import NoteEntry from './NoteEntry';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 /**
  * Displays a sidebar containing the list of all notes created by the user.
@@ -31,14 +30,9 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
                         return (
                             <>
                                 <ListItem key={note.note_id}>
-                                    <Box width="100%" component="div" display="flex" justifyContent="space-between" alignItems="center">
-                                        <ListItemButton onFocus={ () => setIsBlurred(false) } onBlur={ () => setIsBlurred(true) } onClick={ () => { edit(note.note_id); } }>
-                                            <NoteEntry note={note} />
-                                        </ListItemButton>
-                                        <IconButton color="error" onClick={ () => onNoteDelete(note.note_id) }>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Box>
+                                    <ListItemButton onFocus={ () => setIsBlurred(false) } onBlur={ () => setIsBlurred(true) } onClick={ () => { edit(note.note_id); } }>
+                                        <NoteEntry note={note} handleNoteDelete={ () => onNoteDelete(note.note_id) } />
+                                    </ListItemButton>
                                 </ListItem> 
                                 <Divider />
                             </>

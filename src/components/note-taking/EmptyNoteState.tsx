@@ -1,10 +1,15 @@
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Link } from "@mui/material";
 
-export default function EmptyNoteState({ width } : { width : (string | number)}) {
+export default function EmptyNoteState({ width, onLinkClick } : { width : (string | number), onLinkClick : () => void }) {
     return (
-        <Box display="flex" alignItems="center" justifyContent="center" width={width} paddingRight={0}>
-            <Typography variant="h2" component="h1" textAlign="center">No editor loaded yet...</Typography>
+        <Box display="flex" alignItems="center" justifyContent="center" width={width} padding={12}>
+            <Box>
+                <Typography variant="h3" component="h1" textAlign="center" marginBottom={3}>No editor loaded yet...</Typography>
+                <Typography variant="h5" component="p" textAlign="center">
+                    You can select an existing note using the navigation on the left, or <Link href="#" onClick={onLinkClick}>create a new note</Link>.
+                </Typography>
+            </Box>
         </Box>
     )
 }

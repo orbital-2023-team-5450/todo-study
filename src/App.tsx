@@ -23,6 +23,10 @@ const defaultTheme = {
   },
   typography: {
     fontFamily: ["Open Sans", "sans-serif"].join(","),
+    subtitle2: {
+      fontSize: "0.85rem",
+      color: "gray",
+    }
   },
   spacing: 4,
 };

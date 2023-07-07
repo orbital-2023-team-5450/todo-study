@@ -3,35 +3,68 @@ import { createTextEventHandler } from '../../utils/textInputUtils';
 import { Stack, TextField } from '@mui/material';
 import TextEditor from './TextEditor';
 import AccountSettings from '../AccountSettings';
-import { Note, fetchNoteInfoFromId, fetchNotes } from '../../utils/noteUtils';
+import { Note, NotesSettings, fetchNoteInfoFromId, fetchNotes } from '../../utils/noteUtils';
 import { EditorState, convertToRaw } from 'draft-js';
+import _ from "lodash";
 
 // @ts-ignore
 import draftToHtml from 'draftjs-to-html';
 
 import supabase from '../../supabase';
 
-export default function MainEditor( { noteId, width, onNoteChange, toSave, onStartSaving, onDoneSaving } : { noteId : number, width: (string | number), onNoteChange: () => void, toSave: boolean, onStartSaving : () => void, onDoneSaving : () => void } ) {
+export default function MainEditor( { noteId, width, onNoteChange, toSave, toCheck, onDoneChecking, onStartSaving, beforeDoneSaving, onDoneSaving, onOpenSettings } : { noteId : number, width: (string | number), onNoteChange: () => void, toSave: boolean, toCheck: boolean, onDoneChecking: (trigger : boolean) => void, onStartSaving : () => void, beforeDoneSaving : () => void, onDoneSaving : () => void, onOpenSettings : () => void } ) {
 
-    const [ noteInfo, setNoteInfo ] = useState({
+    const [ noteInfo, setNoteInfo ] = useState<Note>({
         note_id: 0,
         user_id: "",
         title: "",
         html_content: "",
         created_at: "",
-        last_modified: ""
+        last_modified: "",
+        content_state: convertToRaw(EditorState.createEmpty().getCurrentContent()),
     });
+    const [ origTitle, setOrigTitle ] = useState("");
 
     const handleTitleTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         setNoteInfo({...noteInfo, title: event.currentTarget.value});
     }
 
+    function check( editorState : EditorState ) {
+        console.log("check");
+        // Lodash's static isEqual method recursively compares values in a JavaScript object,
+        // allowing for comparing JavaScript objects by value. 
+
+        // if both content and title are equal, don't update information to database for efficiency reasons.
+        if (_.isEqual(noteInfo.content_state, convertToRaw(editorState.getCurrentContent()))
+            && noteInfo.title === origTitle
+        ) {
+            onDoneChecking(false);
+        } else {
+            onDoneChecking(true);
+        }
+    }
+
     async function save( editorState : EditorState ) {
         const { data: { user } } = await supabase.auth.getUser();
         const user_id : string = (user === null) ? "" : user.id;
+
+        // Lodash's static isEqual method recursively compares values in a JavaScript object,
+        // allowing for comparing JavaScript objects by value. 
+
+        // if both content and title are equal, don't update information to database for efficiency reasons.
+        if (_.isEqual(noteInfo.content_state, convertToRaw(editorState.getCurrentContent()))
+            && noteInfo.title === origTitle
+        ) {
+            return;
+        }
         
-        const newNoteInfo : Note = {...noteInfo, html_content: draftToHtml(convertToRaw(editorState.getCurrentContent())), last_modified: ((new Date()).toISOString()),}
+        const newNoteInfo : Note = { 
+            ...noteInfo,
+            content_state: convertToRaw(editorState.getCurrentContent()),
+            html_content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+            last_modified: ((new Date()).toISOString()),
+        }
         setNoteInfo(newNoteInfo);
         
         async function performUpdate() {
@@ -49,13 +82,16 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, onSta
     }
 
     useEffect(() => {
-        fetchNoteInfoFromId( noteId, setNoteInfo );
-    }, [ noteId ])
+        fetchNoteInfoFromId( noteId, setNoteInfo ).then((result) => {
+            setOrigTitle(result.title);
+            onDoneSaving();
+        });
+    }, [ noteId ]);
 
     return (
         <Stack sx={{height: 'calc(100% - 240px)'}} component="form" gap={5} padding="1rem" width={width} onSubmit={handleSubmit}>
             <TextField type="text" sx={{width:"100%", fontSize: "1.6rem", fontWeight: "bold"}} label="Title" variant="outlined" value={noteInfo.title} onChange={handleTitleTextChange} />
-            <TextEditor initContent={ noteInfo.html_content } toSave={toSave} onSave={save} onDoneSaving={onDoneSaving} />
+            <TextEditor initContentState={ noteInfo.content_state } toSave={toSave} onSave={save} onCheck={check} toCheck={toCheck} beforeDoneSaving={beforeDoneSaving} onDoneSaving={onDoneSaving} onOpenSettings={ onOpenSettings } />
         </Stack>
     );
 }
