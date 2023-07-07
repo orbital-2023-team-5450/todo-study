@@ -35,3 +35,31 @@
 .placeHolder {
     text-align: center;
 }
+
+.editor-button, .editor-button:hover {
+  background-color: inherit;
+  color: inherit;
+  filter: brightness(0);
+  z-index: 999; /* ensure dropdown is always above textbox */
+}
+
+.editor-button-dark, .editor-button-dark:hover {
+  background-color: inherit;
+  color: inherit;
+}
+
+.editor-button-dark img,a {
+  background-color: inherit;
+  color: inherit;
+  filter: brightness(0) invert(1);
+}
+
+.editor-button-dark li {
+  z-index: 999; /* ensure dropdown is always above textbox */
+  position: relative;
+  background-color: #121212;
+}
+
+.rdw-dropdownoption-highlighted {
+  background-color: grey !important;
+}

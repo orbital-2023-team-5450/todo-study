@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ContentBlock, ContentState, DraftBlockType, DraftStyleMap, EditorState, RawDraftContentState, RichUtils, convertFromHTML, convertFromRaw, convertToRaw } from "draft-js";
-import { Box, Button, Divider, IconButton, Popover, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, Popover, Stack, Typography, useTheme } from "@mui/material";
 import "./textEditor.css";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
@@ -11,8 +11,9 @@ import { Editor } from "react-draft-wysiwyg";
 import htmltoDraft from 'html-to-draftjs';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsIcon from '@mui/icons-material/Settings';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import NotesConfigDialog from "./dialogs/NotesConfigDialog";
-import { DEFAULT_NOTES_SETTINGS, NotesSettings, fetchNotesSettings } from "../../utils/noteUtils";
+import { DEFAULT_NOTES_SETTINGS, NotesSettings, fetchNotesSettings, toolbar } from "../../utils/noteUtils";
 import { usePrompt } from "../../hooks/usePrompt";
 import NotesLeavePageDialog from "./dialogs/NotesLeavePageDialog";
 
@@ -78,34 +79,55 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
   }, [toCheck]);
   
   return (
-    <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{marginLeft: 0, marginTop: 0, marginRight: '2rem', height: 'calc(100vh - 240px)'}}>
-        <Button onClick={handleSave} sx={{color: "rgba(0, 0, 0, 0.7)"}}>
-          <SaveIcon /> Save
-        </Button>
-        <Button onClick={ onOpenSettings } sx={{color: "rgba(0, 0, 0, 0.7)"}}>
-          <SettingsIcon /> Settings
-        </Button>
-        <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
-        <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginLeft: '3vh', height: 'calc(98vh - 400px)'}}>
-          <Editor editorState={editorState}
-                  placeholder="Edit text here..."
-                  toolbarClassName="toolbarClassName"
-                  wrapperClassName="wrapperClassName"
-                  editorClassName="editorClassName"
-                  onEditorStateChange={handleEditorStateChange}
-                  toolbarStyle={{
-                    backgroundColor: 'inherit',
-                    border: 'none',
-                  }}
-                  editorStyle={{
-                    borderRadius: 10,
-                    padding: '.2rem 1rem',
-                    border: '1px solid black',  
-                    height: 'calc(98vh - 400px)'
-                  }}
-                />
-          <NotesLeavePageDialog open={showPrompt as boolean} id={-1} handleConfirm={confirmNavigation as () => void} handleCancel={cancelNavigation as () => void} />
-        </Box>
+    <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{marginLeft: 0, marginTop: 0, height: 'calc(100vh - 240px)'}}>
+      <Grid container spacing={{ xs: 2, sm: 2, md: 5 }}>
+        <Grid item xs={12} sm={4}>
+          <Button sx={{ width: '100%' }} variant="contained" onClick={handleSave}>
+            <Stack spacing={1} direction="row">
+              <SaveIcon />
+              <Typography variant="button">Save</Typography>
+            </Stack>          
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenSettings }>
+            <Stack spacing={1} direction="row">
+              <SettingsIcon />
+              <Typography variant="button">Settings</Typography>
+            </Stack>
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenSettings }>
+            <Stack spacing={1} direction="row">
+              <FileDownloadIcon />
+              <Typography variant="button">Export</Typography>
+            </Stack>
+          </Button>
+        </Grid>
+      </Grid>
+      <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
+      <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginRight: '2rem', height: 'calc(98vh - 400px)'}}>
+        <Editor editorState={editorState}
+                placeholder="Edit text here..."
+                toolbarClassName="toolbarClassName"
+                wrapperClassName="wrapperClassName"
+                editorClassName="editorClassName"
+                onEditorStateChange={handleEditorStateChange}
+                toolbarStyle={{
+                  backgroundColor: 'inherit',
+                  border: 'none',
+                }}
+                editorStyle={{
+                  borderRadius: 10,
+                  padding: '.2rem 1rem',
+                  border: '1px solid',  
+                  height: 'calc(98vh - 400px)'
+                }}
+                toolbar={toolbar(useTheme().palette.mode === 'dark')}
+              />
+        <NotesLeavePageDialog open={showPrompt as boolean} id={-1} handleConfirm={confirmNavigation as () => void} handleCancel={cancelNavigation as () => void} />
+      </Box>
     </Stack>
   );  
 }
