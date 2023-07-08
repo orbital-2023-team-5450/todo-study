@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import supabase from '../../supabase';
 import NavSides from './NavSides';
 import AvatarView from '../AvatarView';
-import { useWindowWidth } from '../../hooks/useWindowWidth';
+import { useWindowParams } from '../../hooks/useWindowParams';
 
 const handleLogoutClick = () => {
   supabase.auth.signOut();
@@ -15,7 +15,7 @@ const handleLogoutClick = () => {
 
 export default function NavigationBar({ title, children } : React.PropsWithChildren<{ title : string }> ) {
   
-  const [ windowWidth, minimumDesktopWidth ] = useWindowWidth();  
+  const [ windowWidth, minimumDesktopWidth ] = useWindowParams();  
 
   return (
     <Box sx={{ flexGrow: 1 }}>

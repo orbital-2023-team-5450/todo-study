@@ -9,6 +9,7 @@ import _ from "lodash";
 import draftToHtml from 'draftjs-to-html';
 
 import supabase from '../../supabase';
+import { useWindowParams } from '../../hooks/useWindowParams';
 
 export default function MainEditor( { noteId, width, onNoteChange, toSave, toCheck, onDoneChecking, onStartSaving, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit } : { noteId : number, width: (string | number), onNoteChange: () => void, toSave: boolean, toCheck: boolean, onDoneChecking: (trigger : boolean) => void, onStartSaving : () => void, beforeDoneSaving : () => void, onDoneSaving : () => void, onOpenSettings : () => void, onExit : () => void } ) {
 
@@ -22,6 +23,7 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
         content_state: convertToRaw(EditorState.createEmpty().getCurrentContent()),
     });
     const [ origTitle, setOrigTitle ] = useState("");
+    const [ windowHeight ] = useWindowParams(false, true);
 
     const handleTitleTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -85,7 +87,7 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
     }, [ noteId, onDoneSaving ]);
 
     return (
-        <Stack sx={{height: 'calc(100% - 240px)'}} component="form" gap={5} padding="1rem" width={width} onSubmit={handleSubmit}>
+        <Stack sx={{ overflow: 'auto', height: 'calc(' + windowHeight + 'px - 120px)' }} component="form" gap={5} padding="1rem" pb={0} width={width} onSubmit={handleSubmit}>
             <TextField type="text" sx={{width:"100%", fontSize: "1.6rem", fontWeight: "bold"}} label="Title" variant="outlined" value={noteInfo.title} onChange={handleTitleTextChange} />
             <TextEditor initContentState={ noteInfo.content_state } toSave={toSave} onSave={save} onCheck={check} toCheck={toCheck} beforeDoneSaving={beforeDoneSaving} onDoneSaving={onDoneSaving} onOpenSettings={ onOpenSettings } onExit={ onExit } />
         </Stack>

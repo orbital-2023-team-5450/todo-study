@@ -12,7 +12,7 @@ import supabase from "../supabase";
 import EmptyNoteState from "../components/note-taking/EmptyNoteState";
 import NotesConfigDialog from "../components/note-taking/dialogs/NotesConfigDialog";
 import NotesLeavePageDialog from "../components/note-taking/dialogs/NotesLeavePageDialog";
-import { useWindowWidth } from "../hooks/useWindowWidth";
+import { useWindowParams } from "../hooks/useWindowParams";
 /*
 const TEST_NOTES : Note[] = [
     {
@@ -58,7 +58,7 @@ export default function Notes() {
     const [ notesSettings, setNotesSettings ] = useState<NotesSettings>(DEFAULT_NOTES_SETTINGS);
     const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
     const navigate = useNavigate();
-    const [ windowWidth, minimumDesktopWidth ] = useWindowWidth();
+    const [ windowWidth, minimumDesktopWidth, windowHeight ] = useWindowParams(true, true); // fix for 100vh for mobile browsers
 
     const addNote = async () => {
         const submitInfo = {
@@ -160,9 +160,9 @@ export default function Notes() {
     return loading ? (
             <LoadingScreen />
         ) : (
-            <>
+            <Box component="main" overflow="hidden" height={ windowHeight }>
                 <CssBaseline />
-                <Box sx={{overflow: 'hidden'}} onKeyDown={handleKeyDown} height="100vh" display="flex" flexDirection="column">
+                <Box height="100%" onKeyDown={handleKeyDown} display="flex" flexDirection="column">
                     <Box flex={0}>
                         <NavigationBar title="Notes" />
                     </Box>
@@ -179,12 +179,14 @@ export default function Notes() {
                     ) : (
                         <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
                     ) }
-                    <Fab onClick={addNote} color="primary" aria-label="add-note" sx={{position: 'absolute', bottom: 16, right: 16}}>
-                        <AddIcon />
-                    </Fab>
+                    <NotesConfigDialog open={notesConfigOpen} handleClose={() => setNotesConfigOpen(false)} onChange={ () => fetchNotesSettings(setNotesSettings) } /> 
+                    <NotesLeavePageDialog open={showLeavePageDialog as boolean} id={nextId} handleConfirm={ handleConfirm } handleCancel={ handleCancel } />
+                    <Box display="flex" justifyContent="right" position="sticky" bottom={16} mr="16px">
+                        <Fab onClick={addNote} color="primary" aria-label="add-note">
+                            <AddIcon />
+                        </Fab>
+                    </Box>
                 </Box>
-                <NotesConfigDialog open={notesConfigOpen} handleClose={() => setNotesConfigOpen(false)} onChange={ () => fetchNotesSettings(setNotesSettings) } /> 
-                <NotesLeavePageDialog open={showLeavePageDialog as boolean} id={nextId} handleConfirm={ handleConfirm } handleCancel={ handleCancel } />
-            </>
+            </Box>
         );
 }

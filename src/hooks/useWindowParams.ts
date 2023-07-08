@@ -5,15 +5,17 @@ import { useState, useEffect } from 'react';
  * that changes on resize.
  * @returns The window width using the window.innerWidth method (as measured on resize).
  */
-export const useWindowWidth = () => {
+export const useWindowParams = (getWidth : boolean = true, getHeight : boolean = false) => {
   
   const minimumDesktopWidth = 600;
   const [ windowWidth, setWindowWidth ] = useState(window.innerWidth);
+  const [ windowHeight, setWindowHeight ] = useState(window.innerHeight);
 
   useEffect(() => {
 
     const handleWindowResize = () => {
       setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
     };
 
     window.addEventListener("resize", handleWindowResize);
@@ -22,6 +24,14 @@ export const useWindowWidth = () => {
       window.removeEventListener("resize", handleWindowResize);
     }
   });
-
-  return [ windowWidth, minimumDesktopWidth ];
+  
+  if (getWidth && getHeight) {
+    return [ windowWidth, minimumDesktopWidth, windowHeight ];
+  } else if (getWidth) {
+    return [ windowWidth, minimumDesktopWidth ];
+  } else if (getHeight) {
+    return [ windowHeight ];
+  } else {
+    return [];
+  }
 }

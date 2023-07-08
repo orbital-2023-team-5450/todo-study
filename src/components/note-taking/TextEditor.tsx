@@ -15,14 +15,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import { toolbar } from "../../utils/noteUtils";
 import { usePrompt } from "../../hooks/usePrompt";
 import NotesLeavePageDialog from "./dialogs/NotesLeavePageDialog";
-import { useWindowWidth } from "../../hooks/useWindowWidth";
-
+import { useWindowParams } from "../../hooks/useWindowParams";
 export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void, onExit : () => void } ) {
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
   const [ showPrompt, confirmNavigation, cancelNavigation ] = usePrompt(showLeavePageDialog, true, handleLeaveSave);
-  const [ windowWidth, minimumDesktopWidth ] = useWindowWidth();  
+  const [ windowWidth, minimumDesktopWidth, windowHeight ] = useWindowParams(true, true);
 
   const handleKeyDown = (event : React.KeyboardEvent<HTMLElement>) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 's') {
@@ -80,7 +79,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
   }, [toCheck, handleCheck]);
   
   return (
-    <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{marginLeft: 0, marginTop: 0, height: 'calc(100vh - 240px)'}}>
+    <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{ marginLeft: 0, marginTop: 0 }}>
       <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
         <Grid item xs={6} md={3}>
           <Button sx={{ width: '100%' }} color="secondary" variant="contained" onClick={ onExit }>
@@ -138,7 +137,8 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
                   borderRadius: 10,
                   padding: '.2rem 1rem',
                   border: '1px solid',  
-                  height: 'calc(98vh - 400px)'
+                  height: 'calc(' + (0.9 * windowHeight) + 'px - 400px)',
+                  minHeight: '10em',
                 }}
                 toolbar={toolbar(useTheme().palette.mode === 'dark')}
               />

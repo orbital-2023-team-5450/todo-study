@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Note } from '../../utils/noteUtils';
-import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, Stack, Typography } from '@mui/material';
+import { Box, Divider, List, ListItem, ListItemButton, Typography } from '@mui/material';
 import NoteEntry from './NoteEntry';
+import { useWindowParams } from '../../hooks/useWindowParams';
 
 /**
  * Displays a sidebar containing the list of all notes created by the user.
@@ -15,7 +16,8 @@ import NoteEntry from './NoteEntry';
 export default function NoteNavigation( { noteList, width, edit, onNoteDelete } : { noteList : Note[], width: (string | number), edit : ( noteId : number ) => void, onNoteDelete : (id : number) => void } ) {
     
     const [ isBlurred, setIsBlurred ] = useState(false);
-    
+    const [ windowHeight ] = useWindowParams(false, true);
+
     return (
         <Box
             sx={{ width: '100%', maxWidth: width, bgcolor: 'background.paper' }}
@@ -24,7 +26,7 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
                 <Typography component="h1" variant="h6" fontWeight="bold" paddingTop=".5rem" paddingBottom=".5rem">Notes</Typography>
             </Box>
             <Divider />
-            <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: 'calc(100vh - 120px)' }}>
+            <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: 'calc(' + windowHeight + 'px - 120px)' }}>
                 {
                     noteList.map((note : Note) => {
                         return (
