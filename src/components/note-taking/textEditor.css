@@ -48,13 +48,13 @@
   color: inherit;
 }
 
-.editor-button-dark img,a {
+.editor-button-dark > img, .editor-button-dark > a {
   background-color: inherit;
   color: inherit;
   filter: brightness(0) invert(1);
 }
 
-.editor-button-dark li {
+.editor-button-dark > li {
   z-index: 999; /* ensure dropdown is always above textbox */
   position: relative;
   background-color: #121212;

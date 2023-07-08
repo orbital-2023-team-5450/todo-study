@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, CssBaseline, Divider, Fab, Stack } from "@mui/material";
+import { Box, Button, CssBaseline, Divider, Fab, Stack, Typography } from "@mui/material";
 import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
 import { useNavigate } from "react-router-dom";
@@ -181,11 +181,24 @@ export default function Notes() {
                     ) }
                     <NotesConfigDialog open={notesConfigOpen} handleClose={() => setNotesConfigOpen(false)} onChange={ () => fetchNotesSettings(setNotesSettings) } /> 
                     <NotesLeavePageDialog open={showLeavePageDialog as boolean} id={nextId} handleConfirm={ handleConfirm } handleCancel={ handleCancel } />
-                    <Box display="flex" justifyContent="right" position="sticky" bottom={16} mr="16px">
-                        <Fab onClick={addNote} color="primary" aria-label="add-note">
-                            <AddIcon />
-                        </Fab>
-                    </Box>
+                    { (windowWidth >= minimumDesktopWidth) ? (
+                        <Box display="flex" justifyContent="right" position="sticky" bottom={16} mr="16px">
+                            <Fab onClick={addNote} color="primary" aria-label="add-note">
+                                <AddIcon />
+                            </Fab>
+                        </Box>
+                    ) : (mainEditorId === -1) ? (
+                        <Box display="flex" justifyContent="center">
+                            <Button sx={{ width: '100%', borderRadius: 0, height: '4em' }} onClick={addNote} aria-label="add-note-mobile" variant="contained" color="primary">
+                                <Stack direction="row" spacing={1}>
+                                    <AddIcon />
+                                    <Typography variant="button">
+                                        Add new note...
+                                    </Typography>
+                                </Stack>
+                            </Button>
+                        </Box>
+                    ) : <></> }
                 </Box>
             </Box>
         );

@@ -16,7 +16,10 @@ import { useWindowParams } from '../../hooks/useWindowParams';
 export default function NoteNavigation( { noteList, width, edit, onNoteDelete } : { noteList : Note[], width: (string | number), edit : ( noteId : number ) => void, onNoteDelete : (id : number) => void } ) {
     
     const [ isBlurred, setIsBlurred ] = useState(false);
-    const [ windowHeight ] = useWindowParams(false, true);
+    const [ windowWidth, minimumDesktopWidth, windowHeight ] = useWindowParams(true, true);
+    const listHeight = (windowWidth >= minimumDesktopWidth)
+        ? 'calc(' + windowHeight + 'px - 120px)'
+        : 'calc(' + windowHeight + 'px - 110px - 4em)';
 
     return (
         <Box
@@ -26,7 +29,7 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
                 <Typography component="h1" variant="h6" fontWeight="bold" paddingTop=".5rem" paddingBottom=".5rem">Notes</Typography>
             </Box>
             <Divider />
-            <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: 'calc(' + windowHeight + 'px - 120px)' }}>
+            <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: listHeight }}>
                 {
                     noteList.map((note : Note) => {
                         return (
