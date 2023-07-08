@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,35 +7,23 @@ import Button from '@mui/material/Button';
 import supabase from '../../supabase';
 import NavSides from './NavSides';
 import AvatarView from '../AvatarView';
+import { useWindowWidth } from '../../hooks/useWindowWidth';
 
 const handleLogoutClick = () => {
   supabase.auth.signOut();
 }
 
-  export default function NavigationBar({ title, children } : React.PropsWithChildren<{ title : string }> ) {
+export default function NavigationBar({ title, children } : React.PropsWithChildren<{ title : string }> ) {
   
-  const [ windowWidth, setWindowWidth ] = useState(window.innerWidth);
+  const [ windowWidth, minimumDesktopWidth ] = useWindowWidth();  
 
-  useEffect(() => {
-
-    const handleWindowResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleWindowResize);
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    }
-  });
-  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{padding: "0.5rem"}}>
           <NavSides />
           <Typography variant="h5" component="code" className="todo-study-logo-white" sx={{ flexGrow: 1 }}>
-            { title + ((windowWidth >= 600) ? " // TODO: Study" : "")}
+            { title + ((windowWidth >= minimumDesktopWidth) ? " // TODO: Study" : "")}
           </Typography>
           <AvatarView />
           <Button variant="contained" onClick={handleLogoutClick} disableElevation>Sign out</Button>

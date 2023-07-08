@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Box, CssBaseline, Divider, Fab, Stack, TextField, Typography } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
+import { Box, CssBaseline, Divider, Fab, Stack } from "@mui/material";
 import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
 import { useNavigate } from "react-router-dom";
@@ -7,14 +7,12 @@ import fetchUserInfo from "../utils/fetchUserInfo";
 import { DEFAULT_NOTES_SETTINGS, Note, NotesSettings, deleteNote, fetchNotes, fetchNotesSettings } from "../utils/noteUtils";
 import AddIcon from "@mui/icons-material/Add";
 import NoteNavigation from "../components/note-taking/NoteNavigation";
-import TextEditor from "../components/note-taking/TextEditor";
 import MainEditor from "../components/note-taking/MainEditor";
 import supabase from "../supabase";
-import { Editor, EditorState } from "draft-js";
 import EmptyNoteState from "../components/note-taking/EmptyNoteState";
 import NotesConfigDialog from "../components/note-taking/dialogs/NotesConfigDialog";
-import { usePrompt } from "../hooks/usePrompt";
 import NotesLeavePageDialog from "../components/note-taking/dialogs/NotesLeavePageDialog";
+import { useWindowWidth } from "../hooks/useWindowWidth";
 /*
 const TEST_NOTES : Note[] = [
     {
@@ -45,9 +43,6 @@ const TEST_NOTES : Note[] = [
     }
 ]*/
 
-const drawerWidth = 260;
-const widthStyle = "calc(100vw - " + drawerWidth + "px)";
-
 export default function Notes() {
 
     document.title = "Notes // TODO: Study";
@@ -63,6 +58,7 @@ export default function Notes() {
     const [ notesSettings, setNotesSettings ] = useState<NotesSettings>(DEFAULT_NOTES_SETTINGS);
     const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
     const navigate = useNavigate();
+    const [ windowWidth, minimumDesktopWidth ] = useWindowWidth();
 
     const addNote = async () => {
         const submitInfo = {
@@ -136,9 +132,9 @@ export default function Notes() {
         }
     }
 
-    const handleDoneSaving = () => {
+    const handleDoneSaving = useCallback(() => {
         setToSave(false);
-    }
+    }, []);
 
     const handleDoneChecking = ( trigger : boolean ) => {
         setToCheck(false);
@@ -158,6 +154,9 @@ export default function Notes() {
       fetchNotesSettings(setNotesSettings);
     }, []);
 
+    const drawerWidth = (windowWidth >= minimumDesktopWidth) ? 260 : '100%';
+    const widthStyle = (windowWidth >= minimumDesktopWidth) ? "calc(100vw - " + drawerWidth + "px)" : '100%';
+
     return loading ? (
             <LoadingScreen />
         ) : (
@@ -167,13 +166,19 @@ export default function Notes() {
                     <Box flex={0}>
                         <NavigationBar title="Notes" />
                     </Box>
-                    <Stack width="100%" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
+                    { (windowWidth >= minimumDesktopWidth) ? (
+                        <Stack width="100%" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
+                            <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
+                            { (mainEditorId !== -1) ? 
+                                <MainEditor onExit={ () => handleEdit(-1) } width={widthStyle} toCheck={ toCheck } onDoneChecking={ handleDoneChecking } toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/> :
+                                <EmptyNoteState width={widthStyle} onLinkClick={addNote} />
+                            }
+                        </Stack>
+                    ) : (mainEditorId !== -1) ? (
+                        <MainEditor onExit={ () => handleEdit(-1) } width={widthStyle} toCheck={ toCheck } onDoneChecking={ handleDoneChecking } toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/>
+                    ) : (
                         <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
-                        { (mainEditorId !== -1) ? 
-                            <MainEditor width={widthStyle} toCheck={ toCheck } onDoneChecking={ handleDoneChecking } toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/> :
-                            <EmptyNoteState width={widthStyle} onLinkClick={addNote} />
-                        }
-                    </Stack>
+                    ) }
                     <Fab onClick={addNote} color="primary" aria-label="add-note" sx={{position: 'absolute', bottom: 16, right: 16}}>
                         <AddIcon />
                     </Fab>

@@ -1,27 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
-import { ContentBlock, ContentState, DraftBlockType, DraftStyleMap, EditorState, RawDraftContentState, RichUtils, convertFromHTML, convertFromRaw, convertToRaw } from "draft-js";
-import { Box, Button, Divider, Grid, IconButton, Popover, Stack, Typography, useTheme } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
+import { EditorState, RawDraftContentState, convertFromRaw } from "draft-js";
+import { Box, Button, Divider, Grid, Stack, Typography, useTheme } from "@mui/material";
 import "./textEditor.css";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 // @ts-ignore
 import { Editor } from "react-draft-wysiwyg";
 
-// @ts-ignore
-import htmltoDraft from 'html-to-draftjs';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsIcon from '@mui/icons-material/Settings';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import NotesConfigDialog from "./dialogs/NotesConfigDialog";
-import { DEFAULT_NOTES_SETTINGS, NotesSettings, fetchNotesSettings, toolbar } from "../../utils/noteUtils";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CloseIcon from '@mui/icons-material/Close';
+import { toolbar } from "../../utils/noteUtils";
 import { usePrompt } from "../../hooks/usePrompt";
 import NotesLeavePageDialog from "./dialogs/NotesLeavePageDialog";
+import { useWindowWidth } from "../../hooks/useWindowWidth";
 
-export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void } ) {
+export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void, onExit : () => void } ) {
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
   const [ showPrompt, confirmNavigation, cancelNavigation ] = usePrompt(showLeavePageDialog, true, handleLeaveSave);
+  const [ windowWidth, minimumDesktopWidth ] = useWindowWidth();  
 
   const handleKeyDown = (event : React.KeyboardEvent<HTMLElement>) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 's') {
@@ -39,14 +40,14 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
     return await onSave(editorState);
   }
 
-  function handleSave() {
+  const handleSave = useCallback(() => {
     setShowLeavePageDialog(false);
     onSave(editorState).then(() => beforeDoneSaving());
-  }
+  }, [onSave, editorState, beforeDoneSaving]);
 
-  function handleCheck() {
+  const handleCheck = useCallback(() => {
     onCheck(editorState);
-  }
+  }, [onCheck, editorState]);
 
   useEffect(() => {
     if (initContentState === null || initContentState === undefined) { 
@@ -70,18 +71,33 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
       handleSave();
       onDoneSaving();
     }
-  }, [toSave]);
+  }, [toSave, handleSave, onDoneSaving]);
 
   useEffect(() => {
     if (toCheck) {
       handleCheck();
     }
-  }, [toCheck]);
+  }, [toCheck, handleCheck]);
   
   return (
     <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{marginLeft: 0, marginTop: 0, height: 'calc(100vh - 240px)'}}>
-      <Grid container spacing={{ xs: 2, sm: 2, md: 5 }}>
-        <Grid item xs={12} sm={4}>
+      <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
+        <Grid item xs={6} md={3}>
+          <Button sx={{ width: '100%' }} color="secondary" variant="contained" onClick={ onExit }>
+            { (windowWidth >= minimumDesktopWidth) ? (
+              <Stack spacing={1} direction="row">
+                <CloseIcon />
+                <Typography variant="button">Close</Typography>
+              </Stack> 
+            ) : (
+              <Stack spacing={1} direction="row">
+                <ArrowBackIcon />
+                <Typography variant="button">Back</Typography>
+              </Stack> 
+            ) }
+          </Button>
+        </Grid>
+        <Grid item xs={6} md={3}>
           <Button sx={{ width: '100%' }} variant="contained" onClick={handleSave}>
             <Stack spacing={1} direction="row">
               <SaveIcon />
@@ -89,7 +105,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
             </Stack>          
           </Button>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={6} md={3}>
           <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenSettings }>
             <Stack spacing={1} direction="row">
               <SettingsIcon />
@@ -97,7 +113,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
             </Stack>
           </Button>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={6} md={3}>
           <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenSettings }>
             <Stack spacing={1} direction="row">
               <FileDownloadIcon />
