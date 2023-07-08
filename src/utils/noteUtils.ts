@@ -147,6 +147,7 @@ export async function fetchNotesSettings(setData : React.Dispatch<React.SetState
 export const toolbar = (dark : boolean) => { 
   
   const defaultButtonStyle = (dark) ? 'editor-button-dark' : 'editor-button';
+  const defaultPopupStyle = (dark) ? 'editor-popup-dark' : 'editor-popup';
 
   return {
     options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'remove', 'history'],
@@ -209,7 +210,7 @@ export const toolbar = (dark : boolean) => {
     colorPicker: {
       className: defaultButtonStyle,
       component: undefined,
-      popupClassName: undefined,
+      popupClassName: defaultPopupStyle,
       colors: ['rgb(97,189,109)', 'rgb(26,188,156)', 'rgb(84,172,210)', 'rgb(44,130,201)',
         'rgb(147,101,184)', 'rgb(71,85,119)', 'rgb(204,204,204)', 'rgb(65,168,95)', 'rgb(0,168,133)',
         'rgb(61,142,185)', 'rgb(41,105,176)', 'rgb(85,57,130)', 'rgb(40,50,78)', 'rgb(0,0,0)',
@@ -221,7 +222,7 @@ export const toolbar = (dark : boolean) => {
       inDropdown: false,
       className: undefined,
       component: undefined,
-      popupClassName: undefined,
+      popupClassName: defaultPopupStyle,
       dropdownClassName: undefined,
       showOpenOptionOnHover: true,
       defaultTargetOption: '_self',
@@ -233,7 +234,7 @@ export const toolbar = (dark : boolean) => {
     emoji: {
       className: defaultButtonStyle,
       component: undefined,
-      popupClassName: undefined,
+      popupClassName: defaultPopupStyle,
       emojis: [
         '😀', '😁', '😂', '😃', '😉', '😋', '😎', '😍', '😗', '🤗', '🤔', '😣', '😫', '😴', '😌', '🤓',
         '😛', '😜', '😠', '😇', '😷', '😈', '👻', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '🙈',
@@ -249,7 +250,7 @@ export const toolbar = (dark : boolean) => {
     embedded: {
       className: defaultButtonStyle,
       component: undefined,
-      popupClassName: undefined,
+      popupClassName: defaultPopupStyle,
       embedCallback: undefined,
       defaultSize: {
         height: 'auto',
@@ -259,7 +260,7 @@ export const toolbar = (dark : boolean) => {
     image: {
       className: defaultButtonStyle,
       component: undefined,
-      popupClassName: undefined,
+      popupClassName: defaultPopupStyle,
       urlEnabled: true,
       uploadEnabled: true,
       alignmentEnabled: true,

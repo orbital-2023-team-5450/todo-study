@@ -36,14 +36,7 @@
     text-align: center;
 }
 
-.editor-button, .editor-button:hover {
-  background-color: inherit;
-  color: inherit;
-  filter: brightness(0);
-  z-index: 999; /* ensure dropdown is always above textbox */
-}
-
-.editor-button-dark, .editor-button-dark:hover {
+.editor-button, .editor-button:hover, .editor-button-dark, .editor-button-dark:hover {
   background-color: inherit;
   color: inherit;
 }
@@ -60,6 +53,53 @@
   background-color: #121212;
 }
 
-.rdw-dropdownoption-highlighted {
-  background-color: grey !important;
+.editor-button > li {
+  z-index: 999; /* ensure dropdown is always above textbox */
+  position: relative;
+  background-color: #EEEEEE;
+}
+
+.editor-button > li.rdw-dropdownoption-highlighted {
+  background-color: rgb(192, 192, 192) !important;
+}
+
+.editor-button-dark > li.rdw-dropdownoption-highlighted {
+  background-color: rgb(64, 64, 64) !important;
+}
+
+.editor-popup {
+  z-index: 999;
+  background-color: #EEEEEE;
+}
+
+.editor-popup-dark input {
+  border: 1px solid white;
+  margin: 1px;
+  background-color: inherit;
+  color: white;
+  font-family: inherit;
+}
+
+.editor-popup input {
+  border: 1px solid black;
+  margin: 1px;
+  font-family: inherit;
+}
+
+.editor-popup-dark {
+  z-index: 999; /* ensure popup is always above textbox */
+  background-color: #121212;
+}
+
+.rdw-colorpicker-modal-options {
+  overflow-x: hidden;
+}
+ 
+.rdw-colorpicker-option {
+  overflow: hidden;
+  border: 1px dashed gray;
+}
+
+.rdw-colorpicker-cube {
+  border: none;
 }
