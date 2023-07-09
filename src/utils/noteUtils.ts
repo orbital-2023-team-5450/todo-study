@@ -1,8 +1,7 @@
-import { EditorState, RawDraftContentState, SelectionState, convertToRaw } from "draft-js";
+import { EditorState, RawDraftContentState, convertToRaw } from "draft-js";
 import supabase from "../supabase";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../components/note-taking/textEditor.css';
-import { Theme } from "@mui/material";
 
 /**
  * A type representing the users' settings for the Notes application, as
@@ -125,7 +124,7 @@ export async function fetchNotesSettings(setData : React.Dispatch<React.SetState
                 user_id: user_id,
             }
 
-            const { error } = await supabase.from('users_notes_config').insert(submitInfo);
+            await supabase.from('users_notes_config').insert(submitInfo);
             
             console.log(submitInfo);
             console.log(result.data);

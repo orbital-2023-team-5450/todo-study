@@ -182,11 +182,9 @@ export default function Notes() {
                     <NotesConfigDialog open={notesConfigOpen} handleClose={() => setNotesConfigOpen(false)} onChange={ () => fetchNotesSettings(setNotesSettings) } /> 
                     <NotesLeavePageDialog open={showLeavePageDialog as boolean} id={nextId} handleConfirm={ handleConfirm } handleCancel={ handleCancel } />
                     { (windowWidth >= minimumDesktopWidth) ? (
-                        <Box display="flex" justifyContent="right" position="sticky" bottom={16} mr="16px">
-                            <Fab onClick={addNote} color="primary" aria-label="add-note">
-                                <AddIcon />
-                            </Fab>
-                        </Box>
+                        <Fab onClick={addNote} color="primary" aria-label="add-note" sx={{ position: 'absolute', bottom: 16, right: 16}}>
+                            <AddIcon />
+                        </Fab>
                     ) : (mainEditorId === -1) ? (
                         <Box display="flex" justifyContent="center">
                             <Button sx={{ width: '100%', borderRadius: 0, height: '4em' }} onClick={addNote} aria-label="add-note-mobile" variant="contained" color="primary">

@@ -68,7 +68,6 @@
 }
 
 .editor-popup {
-  z-index: 999;
   background-color: #EEEEEE;
 }
 
@@ -87,7 +86,6 @@
 }
 
 .editor-popup-dark {
-  z-index: 999; /* ensure popup is always above textbox */
   background-color: #121212;
 }
 
@@ -103,3 +101,18 @@
 .rdw-colorpicker-cube {
   border: none;
 }
+
+.editor-popup *, .editor-popup-dark * {
+  position: relative;
+}
+
+/*
+@media only screen and (min-width: 600px) {
+  .editor-popup, .editor-popup-dark {
+    left: -225px;
+  }
+
+  .rdw-colorpicker-modal {
+    left: -165px;
+  }
+}*/
