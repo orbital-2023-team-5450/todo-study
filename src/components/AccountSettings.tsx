@@ -214,7 +214,7 @@ export default function AccountSettings({ insert, onUpdate } : { insert : boolea
                 onChange={handleTelegramTextChange}
                 helperText={telegramError ? "Telegram handle must start with @ or left blank." : ""}
                 error={telegramError} />
-            <Stack direction="row" gap={6}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} display="flex" justifyContent="center" gap={{ xs: 2, sm: 3 }}>
                 <Button variant="contained" size="medium" type="submit">{ title }</Button>
                 { !insert && <Button variant="contained" size="medium" onClick={handleDashboardClick}>Back to Dashboard</Button> }
                 <Button variant="contained" size="medium" onClick={handleLogoutClick}>Log out</Button>

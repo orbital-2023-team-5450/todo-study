@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Note } from '../../utils/noteUtils';
-import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, Stack, Typography } from '@mui/material';
+import { Box, Divider, List, ListItem, ListItemButton, Typography } from '@mui/material';
 import NoteEntry from './NoteEntry';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useWindowParams } from '../../hooks/useWindowParams';
+import SearchBar from '../SearchBar';
+import { createTextEventHandler } from '../../utils/textInputUtils';
 
 /**
  * Displays a sidebar containing the list of all notes created by the user.
@@ -16,7 +18,28 @@ import DeleteIcon from '@mui/icons-material/Delete';
 export default function NoteNavigation( { noteList, width, edit, onNoteDelete } : { noteList : Note[], width: (string | number), edit : ( noteId : number ) => void, onNoteDelete : (id : number) => void } ) {
     
     const [ isBlurred, setIsBlurred ] = useState(false);
-    
+    const [ windowWidth, minimumDesktopWidth, windowHeight ] = useWindowParams(true, true);
+    const [ searchValue, setSearchValue ] = useState("");
+    const listHeight = (windowWidth >= minimumDesktopWidth)
+        ? 'calc(' + windowHeight + 'px - 120px)'
+        : 'calc(' + windowHeight + 'px - 110px - 4em)';
+
+    const handleSearchBarChange = createTextEventHandler(setSearchValue);
+    const handleSearchBarSubmit = (event : React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+    }
+
+    const notesFilterPredicate = (note : Note) => {
+        return (note.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+          note.html_content.toLowerCase().includes(searchValue.toLowerCase()) ||
+          note.note_id === parseInt(searchValue.toLowerCase()) ||
+          (searchValue.startsWith("#") && note.note_id === parseInt(searchValue.toLowerCase().substring(1))) ||
+          (searchValue.toLowerCase() === "untitled" && note.title === "")
+        );
+    }
+
+    const filteredNoteList = noteList.filter(notesFilterPredicate);
+
     return (
         <Box
             sx={{ width: '100%', maxWidth: width, bgcolor: 'background.paper' }}
@@ -25,25 +48,29 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
                 <Typography component="h1" variant="h6" fontWeight="bold" paddingTop=".5rem" paddingBottom=".5rem">Notes</Typography>
             </Box>
             <Divider />
-            <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: 'calc(100vh - 120px)' }}>
+            <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: listHeight }}>
+                <ListItem key="search">
+                    <SearchBar value={searchValue} onChange={handleSearchBarChange} onSubmit={handleSearchBarSubmit} onClear={ () => setSearchValue("") } />
+                </ListItem>
                 {
-                    noteList.map((note : Note) => {
-                        return (
-                            <>
-                                <ListItem key={note.note_id}>
-                                    <Box width="100%" component="div" display="flex" justifyContent="space-between" alignItems="center">
+                    (filteredNoteList.length !== 0) ? filteredNoteList.map(
+                        (note : Note) => {
+                            return (
+                                <>
+                                    <ListItem key={note.note_id}>
                                         <ListItemButton onFocus={ () => setIsBlurred(false) } onBlur={ () => setIsBlurred(true) } onClick={ () => { edit(note.note_id); } }>
-                                            <NoteEntry note={note} />
+                                            <NoteEntry note={note} handleNoteDelete={ () => onNoteDelete(note.note_id) } />
                                         </ListItemButton>
-                                        <IconButton color="error" onClick={ () => onNoteDelete(note.note_id) }>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Box>
-                                </ListItem> 
-                                <Divider />
-                            </>
-                        );
-                    })
+                                    </ListItem> 
+                                    <Divider />
+                                </>
+                            );
+                        }
+                    ) : (
+                        <ListItem key="empty">
+                            <Typography width="100%" textAlign="center">No matching note found.</Typography>
+                        </ListItem>
+                    )
                 }
             </List>
         </Box>

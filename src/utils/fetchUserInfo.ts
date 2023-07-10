@@ -3,11 +3,38 @@ import supabase from "../supabase";
 import { NavigateFunction } from "react-router-dom";
 
 /**
+ * The type representing the user data, as represented in the users table in the database.
+ */
+export type UserInfo = {
+    user_id: string,
+    user_name: string,
+    first_name: string,
+    last_name: string, 
+    avatar_url: string,
+    theme: string,
+    telegram_handle: string,
+    created_at: string,
+};
+
+/**
+ * A constant representing the default value for the user data if the database is unable to
+ * fetch any user data.
+ */
+export const DEFAULT_USER_INFO : UserInfo = {
+    user_id: "",
+    user_name: "", 
+    first_name: "", 
+    last_name: "", 
+    avatar_url: "", 
+    theme: "",
+    telegram_handle: "",
+    created_at: "" 
+}
+
+/**
  * Fetches the information from the users table in Supabase, and stores it in a
  * React state using setData. Use a useEffect() hook to ensure that this
- * always runs when a page is first loaded. To use this, set this as the initial state:
- * { user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "",
- * telegram_handle: "", created_at: "" }
+ * always runs when a page is first loaded. To use this, set DEFAULT_USER_INFO as the initial state.
  * 
  * @param setData The React state function to store the data from the database.
  * @param loading Whether the page is loading or not.

@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Box, CssBaseline, Divider, Fab, Stack, TextField, Typography } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
+import { Box, Button, CssBaseline, Divider, Fab, Stack, Typography } from "@mui/material";
 import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
 import { useNavigate } from "react-router-dom";
 import fetchUserInfo from "../utils/fetchUserInfo";
-import { Note, deleteNote, fetchNotes } from "../utils/noteUtils";
+import { DEFAULT_NOTES_SETTINGS, Note, NotesSettings, deleteNote, fetchNotes, fetchNotesSettings } from "../utils/noteUtils";
 import AddIcon from "@mui/icons-material/Add";
 import NoteNavigation from "../components/note-taking/NoteNavigation";
-import TextEditor from "../components/note-taking/TextEditor";
 import MainEditor from "../components/note-taking/MainEditor";
 import supabase from "../supabase";
-import { Editor, EditorState } from "draft-js";
 import EmptyNoteState from "../components/note-taking/EmptyNoteState";
-
+import NotesConfigDialog from "../components/note-taking/dialogs/NotesConfigDialog";
+import NotesLeavePageDialog from "../components/note-taking/dialogs/NotesLeavePageDialog";
+import { useWindowParams } from "../hooks/useWindowParams";
+/*
 const TEST_NOTES : Note[] = [
     {
         note_id: 1,
@@ -40,10 +41,7 @@ const TEST_NOTES : Note[] = [
         created_at: "",
         last_modified: "",
     }
-]
-
-const drawerWidth = 260;
-const widthStyle = "calc(100vw - " + drawerWidth + "px)";
+]*/
 
 export default function Notes() {
 
@@ -54,7 +52,13 @@ export default function Notes() {
     const [ mainEditorId, setMainEditorId ] = useState(-1);
     const [ loading, setLoading ] = useState(true);
     const [ toSave, setToSave ] = useState(false);
+    const [ toCheck, setToCheck ] = useState(false);
+    const [ nextId, setNextId ] = useState(-2);
+    const [notesConfigOpen, setNotesConfigOpen] = useState(false);
+    const [ notesSettings, setNotesSettings ] = useState<NotesSettings>(DEFAULT_NOTES_SETTINGS);
+    const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
     const navigate = useNavigate();
+    const [ windowWidth, minimumDesktopWidth, windowHeight ] = useWindowParams(true, true); // fix for 100vh for mobile browsers
 
     const addNote = async () => {
         const submitInfo = {
@@ -65,10 +69,15 @@ export default function Notes() {
             last_modified: ((new Date()).toISOString()),
         }
 
-        const { error } = await supabase.from('notes').insert(submitInfo);
+        const { data, error } = await supabase.from('notes').insert(submitInfo).select();
         console.log(error);
 
-        fetchNotes(setNoteList);
+        if (!error) {
+            if (data !== null && data[0] !== null) {
+                setMainEditorId(data[0].note_id);
+            }
+            fetchNotes(setNoteList);
+        }
     }
 
     const deleteNoteHandler = (id : number) => {
@@ -87,31 +96,108 @@ export default function Notes() {
         }
     }
 
+    const handleEdit = ( id : number ) => {
+        // new ID is different from what is in the editor
+        if (id !== mainEditorId && mainEditorId !== -1) {
+            if (notesSettings.autosave) {
+                setToSave(true);
+                setNextId(id);
+            } else {
+                setNextId(id);
+                setToCheck(true);
+            }
+            // remaining will be handled by handleDoneSaving
+        } else {
+            setMainEditorId(id);
+            // do nothing...
+        }
+        fetchNotes(setNoteList);
+    }
+
+    const handleConfirm = ( id : number ) => {
+        setMainEditorId(id);
+        setNextId(-2);
+        setShowLeavePageDialog(false);
+    }
+
+    const handleCancel = () => {
+        setShowLeavePageDialog(false);
+    }
+
+    const beforeDoneSaving = () => {
+        if (nextId !== -2) {
+            console.log(mainEditorId + " " + nextId);
+            setNextId(-2);
+            setMainEditorId(nextId);
+        }
+    }
+
+    const handleDoneSaving = useCallback(() => {
+        setToSave(false);
+    }, []);
+
+    const handleDoneChecking = ( trigger : boolean ) => {
+        setToCheck(false);
+        if (trigger) {
+            setShowLeavePageDialog(true);
+        } else {
+            handleConfirm(nextId);
+        }
+    }
+
     useEffect(() => {
         fetchUserInfo(setUserData, loading, setLoading, navigate, true);
         fetchNotes(setNoteList);
     }, [loading, navigate]);
 
+    useEffect(() => {
+      fetchNotesSettings(setNotesSettings);
+    }, []);
+
+    const drawerWidth = (windowWidth >= minimumDesktopWidth) ? 260 : '100%';
+    const widthStyle = (windowWidth >= minimumDesktopWidth) ? "calc(100vw - " + drawerWidth + "px)" : '100%';
+
     return loading ? (
             <LoadingScreen />
         ) : (
-            <>
+            <Box component="main" overflow="hidden" height={ windowHeight }>
                 <CssBaseline />
-                <Box sx={{overflow: 'hidden'}} onKeyDown={handleKeyDown} height="100vh" display="flex" flexDirection="column">
+                <Box height="100%" onKeyDown={handleKeyDown} display="flex" flexDirection="column">
                     <Box flex={0}>
                         <NavigationBar title="Notes" />
                     </Box>
-                    <Stack width="100%" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
-                        <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ setMainEditorId } onNoteDelete={ deleteNoteHandler } />
-                        { (mainEditorId !== -1) ? 
-                            <MainEditor width={widthStyle} toSave={toSave} onStartSaving={() => setToSave(true)} onDoneSaving={() => setToSave(false)} noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} /> :
-                            <EmptyNoteState width={widthStyle} />
-                        }
-                    </Stack>
-                    <Fab onClick={addNote} color="primary" aria-label="add-note" sx={{position: 'absolute', bottom: 16, right: 16}}>
-                        <AddIcon />
-                    </Fab>
+                    { (windowWidth >= minimumDesktopWidth) ? (
+                        <Stack width="100%" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
+                            <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
+                            { (mainEditorId !== -1) ? 
+                                <MainEditor onExit={ () => handleEdit(-1) } width={widthStyle} toCheck={ toCheck } onDoneChecking={ handleDoneChecking } toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/> :
+                                <EmptyNoteState width={widthStyle} onLinkClick={addNote} />
+                            }
+                        </Stack>
+                    ) : (mainEditorId !== -1) ? (
+                        <MainEditor onExit={ () => handleEdit(-1) } width={widthStyle} toCheck={ toCheck } onDoneChecking={ handleDoneChecking } toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/>
+                    ) : (
+                        <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
+                    ) }
+                    <NotesConfigDialog open={notesConfigOpen} handleClose={() => setNotesConfigOpen(false)} onChange={ () => fetchNotesSettings(setNotesSettings) } /> 
+                    <NotesLeavePageDialog open={showLeavePageDialog as boolean} id={nextId} handleConfirm={ handleConfirm } handleCancel={ handleCancel } />
+                    { (windowWidth >= minimumDesktopWidth) ? (
+                        <Fab onClick={addNote} color="primary" aria-label="add-note" sx={{ position: 'absolute', bottom: 16, right: 16}}>
+                            <AddIcon />
+                        </Fab>
+                    ) : (mainEditorId === -1) ? (
+                        <Box display="flex" justifyContent="center">
+                            <Button sx={{ width: '100%', borderRadius: 0, height: '4em' }} onClick={addNote} aria-label="add-note-mobile" variant="contained" color="primary">
+                                <Stack direction="row" spacing={1}>
+                                    <AddIcon />
+                                    <Typography variant="button">
+                                        Add new note...
+                                    </Typography>
+                                </Stack>
+                            </Button>
+                        </Box>
+                    ) : <></> }
                 </Box>
-            </>
+            </Box>
         );
 }
