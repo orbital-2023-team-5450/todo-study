@@ -50,7 +50,7 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
             <Divider />
             <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: listHeight }}>
                 <ListItem key="search">
-                    <SearchBar value={searchValue} onChange={handleSearchBarChange} onSubmit={handleSearchBarSubmit} />
+                    <SearchBar value={searchValue} onChange={handleSearchBarChange} onSubmit={handleSearchBarSubmit} onClear={ () => setSearchValue("") } />
                 </ListItem>
                 {
                     (filteredNoteList.length !== 0) ? filteredNoteList.map(
