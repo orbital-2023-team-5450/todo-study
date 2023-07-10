@@ -3,6 +3,8 @@ import { Note } from '../../utils/noteUtils';
 import { Box, Divider, List, ListItem, ListItemButton, Typography } from '@mui/material';
 import NoteEntry from './NoteEntry';
 import { useWindowParams } from '../../hooks/useWindowParams';
+import SearchBar from '../SearchBar';
+import { createTextEventHandler } from '../../utils/textInputUtils';
 
 /**
  * Displays a sidebar containing the list of all notes created by the user.
@@ -17,9 +19,26 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
     
     const [ isBlurred, setIsBlurred ] = useState(false);
     const [ windowWidth, minimumDesktopWidth, windowHeight ] = useWindowParams(true, true);
+    const [ searchValue, setSearchValue ] = useState("");
     const listHeight = (windowWidth >= minimumDesktopWidth)
         ? 'calc(' + windowHeight + 'px - 120px)'
         : 'calc(' + windowHeight + 'px - 110px - 4em)';
+
+    const handleSearchBarChange = createTextEventHandler(setSearchValue);
+    const handleSearchBarSubmit = (event : React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+    }
+
+    const notesFilterPredicate = (note : Note) => {
+        return (note.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+          note.html_content.toLowerCase().includes(searchValue.toLowerCase()) ||
+          note.note_id === parseInt(searchValue.toLowerCase()) ||
+          (searchValue.startsWith("#") && note.note_id === parseInt(searchValue.toLowerCase().substring(1))) ||
+          (searchValue.toLowerCase() === "untitled" && note.title === "")
+        );
+    }
+
+    const filteredNoteList = noteList.filter(notesFilterPredicate);
 
     return (
         <Box
@@ -30,19 +49,28 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
             </Box>
             <Divider />
             <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: listHeight }}>
+                <ListItem key="search">
+                    <SearchBar value={searchValue} onChange={handleSearchBarChange} onSubmit={handleSearchBarSubmit} onClear={ () => setSearchValue("") } />
+                </ListItem>
                 {
-                    noteList.map((note : Note) => {
-                        return (
-                            <>
-                                <ListItem key={note.note_id}>
-                                    <ListItemButton onFocus={ () => setIsBlurred(false) } onBlur={ () => setIsBlurred(true) } onClick={ () => { edit(note.note_id); } }>
-                                        <NoteEntry note={note} handleNoteDelete={ () => onNoteDelete(note.note_id) } />
-                                    </ListItemButton>
-                                </ListItem> 
-                                <Divider />
-                            </>
-                        );
-                    })
+                    (filteredNoteList.length !== 0) ? filteredNoteList.map(
+                        (note : Note) => {
+                            return (
+                                <>
+                                    <ListItem key={note.note_id}>
+                                        <ListItemButton onFocus={ () => setIsBlurred(false) } onBlur={ () => setIsBlurred(true) } onClick={ () => { edit(note.note_id); } }>
+                                            <NoteEntry note={note} handleNoteDelete={ () => onNoteDelete(note.note_id) } />
+                                        </ListItemButton>
+                                    </ListItem> 
+                                    <Divider />
+                                </>
+                            );
+                        }
+                    ) : (
+                        <ListItem key="empty">
+                            <Typography width="100%" textAlign="center">No matching note found.</Typography>
+                        </ListItem>
+                    )
                 }
             </List>
         </Box>
