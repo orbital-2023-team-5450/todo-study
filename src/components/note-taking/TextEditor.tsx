@@ -16,12 +16,18 @@ import { toolbar } from "../../utils/noteUtils";
 import { usePrompt } from "../../hooks/usePrompt";
 import NotesLeavePageDialog from "./dialogs/NotesLeavePageDialog";
 import { useWindowParams } from "../../hooks/useWindowParams";
+import NotesExportDialog from "./dialogs/NotesExportDialog";
 export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void, onExit : () => void } ) {
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
+  const [ showExportDialog, setShowExportDialog ] = useState<boolean>(false);
   const [ showPrompt, confirmNavigation, cancelNavigation ] = usePrompt(showLeavePageDialog, true, handleLeaveSave);
   const [ windowWidth, minimumDesktopWidth, windowHeight ] = useWindowParams(true, true);
+
+  const onOpenExport = () => {
+    setShowExportDialog(true);
+  }
 
   const handleKeyDown = (event : React.KeyboardEvent<HTMLElement>) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 's') {
@@ -113,7 +119,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
           </Button>
         </Grid>
         <Grid item xs={6} md={3}>
-          <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenSettings }>
+          <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenExport }>
             <Stack spacing={1} direction="row">
               <FileDownloadIcon />
               <Typography variant="button">Export</Typography>
@@ -143,6 +149,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
                 toolbar={toolbar(useTheme().palette.mode === 'dark')}
               />
         <NotesLeavePageDialog open={showPrompt as boolean} id={-1} handleConfirm={confirmNavigation as () => void} handleCancel={cancelNavigation as () => void} />
+        <NotesExportDialog open={showExportDialog} onClose={() => setShowExportDialog(false)} editorState={editorState} />
       </Box>
     </Stack>
   );  
