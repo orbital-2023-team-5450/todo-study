@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { createTextEventHandler } from '../../utils/textInputUtils';
 import { Stack, TextField } from '@mui/material';
 import TextEditor from './TextEditor';
-import AccountSettings from '../AccountSettings';
-import { Note, NotesSettings, fetchNoteInfoFromId, fetchNotes } from '../../utils/noteUtils';
+import { Note, fetchNoteInfoFromId } from '../../utils/noteUtils';
 import { EditorState, convertToRaw } from 'draft-js';
 import _ from "lodash";
 
@@ -11,8 +9,9 @@ import _ from "lodash";
 import draftToHtml from 'draftjs-to-html';
 
 import supabase from '../../supabase';
+import { useWindowParams } from '../../hooks/useWindowParams';
 
-export default function MainEditor( { noteId, width, onNoteChange, toSave, toCheck, onDoneChecking, onStartSaving, beforeDoneSaving, onDoneSaving, onOpenSettings } : { noteId : number, width: (string | number), onNoteChange: () => void, toSave: boolean, toCheck: boolean, onDoneChecking: (trigger : boolean) => void, onStartSaving : () => void, beforeDoneSaving : () => void, onDoneSaving : () => void, onOpenSettings : () => void } ) {
+export default function MainEditor( { noteId, width, onNoteChange, toSave, toCheck, onDoneChecking, onStartSaving, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit } : { noteId : number, width: (string | number), onNoteChange: () => void, toSave: boolean, toCheck: boolean, onDoneChecking: (trigger : boolean) => void, onStartSaving : () => void, beforeDoneSaving : () => void, onDoneSaving : () => void, onOpenSettings : () => void, onExit : () => void } ) {
 
     const [ noteInfo, setNoteInfo ] = useState<Note>({
         note_id: 0,
@@ -24,6 +23,7 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
         content_state: convertToRaw(EditorState.createEmpty().getCurrentContent()),
     });
     const [ origTitle, setOrigTitle ] = useState("");
+    const [ windowHeight ] = useWindowParams(false, true);
 
     const handleTitleTextChange = (event : React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -46,9 +46,6 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
     }
 
     async function save( editorState : EditorState ) {
-        const { data: { user } } = await supabase.auth.getUser();
-        const user_id : string = (user === null) ? "" : user.id;
-
         // Lodash's static isEqual method recursively compares values in a JavaScript object,
         // allowing for comparing JavaScript objects by value. 
 
@@ -83,15 +80,16 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
 
     useEffect(() => {
         fetchNoteInfoFromId( noteId, setNoteInfo ).then((result) => {
+            console.log("fetch");
             setOrigTitle(result.title);
             onDoneSaving();
         });
-    }, [ noteId ]);
+    }, [ noteId, onDoneSaving ]);
 
     return (
-        <Stack sx={{height: 'calc(100% - 240px)'}} component="form" gap={5} padding="1rem" width={width} onSubmit={handleSubmit}>
+        <Stack sx={{ overflow: 'auto', height: 'calc(' + windowHeight + 'px - 72px)' }} component="form" gap={5} padding="1rem" pb={0} width={width} onSubmit={handleSubmit}>
             <TextField type="text" sx={{width:"100%", fontSize: "1.6rem", fontWeight: "bold"}} label="Title" variant="outlined" value={noteInfo.title} onChange={handleTitleTextChange} />
-            <TextEditor initContentState={ noteInfo.content_state } toSave={toSave} onSave={save} onCheck={check} toCheck={toCheck} beforeDoneSaving={beforeDoneSaving} onDoneSaving={onDoneSaving} onOpenSettings={ onOpenSettings } />
+            <TextEditor initContentState={ noteInfo.content_state } toSave={toSave} onSave={save} onCheck={check} toCheck={toCheck} beforeDoneSaving={beforeDoneSaving} onDoneSaving={onDoneSaving} onOpenSettings={ onOpenSettings } onExit={ onExit } />
         </Stack>
     );
 }
