@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
-import { Sort } from "@mui/icons-material"
+import { MoreVert } from "@mui/icons-material"
 import React from "react";
 import EmptyState from "./EmptyState";
 import TaskList from "./TaskList";
@@ -16,10 +16,11 @@ import { Task } from "../../utils/taskUtils";
  * @param setWhichTask A useState setter to set the task that is required to be updated with its id.
  * @returns The todo-list of the feature
  */
-export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, setWhichTask } : 
+export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, setWhichTask, setAnchorEl} : 
                                     { taskType : number, tasks : Task[], 
                                       fetchTask : () => void, popUpUpdate: React.Dispatch<React.SetStateAction<boolean>>
-                                      setWhichTask: React.Dispatch<React.SetStateAction<number>>}) {
+                                      setWhichTask: React.Dispatch<React.SetStateAction<number>>
+                                      setAnchorEl: React.Dispatch<React.SetStateAction<null | HTMLElement>>}) {
   
     /* 
       Handle the change of status of completed of the task in the database.
@@ -71,6 +72,12 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
         setWhichTask(id);
         fetchTask();
     }
+
+    const handleMenuOpen = (event : React.MouseEvent<HTMLElement>) => {
+
+      event.preventDefault();
+      setAnchorEl(event.currentTarget);
+    }
   
     return (
         <Stack component="main" gap={2} marginTop={2} direction='column'>
@@ -80,8 +87,8 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
                     {taskType === 0 ? "Due in a Day" : "Due soon"}
                 </Typography> 
 
-                <IconButton sx={{marginTop: '4vh'}}>
-                    <Sort />
+                <IconButton sx={{marginTop: '4vh'}} onClick={handleMenuOpen}>
+                    <MoreVert />
                 </IconButton>
             </Stack>
             

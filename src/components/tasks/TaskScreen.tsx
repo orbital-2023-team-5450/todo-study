@@ -5,6 +5,8 @@ import TaskManager from "./TaskManager";
 import splitTask from "../../utils/splitTask";
 import TaskPopUp from "./TaskPopup";
 import { Task } from "../../utils/taskUtils";
+import MenuFilterDialog from "./MenuFilterDialog";
+import MenuSortDialog from "./MenuSortDialog";
 
 /*
     The enum for the type of the tasks.
@@ -23,7 +25,9 @@ export default function TaskScreen() {
     const [isPopUpCreate, setPopUpCreate] = useState<boolean>(false);
     const [isPopUpUpdate, setPopUpUpdate] = useState<boolean>(false);
     const [whichTask, setWhichTask] = useState<number>(-1);
-    
+    const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
+    const [menuFilterOpen, setMenuFilterOpen] = useState(false);
+    const [menuSortOpen, setMenuSortOpen] = useState(false);
     /*
         Handle the event of submitting new task.
     */
@@ -32,6 +36,18 @@ export default function TaskScreen() {
         event.preventDefault();
         setPopUpCreate(true);
     }; 
+
+    const handleMenuItemFilter = (event : React.MouseEvent<HTMLElement>) => {
+
+        event.preventDefault()
+        setMenuFilterOpen(true);
+    }
+
+    const handleMenuItemSort = (event : React.MouseEvent<HTMLElement>) => {
+        
+        event.preventDefault();
+        setMenuSortOpen(true);
+    }    
 
     /* 
         Fetch info of the tasks from the database and sort it based on date and completed.
@@ -74,6 +90,7 @@ export default function TaskScreen() {
                             fetchTask={fetchTasks} 
                             popUpUpdate={setPopUpUpdate}
                             setWhichTask={setWhichTask}
+                            setAnchorEl={setAnchorMenu}
                         />
                     </Box>
 
@@ -84,6 +101,7 @@ export default function TaskScreen() {
                             fetchTask={fetchTasks}
                             popUpUpdate={setPopUpUpdate}
                             setWhichTask={setWhichTask}
+                            setAnchorEl={setAnchorMenu}
                         />
                     </Box>
             </Stack>
@@ -98,7 +116,7 @@ export default function TaskScreen() {
             >
                  <Typography variant='h6'> + Add new task </Typography>
             </Button>
-
+            
             <TaskPopUp open={isPopUpCreate} 
                        onClose={() => setPopUpCreate(false)} 
                        fetchTask={fetchTasks} 
@@ -109,6 +127,26 @@ export default function TaskScreen() {
                        fetchTask={fetchTasks} 
                        taskType={'Update'} 
                        id={whichTask}/>
+
+            <Menu open={Boolean(anchorMenu)} onClose={() => setAnchorMenu(null)} anchorEl={anchorMenu}>
+                <MenuItem 
+                    onClick={handleMenuItemFilter} 
+                    sx={{width: '100px', justifyContent: 'center'}}
+                > 
+                    <Typography variant='h6'> filter </Typography>
+                </MenuItem>
+                <MenuItem onClick={handleMenuItemSort} sx={{width: '100px', justifyContent: 'center'}}> sort </MenuItem>
+            </Menu>
+
+            <MenuFilterDialog 
+                menuFilterOpen={menuFilterOpen} 
+                setMenuFilterOpen={setMenuFilterOpen} 
+                openMenu={setAnchorMenu}
+                tasks={tasks}
+                popUpUpdate={setPopUpUpdate}
+                setWhichTask={setWhichTask}
+            />
+            <MenuSortDialog menuSortOpen={menuSortOpen}/>
         </Stack>
     );
 }
