@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField, MenuItem } from "@mui/material";
 import { EditorState } from "draft-js";
-import { exportAsHTML, exportAsMarkdown } from "../../../utils/noteExportUtils";
+import { exportAsHTML, exportAsMarkdown, exportAsPDF } from "../../../utils/noteExportUtils";
 
 export default function NotesExportDialog( { open, onClose, editorState, title } : { open : boolean, onClose : () => void, editorState : EditorState, title : string }) {
 
@@ -22,32 +22,32 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
 
   // latter exportFn type to change to Blob if needed
   type exportFormat = {
-    exportFn : ((editorState : EditorState) => string) | ((editorState : EditorState) => string),
+    exportFn : ((editorState : EditorState) => string),
     mimeType : string,
-    isText   : boolean,
   }
 
   const handleExport = () => {
     console.log("something");
     const exportFunctions = new Map<string, exportFormat>([
-      ['md', { exportFn: exportAsMarkdown, mimeType: "text/markdown", isText : true }],
-      ['html', { exportFn: exportAsHTML, mimeType: "text/html", isText : true }],
-      ['pdf', { exportFn: dummy, mimeType: "application/pdf", isText : false }],
-      ['word', { exportFn: dummy, mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", isText : false }]
+      ['md', { exportFn: exportAsMarkdown, mimeType: "text/markdown" }],
+      ['html', { exportFn: exportAsHTML, mimeType: "text/html" }],
     ]);
 
-    const exportFunction = exportFunctions.get(exportState) ?? { exportFn: dummy, mimeType: "text/plain", isText: true };
-    const exportedContent = exportFunction.exportFn(editorState).split("\n");
+    const exportFilename = (title === "" ? 'Untitled' : title) + '.' + exportState;
+    if (exportState === 'md' || exportState === 'html') {
+      const exportType = exportFunctions.get(exportState) ?? { exportFn: dummy, mimeType: "text/plain" };
+      const exportedContent = exportType.exportFn(editorState).split("\n");
+      const fileObj = new Blob(exportedContent, { type: exportType.mimeType });
+      
+      const anchor = document.createElement('a');
+      anchor.href = URL.createObjectURL(fileObj);
+      anchor.download = exportFilename;
 
-    const fileObj = new Blob(exportedContent, { type: 'text/plain' });
-    const anchor = document.createElement('a');
-    anchor.href = URL.createObjectURL(fileObj);
-    anchor.download = (title === "" ? 'Untitled' : title) + '.' + exportState;
-
-    document.body.appendChild(anchor);
-    anchor.click();
-
-    console.log(exportedContent);
+      document.body.appendChild(anchor);
+      anchor.click();
+    } else if (exportState === 'pdf') {
+      exportAsPDF(editorState, exportFilename);
+    }
 
     onClose();
   }
