@@ -89,7 +89,7 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
     return (
         <Stack sx={{ overflow: 'auto', height: 'calc(' + windowHeight + 'px - 72px)' }} component="form" gap={5} padding="1rem" pb={0} width={width} onSubmit={handleSubmit}>
             <TextField type="text" sx={{width:"100%", fontSize: "1.6rem", fontWeight: "bold"}} label="Title" variant="outlined" value={noteInfo.title} onChange={handleTitleTextChange} />
-            <TextEditor initContentState={ noteInfo.content_state } toSave={toSave} onSave={save} onCheck={check} toCheck={toCheck} beforeDoneSaving={beforeDoneSaving} onDoneSaving={onDoneSaving} onOpenSettings={ onOpenSettings } onExit={ onExit } />
+            <TextEditor initContentState={ noteInfo.content_state } toSave={toSave} onSave={save} onCheck={check} toCheck={toCheck} beforeDoneSaving={beforeDoneSaving} onDoneSaving={onDoneSaving} onOpenSettings={ onOpenSettings } onExit={ onExit } title={ noteInfo.title }/>
         </Stack>
     );
 }

@@ -3,7 +3,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typog
 import { EditorState } from "draft-js";
 import { exportAsHTML, exportAsMarkdown } from "../../../utils/noteExportUtils";
 
-export default function NotesExportDialog( { open, onClose, editorState } : { open : boolean, onClose : () => void, editorState : EditorState }) {
+export default function NotesExportDialog( { open, onClose, editorState, title } : { open : boolean, onClose : () => void, editorState : EditorState, title : string }) {
 
   const [ exportState, setExportState ] = useState("md");
 
@@ -42,7 +42,7 @@ export default function NotesExportDialog( { open, onClose, editorState } : { op
     const fileObj = new Blob(exportedContent, { type: 'text/plain' });
     const anchor = document.createElement('a');
     anchor.href = URL.createObjectURL(fileObj);
-    anchor.download = 'Untitled.' + exportState;
+    anchor.download = (title === "" ? 'Untitled' : title) + '.' + exportState;
 
     document.body.appendChild(anchor);
     anchor.click();

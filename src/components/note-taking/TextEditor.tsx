@@ -17,7 +17,7 @@ import { usePrompt } from "../../hooks/usePrompt";
 import NotesLeavePageDialog from "./dialogs/NotesLeavePageDialog";
 import { useWindowParams } from "../../hooks/useWindowParams";
 import NotesExportDialog from "./dialogs/NotesExportDialog";
-export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void, onExit : () => void } ) {
+export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit, title } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void, onExit : () => void, title : string } ) {
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
@@ -149,7 +149,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
                 toolbar={toolbar(useTheme().palette.mode === 'dark')}
               />
         <NotesLeavePageDialog open={showPrompt as boolean} id={-1} handleConfirm={confirmNavigation as () => void} handleCancel={cancelNavigation as () => void} />
-        <NotesExportDialog open={showExportDialog} onClose={() => setShowExportDialog(false)} editorState={editorState} />
+        <NotesExportDialog open={showExportDialog} onClose={() => setShowExportDialog(false)} editorState={editorState} title={ title } />
       </Box>
     </Stack>
   );  
