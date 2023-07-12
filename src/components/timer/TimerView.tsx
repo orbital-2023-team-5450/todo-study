@@ -61,10 +61,10 @@ export default function TimerView({ pattern, showMs, onChange } : { pattern : Wo
 
     return (
         <Stack gap={3} component="section">
-            <Typography variant="h1" component="h2">
+            <Typography textAlign="center" variant="h1" component="h2">
                 { timerDisplay }
             </Typography>
-            <Typography variant="body1" component="h3">
+            <Typography textAlign="center" variant="body1" component="h3">
                 Status: <strong>{statusString()}</strong> | Cycle { currentStatus.cycles + 1 } of { pattern.cycles }
             </Typography>
             <Stack gap={5} direction="row" justifyContent="center">

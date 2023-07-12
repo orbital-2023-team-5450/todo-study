@@ -45,7 +45,7 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
             sx={{ width: '100%', maxWidth: width, bgcolor: 'background.paper' }}
             >
             <Box sx={{backgroundColor: "#1976D2EE", color: "white"}}>
-                <Typography component="h1" variant="h6" fontWeight="bold" paddingTop=".5rem" paddingBottom=".5rem">Notes</Typography>
+                <Typography textAlign="center" component="h1" variant="h6" fontWeight="bold" paddingTop=".5rem" paddingBottom=".5rem">Notes</Typography>
             </Box>
             <Divider />
             <List onClick={ () => { if (isBlurred) { edit(-1); setIsBlurred(false) } } } sx={{overflow: 'auto', height: listHeight }}>

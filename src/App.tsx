@@ -13,6 +13,7 @@ import Notes from './routes/notes'
 import Tasks from './routes/tasks';
 import ModifyAccount from './routes/modifyaccount';
 import fetchUserInfo, { UserInfo } from './utils/fetchUserInfo';
+import NotesPreview from './routes/notespreview';
 
 const defaultTheme = {
   palette: {
@@ -67,7 +68,9 @@ function App() {
         }
       } else {
         setIsLoggedIn(false);
-        navigate("/login");
+        if (!location.pathname.startsWith("/preview")) {
+          navigate("/login");
+        }
       }
     });
     return () => {
@@ -97,6 +100,7 @@ function App() {
           <Route path="/timer" element={<Timer />} />
           <Route path="/notes" element={<Notes />} />
           <Route path="/tasks" element={<Tasks />} />
+          <Route path="/preview/:id" element={<NotesPreview />} />
           <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
         </Routes> 
       </ThemeProvider>

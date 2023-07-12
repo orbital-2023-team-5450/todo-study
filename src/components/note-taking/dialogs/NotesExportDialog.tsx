@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField, MenuItem } from "@mui/material";
 import { EditorState } from "draft-js";
-import { exportAsHTML, exportAsMarkdown, exportAsPDF } from "../../../utils/noteExportUtils";
+import { exportAsHTML, exportAsMarkdown } from "../../../utils/noteExportUtils";
 
 export default function NotesExportDialog( { open, onClose, editorState, title } : { open : boolean, onClose : () => void, editorState : EditorState, title : string }) {
 
@@ -10,8 +10,8 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
   const exportTypes = [
     { value: 'md', label: 'Markdown', },
     { value: 'html', label: 'HTML', },
-    { value: 'pdf', label: 'PDF', },
-    { value: 'word', label: 'Microsoft Word', },
+    { value: 'pdf', label: 'PDF (not working)', },
+    { value: 'word', label: 'Microsoft Word (not working)', },
   ]
 
   const handleExportChange = (event : React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +46,7 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
       document.body.appendChild(anchor);
       anchor.click();
     } else if (exportState === 'pdf') {
-      exportAsPDF(editorState, exportFilename);
+      //exportAsPDF(editorState, exportFilename);
     }
 
     onClose();

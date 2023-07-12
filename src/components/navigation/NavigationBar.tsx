@@ -22,7 +22,7 @@ export default function NavigationBar({ title, children } : React.PropsWithChild
       <AppBar position="static">
         <Toolbar sx={{padding: "0.5rem"}}>
           <NavSides />
-          <Typography variant="h5" component="code" className="todo-study-logo-white" sx={{ flexGrow: 1 }}>
+          <Typography variant="h5" textAlign="center" component="code" className="todo-study-logo-white" sx={{ flexGrow: 1 }}>
             { title + ((windowWidth >= minimumDesktopWidth) ? " // TODO: Study" : "")}
           </Typography>
           <AvatarView />

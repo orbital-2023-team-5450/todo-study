@@ -169,7 +169,7 @@ export default function AccountSettings({ insert, onUpdate } : { insert : boolea
 
     return ( loading ? <LoadingScreen /> :
         <Stack gap={5} component="form" onSubmit={handleFormSubmit}>
-            <Typography variant="h4" component="h1">{ insert ? "Create New Account" : "Update Account Settings"}</Typography>
+            <Typography textAlign="center" variant="h4" component="h1">{ insert ? "Create New Account" : "Update Account Settings"}</Typography>
             <Typography variant="h6" component="h2">Name</Typography>
             <TextField
                 required
