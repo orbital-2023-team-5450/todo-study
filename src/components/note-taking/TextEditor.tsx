@@ -11,13 +11,15 @@ import SaveIcon from '@mui/icons-material/Save';
 import SettingsIcon from '@mui/icons-material/Settings';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import CloseIcon from '@mui/icons-material/Close';
 import { toolbar } from "../../utils/noteUtils";
 import { usePrompt } from "../../hooks/usePrompt";
 import NotesLeavePageDialog from "./dialogs/NotesLeavePageDialog";
 import { useWindowParams } from "../../hooks/useWindowParams";
 import NotesExportDialog from "./dialogs/NotesExportDialog";
-export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit, title } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void, onExit : () => void, title : string } ) {
+
+export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit, title, noteId } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void, onExit : () => void, title : string, noteId : number } ) {
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [ showLeavePageDialog, setShowLeavePageDialog ] = useState<boolean>(false);
@@ -71,6 +73,10 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
     }
   }, [initContentState]);
 
+  const handlePreview = () => {
+    window.open("/preview/" + noteId.toString());
+  }
+
   useEffect(() => {
     if (toSave) {
       handleSave();
@@ -87,7 +93,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
   return (
     <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{ marginLeft: 0, marginTop: 0 }}>
       <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={2.4}>
           <Button sx={{ width: '100%' }} color="secondary" variant="contained" onClick={ onExit }>
             { (windowWidth >= minimumDesktopWidth) ? (
               <Stack spacing={1} direction="row">
@@ -102,7 +108,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
             ) }
           </Button>
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={2.4}>
           <Button sx={{ width: '100%' }} variant="contained" onClick={handleSave}>
             <Stack spacing={1} direction="row">
               <SaveIcon />
@@ -110,7 +116,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
             </Stack>          
           </Button>
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={4} sm={4} md={2.4}>
           <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenSettings }>
             <Stack spacing={1} direction="row">
               <SettingsIcon />
@@ -118,11 +124,19 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
             </Stack>
           </Button>
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={4} sm={4} md={2.4}>
           <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenExport }>
             <Stack spacing={1} direction="row">
               <FileDownloadIcon />
               <Typography variant="button">Export</Typography>
+            </Stack>
+          </Button>
+        </Grid>
+        <Grid item xs={4} sm={4} md={2.4}>
+          <Button sx={{ width: '100%' }} variant="contained" onClick={ handlePreview }>
+            <Stack spacing={1} direction="row">
+              <VisibilityIcon />
+              <Typography variant="button">Preview</Typography>
             </Stack>
           </Button>
         </Grid>
