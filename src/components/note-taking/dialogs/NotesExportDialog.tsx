@@ -13,7 +13,7 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
   const exportTypes = [
     { value: 'md', label: 'Markdown', },
     { value: 'html', label: 'HTML', },
-    { value: 'pdf', label: 'PDF / Print (using system print dialog)', },
+    { value: 'pdf', label: 'PDF / Print (uses browser print dialog)', },
   ]
 
   const handleExportChange = (event : React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +75,6 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
             value={ exportState }
             onChange={ handleExportChange }
             variant="outlined"
-            label="Export as" 
           >
             { exportTypes.map((exportType) => (
               <MenuItem value={exportType.value} key={exportType.value}>
