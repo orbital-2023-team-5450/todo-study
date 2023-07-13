@@ -6,7 +6,7 @@ import { createNumericTextEventHandler, createTextEventHandler } from "../../../
 
 export default function NotesExportDialog( { open, onClose, editorState, title } : { open : boolean, onClose : () => void, editorState : EditorState, title : string }) {
 
-  const [ exportState, setExportState ] = useState("md");
+  const [ exportState, setExportState ] = useState("pdf");
   const [ defaultFont, setDefaultFont ] = useState("Times New Roman");
   const [ defaultSize, setDefaultSize ] = useState(14);
 

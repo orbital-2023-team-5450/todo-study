@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { EditorState, RawDraftContentState, convertFromRaw } from "draft-js";
-import { Box, Button, Divider, Grid, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Button, Divider, Grid, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import "./textEditor.css";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
@@ -18,6 +18,7 @@ import { usePrompt } from "../../hooks/usePrompt";
 import NotesLeavePageDialog from "./dialogs/NotesLeavePageDialog";
 import { useWindowParams } from "../../hooks/useWindowParams";
 import NotesExportDialog from "./dialogs/NotesExportDialog";
+import GridItemButton from "./GridItemButton";
 
 export default function TextEditor({ onSave, onCheck, toCheck, initContentState, toSave, beforeDoneSaving, onDoneSaving, onOpenSettings, onExit, title, noteId } : { onSave : ( editorState : EditorState ) => Promise<void>, onCheck:(editorState : EditorState) => void, toCheck: boolean, initContentState : RawDraftContentState, toSave : boolean, beforeDoneSaving : () => void, onDoneSaving: () => void, onOpenSettings : () => void, onExit : () => void, title : string, noteId : number } ) {
 
@@ -35,6 +36,9 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
     if ((event.ctrlKey || event.metaKey) && event.key === 's') {
       event.preventDefault();
       handleSave();
+    } else if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
+      event.preventDefault();
+      setShowExportDialog(true);
     }
   }
 
@@ -93,53 +97,19 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
   return (
     <Stack onKeyDown={handleKeyDown} direction='column' display='flex' sx={{ marginLeft: 0, marginTop: 0 }}>
       <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
-        <Grid item xs={6} md={2.4}>
-          <Button sx={{ width: '100%' }} color="secondary" variant="contained" onClick={ onExit }>
-            { (windowWidth >= minimumDesktopWidth) ? (
-              <Stack spacing={1} direction="row">
-                <CloseIcon />
-                <Typography variant="button">Close</Typography>
-              </Stack> 
-            ) : (
-              <Stack spacing={1} direction="row">
-                <ArrowBackIcon />
-                <Typography variant="button">Back</Typography>
-              </Stack> 
-            ) }
-          </Button>
-        </Grid>
-        <Grid item xs={6} md={2.4}>
-          <Button sx={{ width: '100%' }} variant="contained" onClick={handleSave}>
-            <Stack spacing={1} direction="row">
-              <SaveIcon />
-              <Typography variant="button">Save</Typography>
-            </Stack>          
-          </Button>
-        </Grid>
-        <Grid item xs={4} sm={4} md={2.4}>
-          <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenSettings }>
-            <Stack spacing={1} direction="row">
-              <SettingsIcon />
-              <Typography variant="button">Settings</Typography>
-            </Stack>
-          </Button>
-        </Grid>
-        <Grid item xs={4} sm={4} md={2.4}>
-          <Button sx={{ width: '100%' }} variant="contained" onClick={ onOpenExport }>
-            <Stack spacing={1} direction="row">
-              <FileDownloadIcon />
-              <Typography variant="button">Export</Typography>
-            </Stack>
-          </Button>
-        </Grid>
-        <Grid item xs={4} sm={4} md={2.4}>
-          <Button sx={{ width: '100%' }} variant="contained" onClick={ handlePreview }>
-            <Stack spacing={1} direction="row">
-              <VisibilityIcon />
-              <Typography variant="button">Preview</Typography>
-            </Stack>
-          </Button>
-        </Grid>
+        { (windowWidth >= minimumDesktopWidth) ? (
+          <GridItemButton xs={6} sm={6} md={2.4} color="secondary" onClick={ onExit } icon={<CloseIcon />} label="Close" />
+        ) : (
+          <GridItemButton xs={6} sm={6} md={2.4} color="secondary" onClick={ onExit } icon={<ArrowBackIcon />} label="Back" />
+        ) }
+        <GridItemButton xs={6} sm={6} md={2.4} onClick={ handleSave } icon={<SaveIcon />} label="Save"
+          tooltip="Saves the current working note." />
+        <GridItemButton xs={4} sm={4} md={2.4} onClick={ onOpenSettings } icon={<SettingsIcon />} label="Settings" 
+          tooltip="Opens the editor's configuration settings."/>
+        <GridItemButton xs={4} sm={4} md={2.4} onClick={ onOpenExport } icon={<FileDownloadIcon />} label="Export"
+          tooltip="Export current content in Markdown, HTML, or PDF (using browser native print dialog)."/>
+        <GridItemButton xs={4} sm={4} md={2.4} onClick={ handlePreview } icon={<VisibilityIcon />} label="Preview" 
+          tooltip="Preview (in new tab). Links generated can be used as permalinks."/>
       </Grid>
       <Divider sx={{marginTop: '1vh', marginBottom: '1vh'}} />
       <Box sx={{ width: '100%', textAlign: 'left', marginTop: '1vh', marginRight: '2rem', height: 'calc(98vh - 400px)'}}>
