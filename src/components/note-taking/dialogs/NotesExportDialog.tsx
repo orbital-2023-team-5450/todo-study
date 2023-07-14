@@ -91,6 +91,11 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
               </>
             ) : <></>
           }
+          {
+            (exportState === 'pdf') ? (
+              <Typography><strong>Note: </strong>For iOS devices (iPhone/iPad), you can save as PDF by tapping on the Share icon right beside the Print button.</Typography>
+            ) : <></>
+          }
         </Stack>
       </DialogContent>
       <DialogActions>

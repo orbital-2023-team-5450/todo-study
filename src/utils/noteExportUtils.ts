@@ -47,7 +47,18 @@ export function exportAsMarkdown(editorState : EditorState) : string {
 
 export function exportAsPDF(editorState : EditorState, title : string, font? : string, fontSize? : number) {
   const htmlContent = exportAsHTML(editorState, title, font, fontSize);
+  var disp_setting="toolbar=yes,location=no,";
+  disp_setting+="directories=yes,menubar=yes,";
+  disp_setting+="scrollbars=yes,width=650, height=600, left=100, top=25";
+  const docPrint = window.open("", "", disp_setting);
+  docPrint?.document.open();
+  docPrint?.document.write(htmlContent);
+  docPrint?.document.close();
+  docPrint?.focus();
+  docPrint?.print();
+  if (docPrint !== null) docPrint.onafterprint = () => docPrint.close();
 
+  /*
   const iframe = document.createElement("iframe");
   iframe.style.display = "none";
   document.body.appendChild(iframe);
@@ -58,5 +69,5 @@ export function exportAsPDF(editorState : EditorState, title : string, font? : s
   pri.focus();
   pri.print();
   pri.onafterprint = () => { document.body.removeChild(iframe); }
-
+*/
 }
