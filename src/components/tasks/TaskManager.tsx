@@ -80,10 +80,9 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
     }
   
     return (
-        <Stack component="main" gap={2} marginTop={2} direction='column'>
-          
+        <Stack component="main" gap={2} marginTop={2} direction='column' sx={{border: '1px solid', borderRadius: '20px'}}>
             <Stack direction='row' marginLeft='3vh'> 
-                <Typography variant="h4" component="h2" marginTop={7} display='flex' flexGrow='0.9'>
+                <Typography variant="h4" component="h2" marginTop={7} display='flex' flexGrow='0.95'>
                     {taskType === 0 ? "Due in a Day" : "Due soon"}
                 </Typography> 
 
@@ -94,7 +93,7 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
             
             <Stack direction='column' component='div'> 
                 <Box component='div' 
-                     sx={{bgcolor: "white", borderRadius: '16px', height: '59.5vh', overflowY: 'auto'}} 
+                     sx={{borderRadius: '16px', height: '59.5vh', overflowY: 'auto'}} 
                      marginLeft={4} 
                      marginRight={4} 
                      marginTop={2}

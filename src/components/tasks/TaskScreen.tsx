@@ -7,6 +7,7 @@ import TaskPopUp from "./TaskPopup";
 import { Task } from "../../utils/taskUtils";
 import MenuFilterDialog from "./MenuFilterDialog";
 import MenuSortDialog from "./MenuSortDialog";
+import FilterDialog from "./FilterDialog";
 
 /*
     The enum for the type of the tasks.
@@ -28,6 +29,7 @@ export default function TaskScreen() {
     const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
     const [menuFilterOpen, setMenuFilterOpen] = useState(false);
     const [menuSortOpen, setMenuSortOpen] = useState(false);
+    const [filterOpen, setFilterOpen] = useState(false);
     /*
         Handle the event of submitting new task.
     */
@@ -66,9 +68,7 @@ export default function TaskScreen() {
             if (result.data === null || result.data === undefined) {
 
             } else {
-                const [now, later, expired] = splitTask(result.data as {id : number, title : string, description : string, 
-                                                dueDate : Date, type : number, completed: boolean, 
-                                                userId: string, expired: boolean, taskCollectionId: number}[]);
+                const [now, later, expired] = splitTask(result.data as Task[]);
                 setFutureTasks(later);
                 setTasks(now.concat(expired));
             }  
@@ -83,7 +83,7 @@ export default function TaskScreen() {
         <Stack direction='column'> 
             <Stack direction="row" marginTop='10px' marginLeft='20vh' marginRight='20vh' display='flex'>
                 <CssBaseline />
-                    <Box sx={{ bgcolor: 'white', height: '75vh', borderRadius: '16px', width: "80vh", marginRight: '10px'}}> 
+                    <Box sx={{ height: '75vh', borderRadius: '16px', width: "80vh", marginRight: '10px'}}> 
                         <TaskManager 
                             taskType={task_type.DUE_SOON} 
                             tasks={tasks}
@@ -94,7 +94,7 @@ export default function TaskScreen() {
                         />
                     </Box>
 
-                    <Box sx={{ bgcolor: 'white', height: '75vh', borderRadius: '16px', width: "80vh", marginLeft: '0.6vh' }}> 
+                    <Box sx={{ height: '75vh', borderRadius: '16px', width: "80vh", marginLeft: '0.6vh' }}> 
                         <TaskManager 
                             taskType={task_type.FUTURE_ASSIGNMENT} 
                             tasks={futureTasks}
@@ -104,49 +104,51 @@ export default function TaskScreen() {
                             setAnchorEl={setAnchorMenu}
                         />
                     </Box>
-            </Stack>
 
+            </Stack>
+ 
             <Button
                 type="submit"
                 variant="contained"
                 size="medium"
                 onClick={handleNewTaskSubmit}
-                sx={{marginLeft: "20vh", marginRight: "21vh", marginTop: '1.5vh', height: '9vh', borderRadius: '10px', 
+                sx={{marginLeft: "20vh", marginRight: "21vh", marginTop: '1vh', height: '9vh', borderRadius: '10px', 
                      backgroundColor: '#00bf63', '&:hover': { backgroundColor: '#018547', opacity: [0.9, 0.8, 0.7]}}}
             >
                  <Typography variant='h6'> + Add new task </Typography>
             </Button>
             
-            <TaskPopUp open={isPopUpCreate} 
-                       onClose={() => setPopUpCreate(false)} 
-                       fetchTask={fetchTasks} 
-                       taskType={'Create'} 
-                       id={-1}/> 
-            <TaskPopUp open={isPopUpUpdate} 
-                       onClose={() => setPopUpUpdate(false)} 
-                       fetchTask={fetchTasks} 
-                       taskType={'Update'} 
-                       id={whichTask}/>
-
             <Menu open={Boolean(anchorMenu)} onClose={() => setAnchorMenu(null)} anchorEl={anchorMenu}>
                 <MenuItem 
                     onClick={handleMenuItemFilter} 
-                    sx={{width: '100px', justifyContent: 'center'}}
                 > 
-                    <Typography variant='h6'> filter </Typography>
+                    Search 
                 </MenuItem>
-                <MenuItem onClick={handleMenuItemSort} sx={{width: '100px', justifyContent: 'center'}}> sort </MenuItem>
+                <MenuItem onClick={handleMenuItemSort} sx={{width: '100px', }}> Sort </MenuItem>
             </Menu>
 
             <MenuFilterDialog 
                 menuFilterOpen={menuFilterOpen} 
                 setMenuFilterOpen={setMenuFilterOpen} 
                 openMenu={setAnchorMenu}
-                tasks={tasks}
+                tasks={tasks.concat(futureTasks)} //watch out
                 popUpUpdate={setPopUpUpdate}
                 setWhichTask={setWhichTask}
+                setFilterOpen={setFilterOpen}
             />
             <MenuSortDialog menuSortOpen={menuSortOpen}/>
+
+            <TaskPopUp open={isPopUpUpdate} 
+                       onClose={() => setPopUpUpdate(false)} 
+                       fetchTask={fetchTasks} 
+                       taskType={'Update'} 
+                       id={whichTask}/>
+            <TaskPopUp open={isPopUpCreate} 
+                       onClose={() => setPopUpCreate(false)} 
+                       fetchTask={fetchTasks} 
+                       taskType={'Create'} 
+                       id={-1}/>
+            <FilterDialog filterOpen={filterOpen} filterClose={() => setFilterOpen(false)}/>
         </Stack>
     );
 }

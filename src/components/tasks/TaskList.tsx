@@ -3,7 +3,6 @@ import { Card, Checkbox, Typography, Stack, IconButton } from "@mui/material";
 import { DeleteOutline } from "@mui/icons-material";
 import { Task } from "../../utils/taskUtils";
 import { format, formatDistance } from "date-fns";
-import { cursorTo } from "readline";
 
 /**
  * A component that displays the list of tasks in the todo-list.
@@ -39,15 +38,17 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
         onTaskEdit(id);
     }
 
-      return (
+    return (    
         <>
           <Stack marginTop={3} direction='column'>
+            {/* <button onClick={() => setYo("hmmmm")}> hmm</button> */}
+            
               {tasks.map((task) => {
                   return (
                     <>
                       <Card 
                         key={task.id} 
-                        sx={{ marginLeft: 3, marginRight: 5, marginBottom: 3, marginTop: 0.7,
+                        sx={{ marginLeft: 3, marginRight: 5, marginBottom: 2, marginTop: 0.7,
                               '&:hover': {backgroundColor: !task.expired ? task.completed ? '#00cc00' : '#d9d9d9' : '#ff6680', 
                               opacity: [0.9, 0.8, 0.7] }, borderRadius: '10px', height: '70px', 
                               backgroundColor: !task.expired ? task.completed ? 'lightGreen' : '#f2f2f2' : 'pink', 

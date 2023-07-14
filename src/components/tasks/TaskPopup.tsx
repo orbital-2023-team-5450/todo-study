@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import dayjs, { Dayjs } from "dayjs";
-import { Box, Button, Icon, IconButton, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, Icon, IconButton, Stack, TextField, Typography } from "@mui/material";
 import supabase from "../../supabase";
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -82,6 +82,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
 
             if (title === "") {
                 alert("Please set a name for the title.")
+                setIsDisabled(false);
             } else {
                 reset();
                 const submitInfo = {
@@ -163,24 +164,18 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         setDueDate(null);
     }
 
-    return ( open ? 
-        <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", height: "100vh", backgroundColor: "rgba(50, 50, 50, 0.9)", 
-                  display: "flex", justifyContent: "center", alignItems: "center", filter: "blur"}} 
-             component="div" 
-             onClick={reset}
-        >
-             <Box sx={{position: "relative", padding: "32px", width: "100%", maxWidth: "640px", backgroundColor: "white"}}
-                  component="form"
-                  onSubmit={submitTask} 
-                  onClick={(e) => e.stopPropagation()}
-             >
-                <Stack direction="column">
-                    <Typography component="h4" variant="h4" marginBottom={3}>
-                        {taskType} new task
-                    </Typography>
+    return (
+        <Dialog open={open} onClose={reset}>
+            <DialogTitle>
+                <Typography component="h4" variant="h4" marginBottom={3}>
+                    {taskType} new task
+                </Typography>
+            </DialogTitle>
+            <DialogContent sx={{width: '600px'}}>
+            <Stack direction="column">
 
-                    <Typography component="h6" variant="h6" align="left" marginBottom='1vh'> Title </Typography>
-                    <TextField
+                 <Typography component="h6" variant="h6" align="left" marginBottom='1vh'> Title </Typography>
+                     <TextField
                         type="text"
                         label="Title"
                         variant="outlined"
@@ -228,19 +223,23 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                     
                 </Stack>
 
-                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
-                         onClick={reset}
-                         disabled={isDisabled}
-                 > 
-                    close 
-                 </Button>
-                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
-                         disabled={isDisabled}
-                         type='submit'
-                 >
-                    {taskType}
-                 </Button>
-             </Box>
-        </Box> : null
+                <Stack direction='row' sx={{justifyContent: 'right'}}> 
+                    <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
+                            onClick={reset}
+                            disabled={isDisabled}
+                    > 
+                        close 
+                    </Button>
+                    <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
+                            disabled={isDisabled}
+                            onClick={submitTask}
+                    >
+                        {taskType}
+                    </Button>
+                </Stack>
+                 
+            </DialogContent>
+        </Dialog> 
+            
     );
 }

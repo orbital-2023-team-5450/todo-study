@@ -7,13 +7,11 @@ import TemplateTextDisplay from "./TemplateTextDisplay";
 export default function TimerTemplateCard({ settings, template, onSelect, onDelete } : { settings : TimerSettings, template : FullWorkRestCycle, onSelect : () => void, onDelete : () => void }) {
 
     const [ name, setName ] = useState("");
-
     const [ loading, setLoading ] = useState(true);
 
     useEffect(() => {
         getUsernameFromId(template.user_id, setName).then(() => setLoading(false));
     }, [loading])
-
 
     return !loading ? (
         <Card sx={{"padding": 2}}>
