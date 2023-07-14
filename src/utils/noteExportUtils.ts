@@ -47,16 +47,21 @@ export function exportAsMarkdown(editorState : EditorState) : string {
 
 export function exportAsPDF(editorState : EditorState, title : string, font? : string, fontSize? : number) {
   const htmlContent = exportAsHTML(editorState, title, font, fontSize);
-  var disp_setting="toolbar=yes,location=no,";
-  disp_setting+="directories=yes,menubar=yes,";
-  disp_setting+="scrollbars=yes,width=650, height=600, left=100, top=25";
+
+  // window.open() method was taken from https://stackoverflow.com/a/15900835 
+  const disp_setting="toolbar=yes,location=no, directories=yes,menubar=yes, scrollbars=yes,width=650, height=600, left=100, top=25";
   const docPrint = window.open("", "", disp_setting);
-  docPrint?.document.open();
-  docPrint?.document.write(htmlContent);
-  docPrint?.document.close();
-  docPrint?.focus();
-  docPrint?.print();
-  if (docPrint !== null) docPrint.onafterprint = () => docPrint.close();
+  
+  if (docPrint !== null) {
+    docPrint.document.open();
+    docPrint.document.write(htmlContent);
+    docPrint.document.close();
+    docPrint.focus();
+    docPrint.print();
+    docPrint.onafterprint = () => docPrint.close();
+  } else {
+    console.log("Could not trigger print dialog!");
+  }
 
   /*
   const iframe = document.createElement("iframe");
