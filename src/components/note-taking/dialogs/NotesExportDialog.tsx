@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack, Typography, TextField, MenuItem } from "@mui/material";
 import { EditorState } from "draft-js";
-import { exportAsHTML, exportAsMarkdown } from "../../../utils/noteExportUtils";
+import { exportAsHTML, exportAsMarkdown, exportAsPDF } from "../../../utils/noteExportUtils";
+import { createNumericTextEventHandler, createTextEventHandler } from "../../../utils/textInputUtils";
 
 export default function NotesExportDialog( { open, onClose, editorState, title } : { open : boolean, onClose : () => void, editorState : EditorState, title : string }) {
 
-  const [ exportState, setExportState ] = useState("md");
+  const [ exportState, setExportState ] = useState("pdf");
+  const [ defaultFont, setDefaultFont ] = useState("Times New Roman");
+  const [ defaultSize, setDefaultSize ] = useState(14);
 
   const exportTypes = [
     { value: 'md', label: 'Markdown', },
     { value: 'html', label: 'HTML', },
-    { value: 'pdf', label: 'PDF (not working)', },
-    { value: 'word', label: 'Microsoft Word (not working)', },
+    { value: 'pdf', label: 'PDF / Print (uses browser print dialog)', },
   ]
 
   const handleExportChange = (event : React.ChangeEvent<HTMLInputElement>) => {
@@ -26,11 +28,14 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
     mimeType : string,
   }
 
+  const handleDefaultFontChange = createTextEventHandler(setDefaultFont);
+  const handleDefaultSizeChange = createNumericTextEventHandler(setDefaultSize, 1, Infinity);
+
   const handleExport = () => {
     console.log("something");
     const exportFunctions = new Map<string, exportFormat>([
       ['md', { exportFn: exportAsMarkdown, mimeType: "text/markdown" }],
-      ['html', { exportFn: exportAsHTML, mimeType: "text/html" }],
+      ['html', { exportFn: (editorState) => exportAsHTML(editorState, title, defaultFont, defaultSize), mimeType: "text/html" }],
     ]);
 
     const exportFilename = (title === "" ? 'Untitled' : title) + '.' + exportState;
@@ -46,7 +51,7 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
       document.body.appendChild(anchor);
       anchor.click();
     } else if (exportState === 'pdf') {
-      //exportAsPDF(editorState, exportFilename);
+      exportAsPDF(editorState, title, defaultFont, defaultSize);
     }
 
     onClose();
@@ -63,7 +68,7 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
       </DialogTitle>
       <DialogContent>
         <Stack gap={5} component="main">
-          <Typography>Export as:</Typography>
+          <Typography variant="h6" component="h2">Export as</Typography>
           <TextField
             id="select-export-type"
             select
@@ -77,6 +82,15 @@ export default function NotesExportDialog( { open, onClose, editorState, title }
               </MenuItem>
             ))}
           </TextField>
+          {
+            (exportState === 'pdf' || exportState === 'html') ? (
+              <>
+                <Typography variant="h6" component="h2">Export settings</Typography>
+                <TextField label="Default font" value={defaultFont} onChange={handleDefaultFontChange} />
+                <TextField label="Default font size" value={defaultSize} onChange={handleDefaultSizeChange} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
+              </>
+            ) : <></>
+          }
         </Stack>
       </DialogContent>
       <DialogActions>

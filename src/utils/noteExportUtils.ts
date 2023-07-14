@@ -7,12 +7,37 @@ import draftToMarkdown from 'draftjs-to-markdown';
 // @ts-ignore
 import prettify from 'html-prettify';
 
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+// utility function to open content in new window for debugging
+function openInNewWindow(obj : string | Object) {
+  if (typeof obj === 'string') {
+    window.open(URL.createObjectURL(new Blob([obj])));
+  } else {
+    window.open(URL.createObjectURL(new Blob(JSON.stringify(obj).split("\n"))));
+  }
+}
 
-export function exportAsHTML(editorState : EditorState) : string {
+const HEADER = ( title : string, font? : string, fontSize? : number ) => {
+  const fontStyle = (font === "" || font === null || font === undefined) ? "" : `font-family: ${font};`;
+  const fontSizeStyle = (fontSize === null || fontSize === undefined || fontSize === 0) ? "" : `font-size: ${fontSize}px; `;
+  return `<!DOCTYPE html>
+  <html>
+    <head>
+      <title>${title}</title>
+      <meta charset="utf-8" />
+      <style type="text/css">
+        body {
+          ${fontStyle}
+          ${fontSizeStyle}
+        }
+      </style></head><body>`;
+}
+
+const FOOTER = `</body></html>`
+
+export function exportAsHTML(editorState : EditorState, title : string, font? : string, fontSize? : number) : string {
   const rawContentState = convertToRaw(editorState.getCurrentContent());
-  return prettify(draftToHtml(rawContentState)) as string;  
+  const header = HEADER(title, font, fontSize);
+  return prettify(header + draftToHtml(rawContentState) + FOOTER) as string;  
 }
 
 export function exportAsMarkdown(editorState : EditorState) : string {
@@ -20,25 +45,18 @@ export function exportAsMarkdown(editorState : EditorState) : string {
   return draftToMarkdown(rawContentState) as string;
 }
 
-/*
-export function exportAsPDF(editorState : EditorState, exportFilename : string) {
-  const htmlContent = exportAsHTML(editorState);
-  
-  const el = document.createElement("div");
-  el.style.color = "black";
-  el.style.width = "2970mm";
-  el.style.height = "2100mm";
-  el.innerHTML = htmlContent;
-  document.body.appendChild(el);
+export function exportAsPDF(editorState : EditorState, title : string, font? : string, fontSize? : number) {
+  const htmlContent = exportAsHTML(editorState, title, font, fontSize);
 
-  html2canvas(el).then(function (canvas) {
-    var img = canvas.toDataURL("image/png");
-    var doc = new jsPDF();
-    var imgWidth =  canvas.width;
-    var imgHeight = canvas.height;
-    doc.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
-    doc.save(exportFilename);
-  });
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  document.body.appendChild(iframe);
+  const pri = iframe.contentWindow as Window;
+  pri.document.open();
+  pri.document.write(htmlContent);
+  pri.document.close();
+  pri.focus();
+  pri.print();
+  pri.onafterprint = () => { document.body.removeChild(iframe); }
 
-  document.body.removeChild(el);
-}*/
+}
