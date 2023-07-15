@@ -9,6 +9,17 @@ import DashboardPanel from "../components/dashboard/DashboardPanel";
 import RandomQuotePanel, { Quote } from "../components/dashboard/RandomQuotePanel";
 
 /**
+ * A Grid item that wraps a DashboardPanel.
+ */
+function DashboardPanelGridItem({ children } : { children : React.ReactElement }) {
+    return (
+        <Grid item xs={12} sm={6} padding={{ xs: 1.5, sm: 2, md: 2.5 }}>
+            { children }
+        </Grid>
+    );
+}
+
+/**
  * Represents the page accessed by URL / in React Router when logged in. Contains the
  * dashboard feature to be developed in // TODO: Study.
  * 
@@ -66,44 +77,45 @@ export default function Dashboard() {
             <> 
                 <CssBaseline />
                 <NavigationBar title="Dashboard" />
-                <Stack gap={3} marginTop={5}>
-                    <Typography variant="h3" component="h1" textAlign="center">
-                        { userData.user_name === null ? "" : `Welcome back ${userData.user_name}!`}
-                    </Typography>
-                    <Grid container padding={2}>
-                        <Grid item xs={12} sm={6} padding={1.5}>
-                            <DashboardPanel title="Tasks" href="/tasks">
-                                <Typography>Hello world!</Typography>
-                            </DashboardPanel>
+                <Container maxWidth="md">
+                    <Stack gap={3} marginTop={5}>
+                        <Typography variant="h3" component="h1" textAlign="center">
+                            { userData.user_name === null ? "" : `Welcome back ${userData.user_name}!`}
+                        </Typography>
+                        <Grid container padding={2}>
+                            <DashboardPanelGridItem>
+                                <DashboardPanel title="Tasks" href="/tasks">
+                                    <Typography>Hello world!</Typography>
+                                </DashboardPanel>
+                            </DashboardPanelGridItem>
+                            <DashboardPanelGridItem>
+                                <DashboardPanel title="Timer" href="/timer">
+                                    <Typography>Hello world!</Typography>
+                                </DashboardPanel>
+                            </DashboardPanelGridItem>
+                            <DashboardPanelGridItem>
+                                <DashboardPanel title="Notes" href="/notes">
+                                    <Typography>Hello world!</Typography>
+                                </DashboardPanel>
+                            </DashboardPanelGridItem>
+                            <DashboardPanelGridItem>
+                                <DashboardPanel title="Telegram Bot" href="">
+                                    <Typography>Hello world!</Typography>
+                                </DashboardPanel>
+                            </DashboardPanelGridItem>
+                            <DashboardPanelGridItem>
+                                <DashboardPanel title="Canvas Downloader" href="">
+                                    <Typography>Hello world!</Typography>
+                                </DashboardPanel>
+                            </DashboardPanelGridItem>
+                            <DashboardPanelGridItem>
+                                <DashboardPanel title="Random Quote of the Day" href="" onClick={ () => { fetchRandomQuote(setQuote) } } buttonTitle="Refresh Quote">
+                                    <RandomQuotePanel quote={ quote } />
+                                </DashboardPanel>
+                            </DashboardPanelGridItem>
                         </Grid>
-                        <Grid item xs={12} sm={6} padding={1.5}>
-                            <DashboardPanel title="Timer" href="/timer">
-                                <Typography>Hello world!</Typography>
-                            </DashboardPanel>
-                        </Grid>
-                        <Grid item xs={12} sm={6} padding={1.5}>
-                            <DashboardPanel title="Notes" href="/notes">
-                                <Typography>Hello world!</Typography>
-                            </DashboardPanel>
-                        </Grid>
-                        <Grid item xs={12} sm={6} padding={1.5}>
-                            <DashboardPanel title="Telegram Bot" href="">
-                                <Typography>Hello world!</Typography>
-                            </DashboardPanel>
-                        </Grid>
-                        <Grid item xs={12} sm={6} padding={1.5}>
-                            <DashboardPanel title="Canvas Downloader" href="">
-                                <Typography>Hello world!</Typography>
-                            </DashboardPanel>
-                        </Grid>
-                        <Grid item xs={12} sm={6} padding={1.5}>
-                            <DashboardPanel title="Random Quote of the Day" href="" onClick={ () => { fetchRandomQuote(setQuote) } } buttonTitle="Refresh Quote">
-                                <RandomQuotePanel quote={ quote } />
-                            </DashboardPanel>
-                        </Grid>
-                    </Grid>
-                </Stack>
-
+                    </Stack>
+                </Container>
             </>
             
         );
