@@ -46,9 +46,9 @@ export function exportAsMarkdown(editorState : EditorState) : string {
 }
 
 /**
- * Determines whether the device used is an Apple mobile device.
+ * Determines whether the device used is an Android mobile device.
  * 
- * @returns true if iOS device; false otherwise
+ * @returns true if Android device; false otherwise
  */
 function isAndroidDevice() {
   const userAgent = navigator.userAgent;
@@ -58,8 +58,7 @@ function isAndroidDevice() {
 
 export function exportAsPDF(editorState : EditorState, title : string, font? : string, fontSize? : number) {
   const htmlContent = exportAsHTML(editorState, title, font, fontSize);
-
-  if (!isAndroidDevice) {
+  if (!isAndroidDevice()) {
     // window.open() method was taken from https://stackoverflow.com/a/15900835 
     const disp_setting="toolbar=yes,location=no, directories=yes,menubar=yes, scrollbars=yes,width=650, height=600, left=100, top=25";
     const docPrint = window.open("", "", disp_setting);
