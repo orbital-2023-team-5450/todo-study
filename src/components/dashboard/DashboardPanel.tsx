@@ -7,17 +7,19 @@ type DashboardPanelProps = {
   title : string,
   href : string,
   onClick? : React.MouseEventHandler<HTMLButtonElement>,
+  onSettingsClick? : React.MouseEventHandler<HTMLButtonElement>
   buttonTitle? : string,
 };
 
-export default function DashboardPanel({ children, title, href, onClick, buttonTitle } : DashboardPanelProps) {
+export default function DashboardPanel({ children, title, href, onClick, onSettingsClick, buttonTitle } : DashboardPanelProps) {
   return (
     <Card>
       <CardHeader
-        action={
-          <IconButton aria-label="settings">
+        action={ ( onSettingsClick !== undefined && onSettingsClick !== null ) ? (
+          <IconButton aria-label="settings" onClick={ onSettingsClick }>
             <MoreVertIcon />
           </IconButton>
+        ) : <></>
         }
         title={ title }
         sx={{ padding: '12px 16px 10px 16px' }}

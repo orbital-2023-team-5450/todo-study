@@ -7,6 +7,8 @@ import NavigationBar from "../components/navigation/NavigationBar";
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardPanel from "../components/dashboard/DashboardPanel";
 import RandomQuotePanel, { Quote } from "../components/dashboard/RandomQuotePanel";
+import MiniTimerPanel from "../components/dashboard/MiniTimerPanel";
+import SelectTemplateDialog from "../components/timer/dialogs/SelectTemplateDialog";
 
 /**
  * A Grid item that wraps a DashboardPanel.
@@ -90,7 +92,7 @@ export default function Dashboard() {
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
                                 <DashboardPanel title="Timer" href="/timer">
-                                    <Typography>Hello world!</Typography>
+                                    <MiniTimerPanel />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>

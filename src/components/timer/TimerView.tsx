@@ -6,7 +6,7 @@ import TimeUpDialog from './dialogs/TimeUpDialog';
 import TimerConfigDialog from './dialogs/TimerConfigDialog';
 
 
-export default function TimerView({ pattern, showMs, onChange } : { pattern : WorkRestCycle, showMs : boolean, onChange : () => void }) {
+export default function TimerView({ pattern, showMs, onChange, showConfigButton = true } : { pattern : WorkRestCycle, showMs : boolean, onChange : () => void, showConfigButton? : boolean }) {
 
     const [ dialogOpen, setDialogOpen ] = useState(false);
     const [ timerConfigOpen, setTimerConfigOpen ] = useState(false);
@@ -72,9 +72,11 @@ export default function TimerView({ pattern, showMs, onChange } : { pattern : Wo
                     { isRunning ? "Pause" : "Start" } Timer</Button>
                 <Button variant="outlined" onClick={reset}>Reset Timer</Button>
             </Stack>
+            { showConfigButton ? (
             <Stack gap={5} alignItems="center">
                 <Button onClick={ handleTimerConfigOpen } variant="outlined">Configure Timer</Button>
             </Stack>
+            ) : <></> }
             <TimeUpDialog open={dialogOpen} handleClose={ handleTimeUpDialogClose } />
             <TimerConfigDialog open={timerConfigOpen} handleClose={handleConfigDialogClose} onChange={onChange} timerRunning={isRunning} timerPaused={isPaused} />
         </Stack>
