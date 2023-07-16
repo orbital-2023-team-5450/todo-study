@@ -1,5 +1,6 @@
-import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Typography } from '@mui/material';
 import React from 'react';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 type DashboardPanelProps = {
   children : React.ReactElement,
@@ -12,10 +13,15 @@ type DashboardPanelProps = {
 export default function DashboardPanel({ children, title, href, onClick, buttonTitle } : DashboardPanelProps) {
   return (
     <Card>
-      <CardContent>
-        <Typography variant="h6" component="h1">
-          { title }
-        </Typography>
+      <CardHeader
+        action={
+          <IconButton aria-label="settings">
+            <MoreVertIcon />
+          </IconButton>
+        }
+        title={ title }
+      />
+      <CardContent sx={{ padding: '0 16px' }}>
         { children }
       </CardContent>
       <CardActions>
