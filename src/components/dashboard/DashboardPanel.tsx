@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardHeader, IconButton } from '@mui/material';
 import React from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -20,6 +20,7 @@ export default function DashboardPanel({ children, title, href, onClick, buttonT
           </IconButton>
         }
         title={ title }
+        sx={{ padding: '12px 16px 10px 16px' }}
       />
       <CardContent sx={{ padding: '0 16px' }}>
         { children }
@@ -27,11 +28,11 @@ export default function DashboardPanel({ children, title, href, onClick, buttonT
       <CardActions>
       {
         (href !== "") ? (
-          <Button size="small" href={ href }>
+          <Button sx={{ padding: '4px 8px' }} size="small" href={ href }>
             { buttonTitle ?? "Go to feature" }
           </Button>
-        ) : (onClick !== null && buttonTitle !== null) ? (
-          <Button size="small" onClick={ onClick }>
+        ) : (onClick !== null && onClick !== undefined && buttonTitle !== null && buttonTitle !== undefined) ? (
+          <Button sx={{ padding: '4px 8px' }} size="small" onClick={ onClick }>
             { buttonTitle ?? "" }
           </Button>
         ) : <></> }
