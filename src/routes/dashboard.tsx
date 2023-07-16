@@ -9,6 +9,11 @@ import DashboardPanel from "../components/dashboard/DashboardPanel";
 import RandomQuotePanel, { Quote } from "../components/dashboard/RandomQuotePanel";
 import MiniTimerPanel from "../components/dashboard/MiniTimerPanel";
 import SelectTemplateDialog from "../components/timer/dialogs/SelectTemplateDialog";
+import CanvasDownloaderPanel from "../components/dashboard/CanvasDownloaderPanel";
+import { Telegram } from "@mui/icons-material";
+import NotesPanel from "../components/dashboard/NotesPanel";
+import TelegramBotPanel from "../components/dashboard/TelegramBotPanel";
+import TasksPanel from "../components/dashboard/TasksPanel";
 
 /**
  * A Grid item that wraps a DashboardPanel.
@@ -85,30 +90,33 @@ export default function Dashboard() {
                         <Typography variant="h3" component="h1" textAlign="center">
                             { userData.user_name === null ? "" : `Welcome back ${userData.user_name}!`}
                         </Typography>
+                        <Typography pl={3} pr={3} pt={1} pb={1} variant="body2" fontSize="1.1em" component="h2" textAlign="center">
+                            You can click/tap on the links in the dashboard or the hamburger icon (<MenuIcon fontSize="small" />) on the top-left corner to access the wonderful mini-applications and features we have curated so far!
+                        </Typography>
                         <Grid container padding={2}>
                             <DashboardPanelGridItem>
                                 <DashboardPanel title="Tasks" href="/tasks">
-                                    <Typography>Hello world!</Typography>
+                                    <TasksPanel />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
-                                <DashboardPanel title="Timer" href="/timer" onSettingsClick={ () => { setTimerDialogOpen(true) } }>
+                                <DashboardPanel title="Timer" href="/timer" onSettingsClick={ () => { setTimerDialogOpen(true) } } tooltip="Change timer template">
                                     <MiniTimerPanel open={ timerDialogOpen } onOpen={ () => { setTimerDialogOpen(false) } } />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
                                 <DashboardPanel title="Notes" href="/notes">
-                                    <Typography>Hello world!</Typography>
+                                    <NotesPanel />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
                                 <DashboardPanel title="Telegram Bot" href="">
-                                    <Typography>Hello world!</Typography>
+                                    <TelegramBotPanel />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
                                 <DashboardPanel title="Canvas Downloader" href="">
-                                    <Typography>Hello world!</Typography>
+                                    <CanvasDownloaderPanel />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
