@@ -5,8 +5,22 @@ import { useTimer } from '../../hooks/useTimer';
 import TimeUpDialog from './dialogs/TimeUpDialog';
 import TimerConfigDialog from './dialogs/TimerConfigDialog';
 
+type Variant = 	'body1'
+| 'body2'
+| 'button'
+| 'caption'
+| 'h1'
+| 'h2'
+| 'h3'
+| 'h4'
+| 'h5'
+| 'h6'
+| 'inherit'
+| 'overline'
+| 'subtitle1'
+| 'subtitle2';
 
-export default function TimerView({ pattern, showMs, onChange, showConfigButton = true } : { pattern : WorkRestCycle, showMs : boolean, onChange : () => void, showConfigButton? : boolean }) {
+export default function TimerView({ pattern, showMs, onChange, textVariant = "h1", showConfigButton = true } : { pattern : WorkRestCycle, showMs : boolean, onChange : () => void, textVariant? : Variant, showConfigButton? : boolean }) {
 
     const [ dialogOpen, setDialogOpen ] = useState(false);
     const [ timerConfigOpen, setTimerConfigOpen ] = useState(false);
@@ -61,7 +75,7 @@ export default function TimerView({ pattern, showMs, onChange, showConfigButton 
 
     return (
         <Stack gap={3} component="section">
-            <Typography textAlign="center" variant="h1" component="h2">
+            <Typography textAlign="center" variant={ textVariant } component="h2">
                 { timerDisplay }
             </Typography>
             <Typography textAlign="center" variant="body1" component="h3">

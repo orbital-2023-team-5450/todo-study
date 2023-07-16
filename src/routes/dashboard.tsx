@@ -33,6 +33,7 @@ export default function Dashboard() {
 
     const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
     const [ loading, setLoading ] = useState(true);
+    const [ timerDialogOpen, setTimerDialogOpen ] = useState(false);
     const [ quote, setQuote ] = useState({ content: "Loading...", author: "" });
     const navigate = useNavigate();
 
@@ -91,8 +92,8 @@ export default function Dashboard() {
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
-                                <DashboardPanel title="Timer" href="/timer">
-                                    <MiniTimerPanel />
+                                <DashboardPanel title="Timer" href="/timer" onSettingsClick={ () => { setTimerDialogOpen(true) } }>
+                                    <MiniTimerPanel open={ timerDialogOpen } onOpen={ () => { setTimerDialogOpen(false) } } />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>

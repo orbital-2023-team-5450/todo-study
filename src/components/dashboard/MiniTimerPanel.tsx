@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { FullWorkRestCycle, TimerSettings, WorkRestCycle, fetchTimerSettings, fetchTimerTemplateFromId, getCycleFromTemplate, isValidPattern } from '../../utils/timerUtils';
 import TimerView from '../timer/TimerView';
 import SelectTemplateDialog from '../timer/dialogs/SelectTemplateDialog';
+import { Link, Stack, Typography } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
-export default function MiniTimerPanel() {
+export default function MiniTimerPanel({ open, onOpen } : { open : boolean, onOpen : () => void }) {
 
   const POMODORO = { timer_template_id: 1, title: "Pomodoro", description: "A timer using the Pomodoro technique for 4 cycles.", user_id: "", work: 1500000, rest: 300000, cycles: 4 };
   const [ timerSettings, setTimerSettings ] = useState<TimerSettings>({ user_id: "", use_milliseconds: false, low_time_warning: true, timer_template_id: 0});
@@ -15,11 +17,26 @@ export default function MiniTimerPanel() {
     fetchTimerTemplateFromId(timerSettings.timer_template_id, setPattern);
   }, [timerSettings]);
 
+  useEffect(() => {
+    if (open) {
+      setTimerTemplateSelectOpen(true);
+      onOpen();
+    }
+  }, [open]);
+
   return (
-    <>
-      <TimerView showConfigButton={false} pattern={ isValidPattern(pattern) ? getCycleFromTemplate(pattern) : getCycleFromTemplate(POMODORO) } showMs={ false } onChange={() => fetchTimerSettings(setTimerSettings)} />
+    <Stack gap={3}>
+      <TimerView
+        showConfigButton={false}
+        pattern={ isValidPattern(pattern) ? getCycleFromTemplate(pattern) : getCycleFromTemplate(POMODORO) }
+        showMs={ false }
+        onChange={() => fetchTimerSettings(setTimerSettings)}
+        textVariant='h2' />
+      <Typography>
+        For more customisation options, such as creating new timer templates, go to the <Link component={RouterLink} to="/timer">full timer app</Link>.
+      </Typography>
       <SelectTemplateDialog open={timerTemplateSelectOpen} handleClose={() => { setTimerTemplateSelectOpen(false) }} onChange={ () => fetchTimerSettings(setTimerSettings) } />
-    </>            
+    </Stack>            
 
   )
 }
