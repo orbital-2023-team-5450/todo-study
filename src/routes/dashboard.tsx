@@ -14,6 +14,7 @@ import { Telegram } from "@mui/icons-material";
 import NotesPanel from "../components/dashboard/NotesPanel";
 import TelegramBotPanel from "../components/dashboard/TelegramBotPanel";
 import TasksPanel from "../components/dashboard/TasksPanel";
+import DashboardNoteSortDialog, { DashboardNoteSettings } from "../components/dashboard/note-taking/DashboardNoteSortDialog";
 
 /**
  * A Grid item that wraps a DashboardPanel.
@@ -38,6 +39,9 @@ export default function Dashboard() {
 
     const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
     const [ loading, setLoading ] = useState(true);
+    
+    const [ noteSortSettings, setNoteSortSettings ] = useState<DashboardNoteSettings>({ noteCount: 3, sort: 'mrm' });
+    const [ noteSortDialogOpen, setNoteSortDialogOpen ] = useState(false);
     const [ timerDialogOpen, setTimerDialogOpen ] = useState(false);
     const [ quote, setQuote ] = useState({ content: "Loading...", author: "" });
     const navigate = useNavigate();
@@ -105,8 +109,9 @@ export default function Dashboard() {
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
-                                <DashboardPanel title="Notes" href="/notes">
-                                    <NotesPanel />
+                                <DashboardPanel title="Notes" href="/notes" onSettingsClick={ () => { setNoteSortDialogOpen(true) } } tooltip="Preview options">
+                                    <NotesPanel settings={ noteSortSettings } />
+                                    <DashboardNoteSortDialog open={ noteSortDialogOpen } handleClose={ () => { setNoteSortDialogOpen(false) } } value={ noteSortSettings } onChange={ setNoteSortSettings } />  
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>

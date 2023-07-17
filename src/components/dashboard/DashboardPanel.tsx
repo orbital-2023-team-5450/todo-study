@@ -2,20 +2,19 @@ import { Button, Card, CardActions, CardContent, CardHeader, IconButton, Tooltip
 import React from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-type DashboardPanelProps = {
-  children : React.ReactElement,
+type DashboardPanelProps = React.PropsWithChildren<{
   title : string,
   href : string,
   onClick? : React.MouseEventHandler<HTMLButtonElement>,
   onSettingsClick? : React.MouseEventHandler<HTMLButtonElement>
   buttonTitle? : string,
   tooltip? : string,
-};
+}>;
 
 /**
  * A React component that represents a DashboardPanel, to be displayed as a Material UI card.
  * @param { DashboardPanelProps } props The props for this React component.
- * @param { React.ReactElement } props.children the child React elements to display within the content of the DashboardPanel.
+ * @param { React.ReactNode } props.children the child React elements to display within the content of the DashboardPanel.
  * @param { string } props.title The title of the DashboardPanel to be displayed on the card header.
  * @param { string } props.href  The URL that the bottom button will link to if the button behaves as a link anchor.
  * @param { React.MouseEventHandler<HTMLButtonElement> } props.onClick The click handler for the bottom button if the button behaves as a form button.
