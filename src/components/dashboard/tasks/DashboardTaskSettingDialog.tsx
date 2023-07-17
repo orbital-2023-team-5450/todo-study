@@ -1,27 +1,27 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import React from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { createNumericTextEventHandler } from '../../../utils/textInputUtils';
 
 const sortSettings = [
-  { label: "Most recently modified", value: "mrm" },
-  { label: "Newest created", value: "mrc" },
-  { label: "Oldest modified", value: "lrm" },
-  { label: "Oldest created", value: "lrc" },
+  { label: "Due soonest (excl. expired tasks)", value: "dsee" },
+  { label: "Due soonest (incl. expired tasks)", value: "dsie" },
+  { label: "Expired tasks", value: "exp" },
+  { label: "Tasks with no due date", value: "ndd" },
   { label: "Alphabetical order (A-Z)", value: "abc" },
   { label: "Reverse alphabetical order (Z-A)", value: "zyx" },
 ]
 
-export type DashboardNoteSettings = {
+export type DashboardTaskSettings = {
   sort: string,
-  noteCount : number,
+  taskCount : number,
 }
 
-export default function DashboardNoteSortDialog( { open, handleClose, value, onChange } : { open : boolean, handleClose : () => void, value : DashboardNoteSettings, onChange : ( settings : DashboardNoteSettings ) => void }) {
-
+export default function DashboardTaskSettingsDialog({ open, handleClose, value, onChange } : { open : boolean, handleClose : () => void, value : DashboardTaskSettings, onChange : ( settings : DashboardTaskSettings ) => void }) {
+  
   const handleSortChange = (event : React.ChangeEvent<HTMLInputElement>) => {
     onChange({...value, sort : event.target.value});
   };
-  const handleNoteCountChange = createNumericTextEventHandler((num) => onChange({...value, noteCount : num}), 1, 10);
+  const handleTaskCountChange = createNumericTextEventHandler((num) => onChange({...value, taskCount : num}), 1, 10);
 
   return (
     <Dialog
@@ -29,7 +29,7 @@ export default function DashboardNoteSortDialog( { open, handleClose, value, onC
       onClose={handleClose}
     >
       <DialogTitle id="notes-config-dialog-title">
-        Sort notes by...
+        Sort tasks by...
       </DialogTitle>
       <DialogContent>
         <Stack pt={2} gap={5} component="main">
@@ -45,7 +45,7 @@ export default function DashboardNoteSortDialog( { open, handleClose, value, onC
               </MenuItem>
             ))}
           </TextField>
-          <TextField type="text" label="Number of notes to show" variant="outlined" value={ value.noteCount } onChange={ handleNoteCountChange } inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
+          <TextField type="text" label="Number of tasks to show" variant="outlined" value={ value.taskCount } onChange={ handleTaskCountChange } inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
         </Stack>
       </DialogContent>
       <DialogActions>

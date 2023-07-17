@@ -24,7 +24,7 @@ type DashboardPanelProps = React.PropsWithChildren<{
  */
 export default function DashboardPanel({ children, title, href, onClick, onSettingsClick, buttonTitle, tooltip } : DashboardPanelProps) {
   return (
-    <Card>
+    <Card sx={{ margin: '1em 0 0 0', padding: '3px' }}>
       <CardHeader
         action={ ( onSettingsClick !== undefined && onSettingsClick !== null ) ? (
           <Tooltip title={ tooltip ?? "" }>

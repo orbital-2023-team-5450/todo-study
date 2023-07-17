@@ -49,7 +49,7 @@ export default function NotesPanel({ settings } : { settings : DashboardNoteSett
         { sortStr.get(settings.sort) }
       </Typography>
       {
-        (noteList.length !== 0) ? processNoteList().map(
+        (processNoteList().length !== 0) ? processNoteList().map(
           (note : Note) => {
             return (
               <Card key={note.note_id}>

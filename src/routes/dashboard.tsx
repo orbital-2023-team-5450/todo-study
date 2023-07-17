@@ -15,13 +15,14 @@ import NotesPanel from "../components/dashboard/NotesPanel";
 import TelegramBotPanel from "../components/dashboard/TelegramBotPanel";
 import TasksPanel from "../components/dashboard/TasksPanel";
 import DashboardNoteSortDialog, { DashboardNoteSettings } from "../components/dashboard/note-taking/DashboardNoteSortDialog";
+import DashboardTaskSettingsDialog, { DashboardTaskSettings } from "../components/dashboard/tasks/DashboardTaskSettingDialog";
 
 /**
  * A Grid item that wraps a DashboardPanel.
  */
-function DashboardPanelGridItem({ children } : { children : React.ReactElement }) {
+function DashboardPanelGridItem({ children } : { children : React.ReactNode }) {
     return (
-        <Grid item xs={12} sm={6} padding={{ xs: 1.5, sm: 2, md: 2.5 }}>
+        <Grid item xs={12} sm={6} pl={1.5} pr={1.5}>
             { children }
         </Grid>
     );
@@ -40,6 +41,8 @@ export default function Dashboard() {
     const [ userData, setUserData ] = useState({ user_id: "", user_name: "", first_name: "", last_name: "", avatar_url: "", theme: "", telegram_handle: "", created_at: "", });
     const [ loading, setLoading ] = useState(true);
     
+    const [ taskSortSettings, setTaskSortSettings ] = useState<DashboardTaskSettings>({ taskCount: 3, sort: 'dsee' });
+    const [ taskSortDialogOpen, setTaskSortDialogOpen ] = useState(false);
     const [ noteSortSettings, setNoteSortSettings ] = useState<DashboardNoteSettings>({ noteCount: 3, sort: 'mrm' });
     const [ noteSortDialogOpen, setNoteSortDialogOpen ] = useState(false);
     const [ timerDialogOpen, setTimerDialogOpen ] = useState(false);
@@ -60,25 +63,6 @@ export default function Dashboard() {
       fetchRandomQuote(setQuote);
     }, []);
 
-    function Temp() {
-        return (
-            
-            <>
-            <Stack sx={{ height: "calc(100vh - 120px)", padding: "2em" }} display="flex" direction="column" gap={3} justifyContent="center" marginTop={5} alignItems="center">
-                <Typography variant="h3" component="h1" marginTop={5}>
-                { userData.user_name === null ? "" : `Welcome back ${userData.user_name}!`}
-                </Typography>
-                <Typography maxWidth="800px" component="p" fontSize="1.5em">
-                    This dashboard is under construction! 🚧👷<br />
-                </Typography>
-                <Typography maxWidth="800px" component="p" fontSize="1.5em">
-                    Click/Tap on the hamburger icon (<MenuIcon fontSize="small" />) on the top-left corner to access the wonderful mini-applications and features we have curated so far!
-                </Typography>
-                </Stack>
-            </>
-        )
-    }
-
     useEffect(() => {
         fetchUserInfo(setUserData, loading, setLoading, navigate, true);
     }, [loading, navigate]);
@@ -94,37 +78,30 @@ export default function Dashboard() {
                         <Typography variant="h3" component="h1" textAlign="center">
                             { userData.user_name === null ? "" : `Welcome back ${userData.user_name}!`}
                         </Typography>
-                        <Typography pl={3} pr={3} pt={1} pb={1} variant="body2" fontSize="1.1em" component="h2" textAlign="center">
+                        <Typography pl={3} pr={3} pt={1} variant="body2" fontSize="1.1em" component="h2" textAlign="center">
                             You can click/tap on the links in the dashboard or the hamburger icon (<MenuIcon fontSize="small" />) on the top-left corner to access the wonderful mini-applications and features we have curated so far!
                         </Typography>
                         <Grid container padding={2}>
                             <DashboardPanelGridItem>
-                                <DashboardPanel title="Tasks" href="/tasks">
-                                    <TasksPanel />
+                                <DashboardPanel title="Tasks" href="/tasks" onSettingsClick={ () => { setTaskSortDialogOpen(true) } } tooltip="Sort tasks by...">
+                                    <TasksPanel settings={ taskSortSettings } />
+                                    <DashboardTaskSettingsDialog open={ taskSortDialogOpen } handleClose={ () => { setTaskSortDialogOpen(false) } } value={ taskSortSettings } onChange={ setTaskSortSettings } />
                                 </DashboardPanel>
-                            </DashboardPanelGridItem>
-                            <DashboardPanelGridItem>
                                 <DashboardPanel title="Timer" href="/timer" onSettingsClick={ () => { setTimerDialogOpen(true) } } tooltip="Change timer template">
                                     <MiniTimerPanel open={ timerDialogOpen } onOpen={ () => { setTimerDialogOpen(false) } } />
                                 </DashboardPanel>
-                            </DashboardPanelGridItem>
-                            <DashboardPanelGridItem>
-                                <DashboardPanel title="Notes" href="/notes" onSettingsClick={ () => { setNoteSortDialogOpen(true) } } tooltip="Preview options">
-                                    <NotesPanel settings={ noteSortSettings } />
-                                    <DashboardNoteSortDialog open={ noteSortDialogOpen } handleClose={ () => { setNoteSortDialogOpen(false) } } value={ noteSortSettings } onChange={ setNoteSortSettings } />  
-                                </DashboardPanel>
-                            </DashboardPanelGridItem>
-                            <DashboardPanelGridItem>
-                                <DashboardPanel title="Telegram Bot" href="">
-                                    <TelegramBotPanel />
-                                </DashboardPanel>
-                            </DashboardPanelGridItem>
-                            <DashboardPanelGridItem>
                                 <DashboardPanel title="Canvas Downloader" href="">
                                     <CanvasDownloaderPanel />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
                             <DashboardPanelGridItem>
+                                <DashboardPanel title="Notes" href="/notes" onSettingsClick={ () => { setNoteSortDialogOpen(true) } } tooltip="Sort notes by...">
+                                    <NotesPanel settings={ noteSortSettings } />
+                                    <DashboardNoteSortDialog open={ noteSortDialogOpen } handleClose={ () => { setNoteSortDialogOpen(false) } } value={ noteSortSettings } onChange={ setNoteSortSettings } />  
+                                </DashboardPanel>
+                                <DashboardPanel title="Telegram Bot" href="">
+                                    <TelegramBotPanel />
+                                </DashboardPanel>
                                 <DashboardPanel title="Random Quote of the Day" href="" onClick={ () => { fetchRandomQuote(setQuote) } } buttonTitle="Refresh Quote">
                                     <RandomQuotePanel quote={ quote } />
                                 </DashboardPanel>
