@@ -33,7 +33,7 @@ export default function TaskCard({ task, popUpUpdate, setWhichTask } :
                                               </Typography>}
 
                     <Typography> 
-                        {task.dueDate !== null ? format(new Date(task.dueDate), 'dd/MMM/yyyy, hh:mm a, eee') 
+                        {task.dueDate !== null ? format(new Date(task.dueDate), 'dd MMM yyyy, eee, hh:mm a') 
                                                 : "No due date"}
                     </Typography>
                 </Stack>

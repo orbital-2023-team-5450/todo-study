@@ -6,7 +6,7 @@ import { Task } from './taskUtils';
  * @param tasks A list of tasks. 
  * @returns A tuple of 3 task lists. 
  */
-export default function splitTask(tasks : Task[]) {
+export function splitTask(tasks : Task[]) {
 
     const now : Task[] = [];
     const nowComplete : Task[] = [];
@@ -50,7 +50,7 @@ export default function splitTask(tasks : Task[]) {
 /*
     Get the difference of 2 dates as day.
 */ 
-function getDayDifference(date1 : Date, date2 : Date) {
+export function getDayDifference(date1 : Date, date2 : Date) {
     const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
   
     // Convert the dates to milliseconds
@@ -58,6 +58,6 @@ function getDayDifference(date1 : Date, date2 : Date) {
     const time2 = date2.getTime();
   
     // Calculate the difference in days
-    const diffDays = Math.abs((time1 - time2) / oneDay);
+    const diffDays = (time1 - time2) / oneDay;
     return diffDays;
 }

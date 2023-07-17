@@ -2,12 +2,11 @@ import React, { useEffect, useState} from "react";
 import {Box, Button, CssBaseline, Menu, MenuItem, Stack, Typography} from "@mui/material";
 import supabase from "../../supabase";
 import TaskManager from "./TaskManager";
-import splitTask from "../../utils/splitTask";
+import { splitTask} from "../../utils/splitTask";
 import TaskPopUp from "./TaskPopup";
 import { Task } from "../../utils/taskUtils";
 import MenuFilterDialog from "./MenuFilterDialog";
 import MenuSortDialog from "./MenuSortDialog";
-import FilterDialog from "./FilterDialog";
 
 /*
     The enum for the type of the tasks.
@@ -29,7 +28,7 @@ export default function TaskScreen() {
     const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
     const [menuFilterOpen, setMenuFilterOpen] = useState(false);
     const [menuSortOpen, setMenuSortOpen] = useState(false);
-    const [filterOpen, setFilterOpen] = useState(false);
+    
     /*
         Handle the event of submitting new task.
     */
@@ -134,7 +133,6 @@ export default function TaskScreen() {
                 tasks={tasks.concat(futureTasks)} //watch out
                 popUpUpdate={setPopUpUpdate}
                 setWhichTask={setWhichTask}
-                setFilterOpen={setFilterOpen}
             />
             <MenuSortDialog menuSortOpen={menuSortOpen}/>
 
@@ -148,7 +146,6 @@ export default function TaskScreen() {
                        fetchTask={fetchTasks} 
                        taskType={'Create'} 
                        id={-1}/>
-            <FilterDialog filterOpen={filterOpen} filterClose={() => setFilterOpen(false)}/>
         </Stack>
     );
 }

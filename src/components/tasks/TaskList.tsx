@@ -3,6 +3,7 @@ import { Card, Checkbox, Typography, Stack, IconButton } from "@mui/material";
 import { DeleteOutline } from "@mui/icons-material";
 import { Task } from "../../utils/taskUtils";
 import { format, formatDistance } from "date-fns";
+import TaskCard from "./TaskCard";
 
 /**
  * A component that displays the list of tasks in the todo-list.
@@ -13,8 +14,7 @@ import { format, formatDistance } from "date-fns";
  * @returns The list of the tasks
  */
 export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit } : 
-                                 { tasks : Task[], 
-                                   onTaskChange : (i : number) => void, onTaskDelete : (i : number) => void,
+                                 { tasks : Task[], onTaskChange : (i : number) => void, onTaskDelete : (i : number) => void,
                                    onTaskEdit : (i : number) => void }) {
 
     /* 
@@ -41,7 +41,6 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
     return (    
         <>
           <Stack marginTop={3} direction='column'>
-            {/* <button onClick={() => setYo("hmmmm")}> hmm</button> */}
             
               {tasks.map((task) => {
                   return (
@@ -77,7 +76,7 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                                                             </Typography>}
 
                                   <Typography> 
-                                      {task.dueDate !== null ? format(new Date(task.dueDate), 'dd/MMM/yyyy, hh:mm a, eee') 
+                                      {task.dueDate !== null ? format(new Date(task.dueDate), 'dd MMM yyyy, eee, hh:mm a') 
                                                              : "No due date"}
                                   </Typography>
                               </Stack>

@@ -168,7 +168,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         <Dialog open={open} onClose={reset}>
             <DialogTitle>
                 <Typography component="h4" variant="h4" marginBottom={3}>
-                    {taskType} new task
+                    {taskType === 'Create' ? ' Create new task' : 'Update task'}
                 </Typography>
             </DialogTitle>
             <DialogContent sx={{width: '600px'}}>
@@ -209,6 +209,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                                         value={dayjs(dueDate)} 
                                         onChange={handleDateTimeChange}
                                         minDateTime={dayjs(new Date())}
+                                        format="DD/MM/YYYY"
                                     />
                                 </DemoItem>
                             </DemoContainer>
