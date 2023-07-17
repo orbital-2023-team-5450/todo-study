@@ -39,6 +39,7 @@ export default function TasksPanel({ settings } : { settings : DashboardTaskSett
     switch (sort) {
       case 'dsee':
         return taskList
+          .filter((task) => task.dueDate !== null)
           .filter((task) => !isExpired(task))
           .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
           .slice(0, taskCount);
