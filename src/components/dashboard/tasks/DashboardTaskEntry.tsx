@@ -1,5 +1,5 @@
 import React from 'react';
-import { Task } from '../../../utils/taskUtils';
+import { Task, isExpired } from '../../../utils/taskUtils';
 import { Stack, Box, Typography, IconButton, Tooltip } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { format } from 'date-fns';
@@ -16,10 +16,15 @@ export default function DashboardTaskEntry( { task } : { task : Task } ) {
     return (
         <Box width="100%" component="div" display="flex" justifyContent="space-between" alignItems="center">
           <Stack width="80%" justifyContent="center">
-            <Typography sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} fontWeight="bold" component="h1">
+            <Typography
+              sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
+              fontWeight="bold"
+              component="h1"
+              color={ isExpired(task) ? 'error' : 'inherit' }
+            >
               { task.title }
             </Typography>
-            <Typography sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} component="h2">
+            <Typography variant="subtitle2" sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} component="h2">
               { task.description }
             </Typography>
             <Typography sx={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} component="h2">

@@ -1,7 +1,7 @@
 import { Card, ListItemButton, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { DashboardTaskSettings } from './tasks/DashboardTaskSettingDialog';
-import { Task } from '../../utils/taskUtils';
+import { Task, isExpired } from '../../utils/taskUtils';
 import DashboardTaskEntry from './tasks/DashboardTaskEntry';
 import supabase from '../../supabase';
 import splitTask from '../../utils/splitTask';
@@ -36,11 +36,10 @@ export default function TasksPanel({ settings } : { settings : DashboardTaskSett
 
   const processTaskList = () => {
     const { taskCount, sort } = settings;
-    const expired = (task : Task) => { return new Date(task.dueDate).getTime() < Date.now(); };
     switch (sort) {
       case 'dsee':
         return taskList
-          .filter((task) => !expired(task))
+          .filter((task) => !isExpired(task))
           .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
           .slice(0, taskCount);
       case 'dsie':
@@ -51,7 +50,7 @@ export default function TasksPanel({ settings } : { settings : DashboardTaskSett
       case 'exp':
         return taskList
           .filter((task) => task.dueDate !== null)
-          .filter((task) => expired(task))
+          .filter((task) => isExpired(task))
           .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
           .slice(0, taskCount);
       case 'ndd':
@@ -86,12 +85,7 @@ export default function TasksPanel({ settings } : { settings : DashboardTaskSett
         (processTaskList().length !== 0) ? processTaskList().map(
           (task : Task) => {
             return (
-              <Card key={task.id} 
-                sx={{
-                  backgroundColor: !task.expired ? task.completed ? 'lightGreen' : '#f2f2f2' : 'pink',
-                  '&:hover': { backgroundColor: !task.expired ? task.completed ? '#00cc00' : '#d9d9d9' : '#ff6680', }
-                }}
-              >
+              <Card key={task.id}>
                 <ListItemButton href="/tasks">
                   <DashboardTaskEntry task={task} />
                 </ListItemButton>
