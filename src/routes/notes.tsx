@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Box, Button, CssBaseline, Divider, Fab, Stack, Typography } from "@mui/material";
 import NavigationBar from "../components/navigation/NavigationBar";
 import LoadingScreen from "../components/LoadingScreen";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import fetchUserInfo from "../utils/fetchUserInfo";
-import { DEFAULT_NOTES_SETTINGS, Note, NotesSettings, deleteNote, fetchNotes, fetchNotesSettings } from "../utils/noteUtils";
+import { DEFAULT_NOTES_SETTINGS, Note, NotesSettings, deleteNote, fetchNoteInfoFromId, fetchNotes, fetchNotesSettings } from "../utils/noteUtils";
 import AddIcon from "@mui/icons-material/Add";
 import NoteNavigation from "../components/note-taking/NoteNavigation";
 import MainEditor from "../components/note-taking/MainEditor";
@@ -44,6 +44,7 @@ const TEST_NOTES : Note[] = [
 ]*/
 
 export default function Notes() {
+    const params = useParams();
 
     document.title = "Notes // TODO: Study";
 
@@ -153,6 +154,24 @@ export default function Notes() {
     useEffect(() => {
       fetchNotesSettings(setNotesSettings);
     }, []);
+
+    useEffect(() => {
+        const id = parseInt(params.id ?? "-1");
+
+        // get creator of note
+        fetchNoteInfoFromId(id, (note : Note) => {}).then((note) => {
+            
+            // prevent people from accessing others' notes. a further optimisation
+            // would be to allow users to share their notes (by allowing other users
+            // to edit their notes) but this will be a future feature.
+            if (notesSettings.user_id === note.user_id) {
+                setMainEditorId(id);
+            } else {
+                setMainEditorId(-1);
+            }
+        });
+        
+    }, [params]);
 
     const drawerWidth = (windowWidth >= minimumDesktopWidth) ? 260 : '100%';
     const widthStyle = (windowWidth >= minimumDesktopWidth) ? "calc(100vw - " + drawerWidth + "px)" : '100%';
