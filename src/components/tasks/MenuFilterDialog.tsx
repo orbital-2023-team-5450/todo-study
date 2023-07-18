@@ -17,7 +17,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
     const [searchValue, setSearchValue] = useState("");
     const [searchDateFrom, setSearchDateFrom] = useState("");
     const [searchDateTill, setSearchDateTill] = useState("");
-    const [searchType, setSearchType] = useState();
+    const [searchType, setSearchType] = useState("none");
     const [isBlurred, setIsBlurred] = useState(false);
     const [filterOpen, setFilterOpen] = useState(false);
 
@@ -29,9 +29,10 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
     const tasksFilterPredicate = (task : Task) => {
 
         const contain = (task.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchValue.toLowerCase()));
-        let range;
-        
+                            task.description.toLowerCase().includes(searchValue.toLowerCase()));
+        const type = task.type === searchType;
+        let range: boolean;
+
         if (searchDateFrom !== "" && searchDateTill !== "") {
             range = new Date(task.dueDate) >= new Date(searchDateFrom) && new Date(task.dueDate) <= new Date(searchDateTill);
         } else if (searchDateFrom !== "" && searchDateTill === "") {
@@ -41,7 +42,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
         } else {
             range = true;
         }
-        return contain && range;
+        return contain && range && type;
     }
 
     const filteredTaskList = tasks.filter(tasksFilterPredicate);
@@ -93,6 +94,8 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
                 searchDateTill={searchDateTill}
                 setSearchDateFrom={setSearchDateFrom}
                 setSearchDateTill={setSearchDateTill}
+                searchType={searchType}
+                setSearchType={setSearchType}
             />
         </>
     );

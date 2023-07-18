@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import dayjs, { Dayjs } from "dayjs";
-import { Box, Button, Dialog, DialogContent, DialogTitle, Icon, IconButton, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, Icon, IconButton, 
+         InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
 import supabase from "../../supabase";
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -81,9 +82,15 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         getUserID().then((userId : string) => {
 
             if (title === "") {
+
                 alert("Please set a name for the title.")
                 setIsDisabled(false);
+            } else if (type === "") {
+
+                alert("Please set a type for the task.")
+                setIsDisabled(false);
             } else {
+
                 reset();
                 const submitInfo = {
 
@@ -164,6 +171,10 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         setDueDate(null);
     }
 
+    const handleChangeSelect = (event: SelectChangeEvent) => {
+        setType(event.target.value);
+    }
+
     return (
         <Dialog open={open} onClose={reset}>
             <DialogTitle>
@@ -195,33 +206,64 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                     />
 
                     <Stack direction='row'> 
-                        <Typography component="h6" variant="h6" align="left" marginTop="3vh" flexGrow={0.5}> 
-                            Date and Time 
-                        </Typography>
+                        <Stack direction='column'> 
+                            <Typography component="h6" variant="h6" align="left" marginTop="3vh" flexGrow={1}> 
+                                Date and Time 
+                            </Typography>
+
+                            <Stack direction='row'> 
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex'}}> 
+                                        <DemoItem>
+                                            <DateTimePicker 
+                                                defaultValue={dayjs((new Date()))} 
+                                                value={dayjs(dueDate)} 
+                                                onChange={handleDateTimeChange}
+                                                minDateTime={dayjs(new Date())}
+                                                format="DD/MM/YYYY hh:mm A"
+                                            />
+                                        </DemoItem>
+                                    </DemoContainer>
+                                </LocalizationProvider>
+
+                                <Button onClick={handleClear} sx={{color: '#00bf63'}}> 
+                                    Clear
+                                </Button>
+                            </Stack>
+                        </Stack>
+
+                        <Stack direction='column' marginTop="3vh" marginLeft='3vh'>
+                            <Typography variant='h6'>
+                                Type of the task
+                            </Typography>
+
+                            <Box sx={{ minWidth: 120, marginTop: '1vh' }}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label"> Type </InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={type}
+                                        label="Type"
+                                        onChange={handleChangeSelect}
+                                    >
+                                        <MenuItem value={"assignment"}> Assignment </MenuItem>
+                                        <MenuItem value={"house chore"}> House work </MenuItem>
+                                        <MenuItem value={"sport"}> Sport </MenuItem>
+                                        <MenuItem value={"general"}> General </MenuItem>
+                                        <MenuItem value={"none"}> None </MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </Stack>
                     </Stack>
 
-                    <Stack direction='row'> 
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex'}}> 
-                                <DemoItem>
-                                    <DateTimePicker 
-                                        defaultValue={dayjs((new Date()))} 
-                                        value={dayjs(dueDate)} 
-                                        onChange={handleDateTimeChange}
-                                        minDateTime={dayjs(new Date())}
-                                        format="DD/MM/YYYY"
-                                    />
-                                </DemoItem>
-                            </DemoContainer>
-                        </LocalizationProvider>
-
-                        <Button onClick={handleClear} sx={{color: '#00bf63'}}> 
-                            Clear
-                        </Button>
-                    </Stack>
-
-                    <Typography display='flex' flexGrow={0.5} fontSize='1.5vh'> The year selected must be within current year to 2099 (inclusive) </Typography>
+                    <Typography display='flex' flexGrow={0.5} fontSize='1.5vh'> 
+                        The year selected must be within 
+                        <br/>current year to 2099 (inclusive) 
+                    </Typography>
                     
+
                 </Stack>
 
                 <Stack direction='row' sx={{justifyContent: 'right'}}> 

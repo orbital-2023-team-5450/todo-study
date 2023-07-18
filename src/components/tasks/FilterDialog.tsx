@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dialog, DialogContent, DialogTitle, Stack, TextField, Typography, } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography, } from '@mui/material';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DateTimePicker, DateTimeValidationError, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -8,10 +8,12 @@ import { PickerChangeHandlerContext } from '@mui/x-date-pickers/internals/hooks/
 import ClearIcon from '@mui/icons-material/Clear';
 import { getDayDifference } from "../../utils/splitTask";
 
-export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, searchDateTill, setSearchDateFrom, setSearchDateTill } : 
+export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, searchDateTill, setSearchDateFrom, 
+                                       setSearchDateTill, searchType, setSearchType } : 
                                      { filterOpen : boolean, filterClose : (arg : boolean) => void, 
                                         setSearchDateFrom : (arg : string) => void, setSearchDateTill: (arg : string) => void,
-                                        searchDateFrom : string, searchDateTill : string}) {
+                                        searchDateFrom : string, searchDateTill : string, searchType: string, 
+                                        setSearchType: (arg : string) => void}) {
 
     const handleDateFrom = (value: Dayjs | null, content: PickerChangeHandlerContext<DateTimeValidationError>) => {  
 
@@ -54,6 +56,12 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
         event.preventDefault();
         setSearchDateFrom("");
         setSearchDateTill("");
+        setSearchType("none");
+    }
+
+    const handleChangeSelect = (event: SelectChangeEvent) => {
+        console.log(event.target.value)
+        setSearchType(event.target.value);
     }
 
     return (
@@ -84,7 +92,7 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
                         </Typography>
                     </Stack>
                     
-                    <Stack direction='row'>
+                    <Stack direction='row' sx={{marginBottom: '5vh'}}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex', flexGrow: '0.5'}}> 
                                     <DemoItem>
@@ -93,7 +101,7 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
                                             value={dayjs(searchDateFrom)} 
                                             onChange={handleDateFrom}
                                             minDateTime={dayjs(new Date())}
-                                            format="DD/MM/YYYY"
+                                            format="DD/MM/YYYY hh:mm A"
                                         />
                                     </DemoItem>
                                 </DemoContainer>
@@ -107,17 +115,40 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
                                             value={dayjs(searchDateTill)} 
                                             onChange={handleDateTill}
                                             minDateTime={dayjs(new Date())}
-                                            format="DD/MM/YYYY"
+                                            format="DD/MM/YYYY hh:mm A"
                                         />
                                     </DemoItem>
                                 </DemoContainer>
                         </LocalizationProvider>
                     </Stack>
 
+                    <Typography sx={{marginBottom: '1vh'}} variant='h6'>
+                        Label of the task... 
+                    </Typography>
+
+                    <Box sx={{ minWidth: 120 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label"> Type </InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={searchType}
+                                label="Type"
+                                onChange={handleChangeSelect}
+                            >
+                                <MenuItem value={"assignment"}> Assignment </MenuItem>
+                                <MenuItem value={"house chore"}> House work </MenuItem>
+                                <MenuItem value={"sport"}> Sport </MenuItem>
+                                <MenuItem value={"general"}> General </MenuItem>
+                                <MenuItem value={"none"}> None </MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+
                     {!checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill)) && 
                         <Typography> The start date should not be later than the end date! </Typography>}
 
-                    <Button onClick={handleFilterOk} sx={{position: 'relative'}}> ok </Button>
+                    <Button onClick={handleFilterOk} sx={{justifyContent: 'right', marginTop: '1vh'}}> ok </Button>
                 </Stack>
             </DialogContent>
         </Dialog>
