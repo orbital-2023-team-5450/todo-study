@@ -4,7 +4,7 @@ import { DashboardTaskSettings } from './tasks/DashboardTaskSettingDialog';
 import { Task, isExpired } from '../../utils/taskUtils';
 import DashboardTaskEntry from './tasks/DashboardTaskEntry';
 import supabase from '../../supabase';
-import splitTask from '../../utils/splitTask';
+import { splitTask } from '../../utils/splitTask';
 
 export default function TasksPanel({ settings } : { settings : DashboardTaskSettings }) {
 
