@@ -25,8 +25,8 @@ export default function Login() {
     return (
         <Container maxWidth="sm"> 
             <Stack component="main" gap={3}>
-                <Typography variant="h3" component="h1"><span className="todo-study-logo">{"//"} TODO: Study</span></Typography>
-                <Typography variant="h4" component="h2">Log in or sign up</Typography>
+                <Typography variant="h3" textAlign="center" component="h1"><span className="todo-study-logo">{"//"} TODO: Study</span></Typography>
+                <Typography variant="h4" textAlign="center" component="h2">Log in or sign up</Typography>
                 <Auth 
                     supabaseClient={supabase}
                     providers={[]}
