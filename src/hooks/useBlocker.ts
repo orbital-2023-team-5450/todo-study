@@ -11,7 +11,6 @@
 import * as React from 'react';
 import { UNSAFE_NavigationContext } from 'react-router-dom';
 import type { History, Blocker, Transition } from 'history';
-import _ from 'lodash';
 
 /**
  * Blocks users from navigating away if there are any changes made.
