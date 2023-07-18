@@ -42,7 +42,7 @@ export default function Timer() {
                 <NavigationBar title="Study Timer" />
                 <Container maxWidth="sm">
                     <Stack component="main" direction="column" gap={5} justifyContent="center" marginTop={5}>
-                        <Typography variant="h3" component="h1">{pattern.title}</Typography>
+                        <Typography textAlign="center" variant="h3" component="h1">{pattern.title}</Typography>
                         <TimerView pattern={ isValidPattern(pattern) ? getCycleFromTemplate(pattern) : getCycleFromTemplate(POMODORO) } showMs={timerSettings.use_milliseconds} onChange={() => fetchTimerSettings(setTimerSettings)} />
                     </Stack>
                 </Container>
