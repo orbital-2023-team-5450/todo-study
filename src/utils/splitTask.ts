@@ -1,4 +1,47 @@
-import { Task } from './taskUtils';
+import { Task, isExpired } from './taskUtils';
+
+export function processTaskList(taskList : Task[], sort: string) {
+
+    switch (sort) {
+
+      case 'dsee':
+        return taskList
+          .filter((task) => task.dueDate !== null)
+          .filter((task) => !isExpired(task))
+          .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+
+      case 'dsie':
+        return taskList
+          .filter((task) => task.dueDate !== null)
+          .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+
+      case 'exp':
+        return taskList
+          .filter((task) => task.dueDate !== null)
+          .filter((task) => isExpired(task))
+          .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+
+      case 'ndd':
+        return taskList
+          .filter((task) => task.dueDate === null)
+          
+      case 'abc':
+        // need to filter off untitled tasks so that tasks with an actual title shows up  
+        return taskList.filter((task) => task.title !== "").sort((a, b) => a.title.localeCompare(b.title));
+
+      case 'zyx':
+        return taskList.sort((a, b) => b.title.localeCompare(a.title));
+
+      default:
+        return taskList;
+    }
+  }
+
+export function sortTask(tasks : Task[], sort : string) {
+
+    processTaskList(tasks, sort);
+    return splitTask(tasks);
+}
 
 /**
  * A function that sorts the tasks based on the due date and assign to 3 lists according to their status.

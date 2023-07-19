@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
-import { MoreVert } from "@mui/icons-material"
+import { Search, Sort } from "@mui/icons-material"
 import React from "react";
 import EmptyState from "./EmptyState";
 import TaskList from "./TaskList";
@@ -87,7 +87,11 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
                 </Typography> 
 
                 <IconButton sx={{marginTop: '4vh'}} onClick={handleMenuOpen}>
-                    <MoreVert />
+                    <Sort />
+                </IconButton>
+
+                <IconButton sx={{marginTop: '4vh'}} onClick={handleMenuOpen}>
+                  <Search />
                 </IconButton>
             </Stack>
             

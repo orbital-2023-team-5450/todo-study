@@ -2,7 +2,7 @@ import React, { useEffect, useState} from "react";
 import {Box, Button, CssBaseline, Menu, MenuItem, Stack, Typography} from "@mui/material";
 import supabase from "../../supabase";
 import TaskManager from "./TaskManager";
-import { splitTask} from "../../utils/splitTask";
+import { sortTask } from "../../utils/splitTask";
 import TaskPopUp from "./TaskPopup";
 import { Task } from "../../utils/taskUtils";
 import MenuFilterDialog from "./MenuFilterDialog";
@@ -28,6 +28,7 @@ export default function TaskScreen() {
     const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
     const [menuFilterOpen, setMenuFilterOpen] = useState(false);
     const [menuSortOpen, setMenuSortOpen] = useState(false);
+    const [sortType, setSortType] = useState("");
     
     /*
         Handle the event of submitting new task.
@@ -58,24 +59,21 @@ export default function TaskScreen() {
       const { data: { user } } = await supabase.auth.getUser();
       const user_id : string = (user === null) ? "" : user.id;
 
-        supabase
-          .from("tasks")
-          .select()
-          .eq("userId", user_id)
-          .order("id")
-          .then((result) => {
-            if (result.data === null || result.data === undefined) {
-
-            } else {
-                const [now, later, expired] = splitTask(result.data as Task[]);
-                setFutureTasks(later);
-                setTasks(now.concat(expired));
-            }  
-          })};
+        supabase.from("tasks").select().eq("userId", user_id).order("id")
+                .then((result) => {
+                    if (result.data === null || result.data === undefined) {
+                    } else {
+                        
+                        const [now, later, expired] = sortTask(result.data as Task[], sortType);
+                        setFutureTasks(later);
+                        setTasks(now.concat(expired));
+                    }  
+                })
+    };
       
       useEffect(() => {
         fetchTasks();
-      }, []);
+      }, [sortType]);
 
     return (
 
@@ -118,11 +116,7 @@ export default function TaskScreen() {
             </Button>
             
             <Menu open={Boolean(anchorMenu)} onClose={() => setAnchorMenu(null)} anchorEl={anchorMenu}>
-                <MenuItem 
-                    onClick={handleMenuItemFilter} 
-                > 
-                    Search 
-                </MenuItem>
+                <MenuItem onClick={handleMenuItemFilter}> Search </MenuItem>
                 <MenuItem onClick={handleMenuItemSort} sx={{width: '100px', }}> Sort </MenuItem>
             </Menu>
 
@@ -134,7 +128,12 @@ export default function TaskScreen() {
                 popUpUpdate={setPopUpUpdate}
                 setWhichTask={setWhichTask}
             />
-            <MenuSortDialog menuSortOpen={menuSortOpen}/>
+            <MenuSortDialog 
+                menuSortOpen={menuSortOpen} 
+                setMenuSortOpen={setMenuSortOpen} 
+                sortType={sortType} 
+                setSortType={setSortType} 
+            />
 
             <TaskPopUp open={isPopUpUpdate} 
                        onClose={() => setPopUpUpdate(false)} 

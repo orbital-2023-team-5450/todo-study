@@ -60,7 +60,6 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
     }
 
     const handleChangeSelect = (event: SelectChangeEvent) => {
-        console.log(event.target.value)
         setSearchType(event.target.value);
     }
 
