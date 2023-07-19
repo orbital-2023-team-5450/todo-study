@@ -17,7 +17,7 @@ const features : {feature: string, app: JSX.Element}[] = [
   {feature: "Notes", app: <EditNoteRoundedIcon />}, 
   {feature: "Tasks", app: <FormatListBulletedIcon />},
   {feature: "Canvas Downloader", app: <SvgIcon><SvgCanvas /></SvgIcon>},
-  {feature: "", app: <></>}, // divider
+  {feature: "Divider1", app: <></>}, // divider
   {feature: "Account Settings", app: <ManageAccountsIcon />},
 ];
 
@@ -51,7 +51,7 @@ export default function NavSides({ onLogout } : { onLogout : React.MouseEventHan
       <Divider />
       <List>
         {features.map((f) => (
-          (f.feature !== "") ? (
+          (!f.feature.startsWith("Divider")) ? (
           <ListItem key={f.feature} disablePadding>
             <ListItemButton href={"/" + f.feature.toLowerCase().replace(" ", "-")}>
               <ListItemIcon>
@@ -62,7 +62,9 @@ export default function NavSides({ onLogout } : { onLogout : React.MouseEventHan
               </ListItemIcon>
             </ListItemButton>
           </ListItem>
-          ) : <Divider sx={{ margin: ".5em" }} />
+          ) : (
+            <Divider sx={{ margin: ".5em" }} />
+          )
         ))}
         <ListItem key="logout" disablePadding>
           <ListItemButton onClick={ onLogout }>
