@@ -8,6 +8,7 @@ type CanvasDownloaderButtonProps = {
 }
 
 export default function CanvasDownloaderButton({ step, title, onClick } : CanvasDownloaderButtonProps) {
+
   return (
     <Stack gap={2}>
       <Typography textAlign="center" variant="body2">Step { step.toString() }</Typography>

@@ -41,6 +41,7 @@ export default function CanvasDownloader() {
   const [ data, setData ] = useState<{ course : Course, folders : CanvasFolderWithFiles[] }[]>([]);
   const [ refresh, setRefresh ] = useState(false);
   const [ downloadStatus, setDownloadStatus ] = useState(false);
+  const [ fetchStatus, setFetchStatus ] = useState(false);
   const [ token, setToken ] = useState("");
   const [ canvasDownloaderShow, setCanvasDownloaderShow ] = useState(false);
 
@@ -48,7 +49,6 @@ export default function CanvasDownloader() {
 
   function fetchCanvasAPI(apiPath : string, fullPath : boolean = false) {
     const pathToUse = (fullPath) ? apiPath : getURL(apiPath);
-    console.log(pathToUse);
     return fetch(pathToUse, {
       method: 'GET',  
       headers: {
@@ -63,7 +63,7 @@ export default function CanvasDownloader() {
       const text = await response.json();
       return (text as Course[]).filter(course => course.name !== undefined);
     } catch (error) {
-      alert("Failed to fetch! " + error);
+      alert("Failed to fetch!ss " + error);
       return [] as Course[];
     }
   }
@@ -74,27 +74,30 @@ export default function CanvasDownloader() {
       const text = await response.json();
       return (text as CanvasFolder[]);
     } catch (error) {
-      alert("Failed to fetch! " + error);
+      alert("Failed to fetch!ss " + error);
       return [] as CanvasFolder[];
     }
   }
 
-  function handleGetFilesClick() {
-    fetchCourses()
-      .then(courses => courses.map((course) => {
-        const foldersArray : CanvasFolderWithFiles[] = [];
-        getCourseFolders(course.id)
-          .then(async (folders) => {
-            for (let i = 0; i < folders.length; i++) {
-              const files = await getFilesFromFolder(folders[i].id);
-              foldersArray.push({ ...folders[i], files: files });
-            }
-          });
-        return { course: course, folders: foldersArray };
-      })).then((ar) => { 
-        console.log(ar);
-        setData(ar);
-      })
+  async function handleGetFilesClick() {
+    setFetchStatus(true);
+    const courses = await fetchCourses();
+    const data = await (async () => {
+      const dataResult : { course: Course, folders : CanvasFolderWithFiles[] }[] = [];
+      for (let i = 0; i < courses.length; i++) {
+        const foldersArray: CanvasFolderWithFiles[] = [];
+        const folders = await getCourseFolders(courses[i].id);
+        for (let j = 0; j < folders.length; j++) {
+          const files = await getFilesFromFolder(folders[j].id);
+          foldersArray.push({...folders[j], files: files});  
+        }
+        dataResult.push({ course : courses[i], folders: foldersArray });
+      }
+      return dataResult;
+    })();
+
+    setData(data);
+    setFetchStatus(false);
   }
 
   function getPathFromFolderId(folderId : number, folders : CanvasFolder[]) {
@@ -160,9 +163,19 @@ export default function CanvasDownloader() {
   const handleTokenChange = createTextEventHandler(setToken);
 
   const handleAccessTokenDone = () => {
-    if (token !== "") {
-      setCanvasDownloaderShow(true);
-    }
+    // send dummy API call
+    fetchCanvasAPI('courses')
+      .then((response) => response.json())
+      .then((text) => {
+        if (text.errors !== null && text.errors !== undefined) {
+          alert("Invalid access token.");
+        } else {
+          setCanvasDownloaderShow(true);
+        }
+      })
+      .catch((error) => {
+        alert("Cannot fetch!");
+      })
   }
 
   useEffect(() => {
@@ -184,19 +197,19 @@ export default function CanvasDownloader() {
         <Stack gap={5} mt={5}>
           <Typography variant="h4" component="h1">Canvas Downloader</Typography>
           <Stack gap={1} textAlign="left">
-            <Typography><strong>Step 1: </strong>Retrieve the files from Canvas. Note that only the module title will show up when you click on this button.</Typography>
-            <Typography><strong>Step 2: </strong>Refresh the files. Here, the files to download will be slowly populated below. It may need a while for all files to be fetched from the Canvas API. Wait a minute or two before refreshing to ensure all files are loaded.</Typography>
-            <Typography><strong>Step 3: </strong>After <strong>ALL</strong> the files that you want have been displayed below, click/tap the <strong>Download files</strong> button to download the files as a ZIP. As this app is downloading many files, note that it will take a few minutes for the save dialog to pop up, so please be patient 😄</Typography>
+            <Typography><strong>Step 1: </strong>Retrieve the files from Canvas. It will take a while for all the files to show up in the section below.</Typography>
+            <Typography><strong>Step 2: </strong>After the files that you want have been displayed below, click/tap the <strong>Download files</strong> button to download the files as a ZIP. As this app is downloading many files, note that it will take a few minutes for the save dialog to pop up, so please be patient 😄</Typography>
           </Stack>
           <Stack direction="row" gap={3} justifyContent="center" alignItems="center">
             <CanvasDownloaderButton step={1} title="Get files to download" onClick={ handleGetFilesClick } />
             <KeyboardArrowRightIcon />
-            <CanvasDownloaderButton step={2} title="Refresh files" onClick={ () => setRefresh(true) } />
-            <KeyboardArrowRightIcon />
-            <CanvasDownloaderButton step={3} title="Download files" onClick={ handleDownload } />
+            <CanvasDownloaderButton step={2} title="Download files" onClick={ handleDownload } />
           </Stack>
           { downloadStatus ? (
             <Typography variant="h5">Downloading... Please wait a few minutes for the save dialog to load up.</Typography>
+          ) : <></> }
+          { fetchStatus ? (
+            <Typography variant="h5">Fetching... Please wait a few minutes for the files to show up in the section below.</Typography>
           ) : <></> }
           <Divider />
           <Typography variant="h4" component="h1">List of files to download</Typography>
