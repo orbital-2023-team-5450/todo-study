@@ -9,7 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickerChangeHandlerContext } from "@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types";
 import { DateTimeValidationError } from "@mui/x-date-pickers";
-import { Clear } from "@mui/icons-material";
+import SortTaskFilter from "./SortTaskFilter";
 
 /**
  * A component that is displayed to facilitate the creation and update of a task.
@@ -31,7 +31,6 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
     const [completed, setCompleted] = useState(false);
     const [expired, setExpired] = useState(false);
     const [taskCollectionId, setTaskCollectionId] = useState();
-
     const [isDisabled, setIsDisabled] = useState(false);
 
     /*
@@ -237,24 +236,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                                 Type of the task
                             </Typography>
 
-                            <Box sx={{ minWidth: 120, marginTop: '1vh' }}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label"> Type </InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        value={type}
-                                        label="Type"
-                                        onChange={handleChangeSelect}
-                                    >
-                                        <MenuItem value={"assignment"}> Assignment </MenuItem>
-                                        <MenuItem value={"house chore"}> House work </MenuItem>
-                                        <MenuItem value={"sport"}> Sport </MenuItem>
-                                        <MenuItem value={"general"}> General </MenuItem>
-                                        <MenuItem value={"none"}> None </MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Box>
+                            <SortTaskFilter searchType={type} handleChangeSelect={handleChangeSelect} />
                         </Stack>
                     </Stack>
 

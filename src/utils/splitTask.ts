@@ -25,9 +25,8 @@ export function processTaskList(taskList : Task[], sort: string) {
         return taskList
           .filter((task) => task.dueDate === null)
           
-      case 'abc':
-        // need to filter off untitled tasks so that tasks with an actual title shows up  
-        return taskList.filter((task) => task.title !== "").sort((a, b) => a.title.localeCompare(b.title));
+      case 'abc': 
+        return taskList.sort((a, b) => a.title.localeCompare(b.title));
 
       case 'zyx':
         return taskList.sort((a, b) => b.title.localeCompare(a.title));
@@ -58,10 +57,6 @@ export function splitTask(tasks : Task[]) {
     const noDue : Task[] = [];
     const expired : Task[] = [];
     let tdy = new Date();
-
-    tasks.sort((a : Task, b : Task) => {
-        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-    });
     
     tasks.map((task) => {
 

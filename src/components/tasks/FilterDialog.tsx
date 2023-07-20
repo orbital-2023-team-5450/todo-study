@@ -7,6 +7,9 @@ import dayjs, { Dayjs } from 'dayjs';
 import { PickerChangeHandlerContext } from '@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types';
 import ClearIcon from '@mui/icons-material/Clear';
 import { getDayDifference } from "../../utils/splitTask";
+import DueDateRangeFiler from './DueDateSelect';
+import SortTaskFilter from './SortTaskFilter';
+import DueDateSelect from './DueDateSelect';
 
 export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, searchDateTill, setSearchDateFrom, 
                                        setSearchDateTill, searchType, setSearchType } : 
@@ -14,6 +17,7 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
                                         setSearchDateFrom : (arg : string) => void, setSearchDateTill: (arg : string) => void,
                                         searchDateFrom : string, searchDateTill : string, searchType: string, 
                                         setSearchType: (arg : string) => void}) {
+
 
     const handleDateFrom = (value: Dayjs | null, content: PickerChangeHandlerContext<DateTimeValidationError>) => {  
 
@@ -78,10 +82,11 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
             </DialogTitle>
             <DialogContent>
                 <Stack direction="column">
+
                     <Typography sx={{marginBottom: '1vh'}} variant='h6'>
                         Due Date of the task 
                     </Typography>
-                    
+                        
                     <Stack direction='row'>
                         <Typography sx={{marginBottom: '5px', flexGrow: '0.5'}}>
                             From
@@ -90,62 +95,27 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
                             To
                         </Typography>
                     </Stack>
-                    
-                    <Stack direction='row' sx={{marginBottom: '5vh'}}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex', flexGrow: '0.5'}}> 
-                                    <DemoItem>
-                                        <DateTimePicker 
-                                            defaultValue={dayjs((new Date()))} 
-                                            value={dayjs(searchDateFrom)} 
-                                            onChange={handleDateFrom}
-                                            minDateTime={dayjs(new Date())}
-                                            format="DD/MM/YYYY hh:mm A"
-                                        />
-                                    </DemoItem>
-                                </DemoContainer>
-                        </LocalizationProvider>
 
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex'}}> 
-                                    <DemoItem>
-                                        <DateTimePicker 
-                                            defaultValue={dayjs((new Date()))} 
-                                            value={dayjs(searchDateTill)} 
-                                            onChange={handleDateTill}
-                                            minDateTime={dayjs(new Date())}
-                                            format="DD/MM/YYYY hh:mm A"
-                                        />
-                                    </DemoItem>
-                                </DemoContainer>
-                        </LocalizationProvider>
+                    <Stack direction='row' sx={{marginBottom: '5vh'}}>
+                        <DueDateSelect
+                            searchDate={searchDateFrom}
+                            handleDate={handleDateFrom}
+                        />
+
+                        <DueDateSelect
+                            searchDate={searchDateTill}
+                            handleDate={handleDateTill}
+                        />
                     </Stack>
+
+                    {!checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill)) && 
+                        <Typography> The start date should not be later than the end date! </Typography>}
 
                     <Typography sx={{marginBottom: '1vh'}} variant='h6'>
                         Label of the task... 
                     </Typography>
 
-                    <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label"> Type </InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={searchType}
-                                label="Type"
-                                onChange={handleChangeSelect}
-                            >
-                                <MenuItem value={"assignment"}> Assignment </MenuItem>
-                                <MenuItem value={"house chore"}> House work </MenuItem>
-                                <MenuItem value={"sport"}> Sport </MenuItem>
-                                <MenuItem value={"general"}> General </MenuItem>
-                                <MenuItem value={"none"}> None </MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Box>
-
-                    {!checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill)) && 
-                        <Typography> The start date should not be later than the end date! </Typography>}
+                    <SortTaskFilter searchType={searchType} handleChangeSelect={handleChangeSelect} />
 
                     <Button onClick={handleFilterOk} sx={{justifyContent: 'right', marginTop: '1vh'}}> ok </Button>
                 </Stack>
