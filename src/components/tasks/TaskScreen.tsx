@@ -3,10 +3,10 @@ import {Box, Button, CssBaseline, Menu, MenuItem, Stack, Typography} from "@mui/
 import supabase from "../../supabase";
 import TaskManager from "./TaskManager";
 import { sortTask } from "../../utils/splitTask";
-import TaskPopUp from "./TaskPopup";
+import TaskPopUp from "./Dialog/TaskPopup";
 import { Task } from "../../utils/taskUtils";
-import MenuFilterDialog from "./MenuFilterDialog";
-import MenuSortDialog from "./MenuSortDialog";
+import MenuFilterDialog from "./Dialog/MenuFilterDialog";
+import MenuSortDialog from "./Dialog/MenuSortDialog";
 
 /*
     The enum for the type of the tasks.

@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Button, Card, Dialog, DialogContent, DialogTitle, Divider, ListItem, ListItemButton, 
         Paper, Stack, Typography, } from "@mui/material";
-import { Task } from "../../utils/taskUtils"
-import { createTextEventHandler } from '../../utils/textInputUtils';
-import SearchBar from "../SearchBar";
-import TaskCard from "./TaskCard";
+import { Task } from "../../../utils/taskUtils"
+import { createTextEventHandler } from '../../../utils/textInputUtils';
+import SearchBar from "../../SearchBar";
+import TaskCard from "../TaskCard";
 import FilterDialog from "./FilterDialog";
 
 export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, openMenu, tasks, popUpUpdate, setWhichTask,
-                                           } : 
+                                            } : 
                                          { menuFilterOpen : boolean, 
                                           setMenuFilterOpen : (arg : boolean) => void, 
                                           openMenu : (arg : null | HTMLElement) => void, tasks : Task[], 
-                                          popUpUpdate : (arg : boolean) => void, setWhichTask : (arg : number) => void, }) {
+                                          popUpUpdate : (arg : boolean) => void, setWhichTask : (arg : number) => void, 
+                                            }) {
 
     const [searchValue, setSearchValue] = useState("");
     const [searchDateFrom, setSearchDateFrom] = useState("");
@@ -20,6 +21,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
     const [searchType, setSearchType] = useState("none");
     const [isBlurred, setIsBlurred] = useState(false);
     const [filterOpen, setFilterOpen] = useState(false);
+    const [switchDueDate, setSwitchDueDate] = useState(false);
 
     const handleSearchBarChange = createTextEventHandler(setSearchValue);
     const handleSearchBarSubmit = (event : React.FormEvent<HTMLFormElement>) => {
@@ -33,15 +35,21 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
         const type = task.type === searchType;
         let range: boolean;
 
-        if (searchDateFrom !== "" && searchDateTill !== "") {
-            range = new Date(task.dueDate) >= new Date(searchDateFrom) && new Date(task.dueDate) <= new Date(searchDateTill);
-        } else if (searchDateFrom !== "" && searchDateTill === "") {
-            range = new Date(task.dueDate) >= new Date(searchDateFrom);
-        } else if (searchDateFrom === "" && searchDateTill !== "") {
-            range = new Date(task.dueDate) <= new Date(searchDateTill);
+        if (switchDueDate) {
+
+            if (searchDateFrom !== "" && searchDateTill !== "") {
+                range = new Date(task.dueDate) >= new Date(searchDateFrom) && new Date(task.dueDate) <= new Date(searchDateTill);
+            } else if (searchDateFrom !== "" && searchDateTill === "") {
+                range = new Date(task.dueDate) >= new Date(searchDateFrom);
+            } else if (searchDateFrom === "" && searchDateTill !== "") {
+                range = new Date(task.dueDate) <= new Date(searchDateTill);
+            } else {
+                range = true;
+            }
         } else {
-            range = true;
+            range = task.dueDate === null;
         }
+        
         return contain && range && type;
     }
 
@@ -83,7 +91,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
                             );
                         }
                     ) : (
-                        <Typography width="100%" textAlign="center">No matching task found.</Typography>)}
+                        <Typography width="100%" textAlign="center"> No matching task found. </Typography>)}
                 </DialogContent>
             </Dialog>
 
@@ -96,6 +104,8 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
                 setSearchDateTill={setSearchDateTill}
                 searchType={searchType}
                 setSearchType={setSearchType}
+                switchDueDate={switchDueDate}
+                setSwitchDueDate={setSwitchDueDate}
             />
         </>
     );

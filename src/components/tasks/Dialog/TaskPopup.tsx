@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, Icon, IconButton, 
          InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
-import supabase from "../../supabase";
+import supabase from "../../../supabase";
 import { PickerChangeHandlerContext } from "@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types";
 import { DateTimeValidationError } from "@mui/x-date-pickers";
-import SortTaskFilter from "./SortTaskFilter";
-import DueDateSelect from "./DueDateSelect";
+import SortTaskFilter from "../SortTaskFilter";
+import DueDateSelect from "../DueDateSelect";
 import FieldInDialog from "./FieldInDialog";
 
 /**

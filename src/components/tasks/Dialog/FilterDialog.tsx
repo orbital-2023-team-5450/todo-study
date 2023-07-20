@@ -1,24 +1,22 @@
-import React from 'react';
-import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography, } from '@mui/material';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import React, { useState } from 'react';
+import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, FormControlLabel, FormGroup, 
+            InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Switch, TextField, Typography, } from '@mui/material';
 import { DateTimePicker, DateTimeValidationError, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { PickerChangeHandlerContext } from '@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types';
 import ClearIcon from '@mui/icons-material/Clear';
-import { getDayDifference } from "../../utils/splitTask";
-import DueDateRangeFiler from './DueDateSelect';
-import SortTaskFilter from './SortTaskFilter';
-import DueDateSelect from './DueDateSelect';
+import { getDayDifference } from "../../../utils/splitTask";
+import SortTaskFilter from '../SortTaskFilter';
+import DueDateSelect from '../DueDateSelect';
 
 export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, searchDateTill, setSearchDateFrom, 
-                                       setSearchDateTill, searchType, setSearchType } : 
+                                       setSearchDateTill, searchType, setSearchType, switchDueDate, setSwitchDueDate } : 
                                      { filterOpen : boolean, filterClose : (arg : boolean) => void, 
                                         setSearchDateFrom : (arg : string) => void, setSearchDateTill: (arg : string) => void,
                                         searchDateFrom : string, searchDateTill : string, searchType: string, 
-                                        setSearchType: (arg : string) => void}) {
-
-
+                                        setSearchType: (arg : string) => void, switchDueDate : boolean, 
+                                        setSwitchDueDate : (arg : boolean) => void }) {
+    
     const handleDateFrom = (value: Dayjs | null, content: PickerChangeHandlerContext<DateTimeValidationError>) => {  
 
         if (value === null || content.validationError !== null) {
@@ -48,7 +46,7 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
     const handleFilterOk = (event : React.MouseEvent<HTMLElement>) => {
 
         event.preventDefault();
-        if (!checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill))) {
+        if (switchDueDate && !checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill))) {
             alert("The start date should not be later than the end date!")
         } else {
             filterClose(true);
@@ -61,10 +59,15 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
         setSearchDateFrom("");
         setSearchDateTill("");
         setSearchType("none");
+        setSwitchDueDate(true);
     }
 
     const handleChangeSelect = (event: SelectChangeEvent) => {
         setSearchType(event.target.value);
+    }
+
+    const handleSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSwitchDueDate(event.target.checked);
     }
 
     return (
@@ -86,27 +89,40 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
                     <Typography sx={{marginBottom: '1vh'}} variant='h6'>
                         Due Date of the task 
                     </Typography>
-                        
-                    <Stack direction='row'>
-                        <Typography sx={{marginBottom: '5px', flexGrow: '0.5'}}>
-                            From
-                        </Typography>
-                        <Typography sx={{marginBottom: '5px'}}>
-                            To
-                        </Typography>
-                    </Stack>
+                    
+                    <FormControl component="fieldset" variant="standard">
+                        <FormGroup>
+                            <FormControlLabel
+                                control={<Switch checked={ switchDueDate } onChange={ handleSwitch } />}
+                                label="With due date"
+                            />
+                        </FormGroup>
+                    </FormControl>
+                    
+                    {switchDueDate 
+                        ? <>
+                            <Stack direction='row'>
+                                <Typography sx={{marginBottom: '5px', flexGrow: '0.5'}}>
+                                    From
+                                </Typography>
+                                <Typography sx={{marginBottom: '5px'}}>
+                                    To
+                                </Typography>
+                            </Stack>
 
-                    <Stack direction='row' sx={{marginBottom: '5vh'}}>
-                        <DueDateSelect
-                            searchDate={searchDateFrom}
-                            handleDate={handleDateFrom}
-                        />
+                            <Stack direction='row' sx={{marginBottom: '5vh'}}>
+                                <DueDateSelect
+                                    searchDate={searchDateFrom}
+                                    handleDate={handleDateFrom}
+                                />
 
-                        <DueDateSelect
-                            searchDate={searchDateTill}
-                            handleDate={handleDateTill}
-                        />
-                    </Stack>
+                                <DueDateSelect
+                                    searchDate={searchDateTill}
+                                    handleDate={handleDateTill}
+                                />
+                            </Stack> 
+                            </>
+                        : <></>}
 
                     {!checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill)) && 
                         <Typography> The start date should not be later than the end date! </Typography>}
