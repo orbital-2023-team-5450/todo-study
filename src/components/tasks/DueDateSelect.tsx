@@ -7,7 +7,7 @@ import dayjs, { Dayjs } from "dayjs";
 import React from "react";
 
 export default function DueDateSelect({ searchDate, handleDate} :
-                                      { searchDate : string, 
+                                      { searchDate : string | null, 
                                         handleDate : (value: Dayjs | null, 
                                                       content: PickerChangeHandlerContext<DateTimeValidationError>) => void,
                                       }) {

@@ -3,13 +3,11 @@ import dayjs, { Dayjs } from "dayjs";
 import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, Icon, IconButton, 
          InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
 import supabase from "../../supabase";
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickerChangeHandlerContext } from "@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types";
 import { DateTimeValidationError } from "@mui/x-date-pickers";
 import SortTaskFilter from "./SortTaskFilter";
+import DueDateSelect from "./DueDateSelect";
+import FieldInDialog from "./FieldInDialog";
 
 /**
  * A component that is displayed to facilitate the creation and update of a task.
@@ -182,27 +180,13 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                 </Typography>
             </DialogTitle>
             <DialogContent sx={{width: '600px'}}>
-            <Stack direction="column">
+                <Stack direction="column">
 
-                 <Typography component="h6" variant="h6" align="left" marginBottom='1vh'> Title </Typography>
-                     <TextField
-                        type="text"
-                        label="Title"
-                        variant="outlined"
-                        value={title}
-                        onChange={handleTitleTextChange} 
-                        required
-                    />
+                    <Typography component="h6" variant="h6" align="left" marginBottom='1vh'> Title </Typography>
+                    <FieldInDialog name={title} handleNameChange={handleTitleTextChange} type='Title' />
 
                     <Typography component="h6" variant="h6" align="left" marginTop="2vh" marginBottom='1vh'> Description </Typography>
-                    <TextField
-                        type="text"
-                        label="Description"
-                        variant="outlined"
-                        value={description}
-                        onChange={handleDescriptionTextChange} 
-                        size="medium"
-                    />
+                    <FieldInDialog name={description} handleNameChange={handleDescriptionTextChange} type='Description' />
 
                     <Stack direction='row'> 
                         <Stack direction='column'> 
@@ -210,20 +194,8 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                                 Date and Time 
                             </Typography>
 
-                            <Stack direction='row'> 
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex'}}> 
-                                        <DemoItem>
-                                            <DateTimePicker 
-                                                defaultValue={dayjs((new Date()))} 
-                                                value={dayjs(dueDate)} 
-                                                onChange={handleDateTimeChange}
-                                                minDateTime={dayjs(new Date())}
-                                                format="DD/MM/YYYY hh:mm A"
-                                            />
-                                        </DemoItem>
-                                    </DemoContainer>
-                                </LocalizationProvider>
+                            <Stack direction='row'>
+                                <DueDateSelect searchDate={dueDate} handleDate={handleDateTimeChange} />
 
                                 <Button onClick={handleClear} sx={{color: '#00bf63'}}> 
                                     Clear
