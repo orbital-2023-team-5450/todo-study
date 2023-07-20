@@ -6,10 +6,9 @@ export default function MenuSortDialog({ menuSortOpen, setMenuSortOpen, sortType
                                          sortType : string, setSortType : (arg : string) => void }) {
     
     const sortSettings = [
-        { label: "Due soonest (excl. expired tasks)", value: "dsee" },
-        { label: "Due soonest (incl. expired tasks)", value: "dsie" },
-        { label: "Expired tasks", value: "exp" },
-        { label: "Tasks with no due date", value: "ndd" },
+        { label: "Due soonest (excl. expired tasks and completed)", value: "dsee" },
+        { label: "Due soonest (incl. expired tasks and completed)", value: "dsie" },
+        { label: "The type of the task", value: "type" },
         { label: "Alphabetical order (A-Z)", value: "abc" },
         { label: "Reverse alphabetical order (Z-A)", value: "zyx" },
     ]

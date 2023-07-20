@@ -5,25 +5,13 @@ export function processTaskList(taskList : Task[], sort: string) {
     switch (sort) {
 
       case 'dsee':
-        return taskList
-          .filter((task) => task.dueDate !== null)
-          .filter((task) => !isExpired(task))
-          .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+        return taskList.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
-      case 'dsie':
-        return taskList
-          .filter((task) => task.dueDate !== null)
-          .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-
-      case 'exp':
+      case 'type': //watch out 
         return taskList
           .filter((task) => task.dueDate !== null)
           .filter((task) => isExpired(task))
           .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
-
-      case 'ndd':
-        return taskList
-          .filter((task) => task.dueDate === null)
           
       case 'abc': 
         return taskList.sort((a, b) => a.title.localeCompare(b.title));
@@ -51,38 +39,30 @@ export function sortTask(tasks : Task[], sort : string) {
 export function splitTask(tasks : Task[]) {
 
     const now : Task[] = [];
-    const nowComplete : Task[] = [];
     const later : Task[] = [];
-    const laterComplete : Task[] = [];
-    const noDue : Task[] = [];
     const expired : Task[] = [];
+    const completed : Task[] = [];
+    const none : Task[] = [];
     let tdy = new Date();
     
     tasks.map((task) => {
 
-        if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) <= 1){
+        if (task.dueDate === null) {
+          none.push(task);
+        } else if (task.completed) {
 
-            if (task.completed) {
-                nowComplete.push(task);
-            } else {
-                now.push(task);
-            }
+          completed.push(task); 
+        } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) <= 1){
+            now.push(task);
         } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) > 1) {
-            
-            if (task.completed) {
-                laterComplete.push(task);
-            } else {
-                later.push(task);
-            }
-        } else if (task.dueDate === null) {
-            noDue.push(task);
+            later.push(task);
         } else {
 
             task.expired = true;
             expired.push(task);
-        }
+        } 
     });
-    return [now.concat(nowComplete), later.concat(laterComplete).concat(noDue), expired];
+    return [now, later.concat(none), expired, completed];
 }
 
 /*

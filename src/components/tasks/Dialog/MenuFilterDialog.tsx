@@ -8,12 +8,12 @@ import TaskCard from "../TaskCard";
 import FilterDialog from "./FilterDialog";
 
 export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, openMenu, tasks, popUpUpdate, setWhichTask,
-                                            } : 
+                                           switchIncludeTask, setSwitchIncludeTask} : 
                                          { menuFilterOpen : boolean, 
                                           setMenuFilterOpen : (arg : boolean) => void, 
                                           openMenu : (arg : null | HTMLElement) => void, tasks : Task[], 
                                           popUpUpdate : (arg : boolean) => void, setWhichTask : (arg : number) => void, 
-                                            }) {
+                                          switchIncludeTask : boolean, setSwitchIncludeTask : (arg : boolean) => void}) {
 
     const [searchValue, setSearchValue] = useState("");
     const [searchDateFrom, setSearchDateFrom] = useState("");
@@ -106,6 +106,8 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
                 setSearchType={setSearchType}
                 switchDueDate={switchDueDate}
                 setSwitchDueDate={setSwitchDueDate}
+                switchIncludeTask={switchIncludeTask}
+                setSwitchIncludeTask={setSwitchIncludeTask}
             />
         </>
     );

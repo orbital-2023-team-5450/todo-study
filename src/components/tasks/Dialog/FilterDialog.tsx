@@ -10,12 +10,14 @@ import SortTaskFilter from '../SortTaskFilter';
 import DueDateSelect from '../DueDateSelect';
 
 export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, searchDateTill, setSearchDateFrom, 
-                                       setSearchDateTill, searchType, setSearchType, switchDueDate, setSwitchDueDate } : 
+                                       setSearchDateTill, searchType, setSearchType, switchDueDate, setSwitchDueDate,
+                                       switchIncludeTask, setSwitchIncludeTask } : 
                                      { filterOpen : boolean, filterClose : (arg : boolean) => void, 
                                         setSearchDateFrom : (arg : string) => void, setSearchDateTill: (arg : string) => void,
                                         searchDateFrom : string, searchDateTill : string, searchType: string, 
                                         setSearchType: (arg : string) => void, switchDueDate : boolean, 
-                                        setSwitchDueDate : (arg : boolean) => void }) {
+                                        setSwitchDueDate : (arg : boolean) => void, switchIncludeTask : boolean, 
+                                        setSwitchIncludeTask : (arg : boolean) => void}) {
     
     const handleDateFrom = (value: Dayjs | null, content: PickerChangeHandlerContext<DateTimeValidationError>) => {  
 
@@ -70,6 +72,10 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
         setSwitchDueDate(event.target.checked);
     }
 
+    const handleSwitch2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSwitchIncludeTask(event.target.checked);
+    }
+    
     return (
         <Dialog open={filterOpen} onClose={filterClose} maxWidth="sm" fullWidth>
             <DialogTitle>
@@ -95,6 +101,13 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
                             <FormControlLabel
                                 control={<Switch checked={ switchDueDate } onChange={ handleSwitch } />}
                                 label="With due date"
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <FormControlLabel
+                                control={<Switch checked={ switchIncludeTask } onChange={ handleSwitch2 } />}
+                                label="With expired and completed tasks"
                             />
                         </FormGroup>
                     </FormControl>

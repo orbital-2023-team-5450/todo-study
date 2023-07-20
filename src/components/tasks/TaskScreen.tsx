@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from "react";
-import {Box, Button, CssBaseline, Menu, MenuItem, Stack, Typography} from "@mui/material";
+import {Box, Button, CssBaseline, IconButton, Menu, MenuItem, Stack, Typography} from "@mui/material";
 import supabase from "../../supabase";
 import TaskManager from "./TaskManager";
 import { sortTask } from "../../utils/splitTask";
@@ -7,6 +7,8 @@ import TaskPopUp from "./Dialog/TaskPopup";
 import { Task } from "../../utils/taskUtils";
 import MenuFilterDialog from "./Dialog/MenuFilterDialog";
 import MenuSortDialog from "./Dialog/MenuSortDialog";
+import OtherTaskDialog from "./Dialog/OtherTaskDialog";
+import { Search } from "@mui/icons-material";
 
 /*
     The enum for the type of the tasks.
@@ -29,6 +31,10 @@ export default function TaskScreen() {
     const [menuFilterOpen, setMenuFilterOpen] = useState(false);
     const [menuSortOpen, setMenuSortOpen] = useState(false);
     const [sortType, setSortType] = useState("");
+    const [expiredTask, setExpiredTask] = useState<Task[]>([]);
+    const [doneTask, setDoneTask] = useState<Task[]>([]);
+    const [otherTaskMenu, setOtherTaskMenu] = useState(false);
+    const [switchIncludeTask, setSwitchIncludeTask] = useState(false);
     
     /*
         Handle the event of submitting new task.
@@ -38,18 +44,6 @@ export default function TaskScreen() {
         event.preventDefault();
         setPopUpCreate(true);
     }; 
-
-    const handleMenuItemFilter = (event : React.MouseEvent<HTMLElement>) => {
-
-        event.preventDefault()
-        setMenuFilterOpen(true);
-    }
-
-    const handleMenuItemSort = (event : React.MouseEvent<HTMLElement>) => {
-        
-        event.preventDefault();
-        setMenuSortOpen(true);
-    }    
 
     /* 
         Fetch info of the tasks from the database and sort it based on date and completed.
@@ -64,9 +58,11 @@ export default function TaskScreen() {
                     if (result.data === null || result.data === undefined) {
                     } else {
                         
-                        const [now, later, expired] = sortTask(result.data as Task[], sortType);
+                        const [now, later, expired, completed] = sortTask(result.data as Task[], sortType);
                         setFutureTasks(later);
-                        setTasks(now.concat(expired));
+                        setTasks(now);
+                        setDoneTask(completed);
+                        setExpiredTask(expired);
                     }  
                 })
     };
@@ -78,6 +74,16 @@ export default function TaskScreen() {
     return (
 
         <Stack direction='column'> 
+            <Stack direction='row' sx={{display: "flex", justifyContent: 'flex-end'}} >
+                <Button onClick={() => setOtherTaskMenu(true)}> 
+                    other tasks 
+                </Button>
+
+                <IconButton onClick={() => setMenuFilterOpen(true)}>
+                  <Search />
+                </IconButton>
+            </Stack>
+            
             <Stack direction="row" marginTop='10px' marginLeft='20vh' marginRight='20vh' display='flex'>
                 <CssBaseline />
                     <Box sx={{ height: '75vh', borderRadius: '16px', width: "80vh", marginRight: '10px'}}> 
@@ -87,7 +93,7 @@ export default function TaskScreen() {
                             fetchTask={fetchTasks} 
                             popUpUpdate={setPopUpUpdate}
                             setWhichTask={setWhichTask}
-                            setAnchorEl={setAnchorMenu}
+                            setMenuSortOpen={setMenuSortOpen}
                         />
                     </Box>
 
@@ -98,10 +104,9 @@ export default function TaskScreen() {
                             fetchTask={fetchTasks}
                             popUpUpdate={setPopUpUpdate}
                             setWhichTask={setWhichTask}
-                            setAnchorEl={setAnchorMenu}
+                            setMenuSortOpen={setMenuSortOpen}
                         />
                     </Box>
-
             </Stack>
  
             <Button
@@ -114,19 +119,17 @@ export default function TaskScreen() {
             >
                  <Typography variant='h6'> + Add new task </Typography>
             </Button>
-            
-            <Menu open={Boolean(anchorMenu)} onClose={() => setAnchorMenu(null)} anchorEl={anchorMenu}>
-                <MenuItem onClick={handleMenuItemFilter}> Search </MenuItem>
-                <MenuItem onClick={handleMenuItemSort} sx={{width: '100px', }}> Sort </MenuItem>
-            </Menu>
 
             <MenuFilterDialog 
                 menuFilterOpen={menuFilterOpen} 
                 setMenuFilterOpen={setMenuFilterOpen} 
                 openMenu={setAnchorMenu}
-                tasks={tasks.concat(futureTasks)} //watch out
+                tasks={switchIncludeTask ? tasks.concat(futureTasks).concat(doneTask).concat(expiredTask)
+                                         : tasks.concat(futureTasks)} //watch out
                 popUpUpdate={setPopUpUpdate}
                 setWhichTask={setWhichTask}
+                switchIncludeTask={switchIncludeTask}
+                setSwitchIncludeTask={setSwitchIncludeTask}
             />
             <MenuSortDialog 
                 menuSortOpen={menuSortOpen} 
@@ -135,16 +138,27 @@ export default function TaskScreen() {
                 setSortType={setSortType} 
             />
 
+            <OtherTaskDialog 
+                open={otherTaskMenu} 
+                onClose={() => setOtherTaskMenu(false)} 
+                expired={expiredTask}
+                completed={doneTask}
+                setPopUpUpdate={setPopUpUpdate}
+                setWhichTask={setWhichTask}
+            />
+
             <TaskPopUp open={isPopUpUpdate} 
                        onClose={() => setPopUpUpdate(false)} 
                        fetchTask={fetchTasks} 
                        taskType={'Update'} 
-                       id={whichTask}/>
+                       id={whichTask}
+            />
             <TaskPopUp open={isPopUpCreate} 
                        onClose={() => setPopUpCreate(false)} 
                        fetchTask={fetchTasks} 
                        taskType={'Create'} 
-                       id={-1}/>
+                       id={-1}
+            />
         </Stack>
     );
 }
