@@ -15,6 +15,9 @@ export default function CompletedTaskDialog({ open, onClose, completed, setCompl
         
         event.preventDefault();
         setCompletedTask([]);
+        completed.map((task : Task) => {
+            handleTaskDelete(task.id);
+        });
     }
 
     /* 
@@ -42,6 +45,7 @@ export default function CompletedTaskDialog({ open, onClose, completed, setCompl
     */
     const handleTaskDelete = (id : number) => {
 
+        console.log("Deleted")
         supabase.from("tasks").delete().eq("id", id)
             .then((result) => {
               if (result.error) {
@@ -71,11 +75,11 @@ export default function CompletedTaskDialog({ open, onClose, completed, setCompl
                                             
                     {completed.length !== 0 ? completed.map((task : Task) => {
                                                 return <TaskCard 
-                                                        task={task} 
-                                                        popUpUpdate={setPopUpUpdate} 
-                                                        setWhichTask={setWhichTask}
-                                                        onTaskChange={ handleTaskChange }
-                                                        onTaskDelete={ handleTaskDelete }
+                                                            task={task} 
+                                                            popUpUpdate={setPopUpUpdate} 
+                                                            setWhichTask={setWhichTask}
+                                                            onTaskChange={ handleTaskChange }
+                                                            onTaskDelete={ handleTaskDelete }
                                                         />;
                                                 })
                                             : <EmptyState />

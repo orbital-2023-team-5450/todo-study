@@ -7,7 +7,7 @@ import TaskPopUp from "./Dialog/TaskPopup";
 import { Task } from "../../utils/taskUtils";
 import MenuFilterDialog from "./Dialog/MenuFilterDialog";
 import MenuSortDialog from "./Dialog/MenuSortDialog";
-import { Search } from "@mui/icons-material";
+import { Search, Sort } from "@mui/icons-material";
 import CompletedTaskDialog from "./Dialog/CompletedTaskDialog";
 import ExpiredTaskDialog from "./Dialog/ExpiredTaskDialog";
 
@@ -35,7 +35,7 @@ export default function TaskScreen() {
     const [expiredTask, setExpiredTask] = useState<Task[]>([]);
     const [completedTask, setCompletedTask] = useState<Task[]>([]);
     const [anchorOtherTask, setAnchorOtherTask] = React.useState<null | HTMLElement>(null);
-    const [switchIncludeTask, setSwitchIncludeTask] = useState(false);
+    const [switchIncludeTask, setSwitchIncludeTask] = useState(true);
     const [completedDialog, setCompletedDialog] = useState(false);
     const [expiredDialog, setExpiredDialog] = useState(false);
     
@@ -62,7 +62,13 @@ export default function TaskScreen() {
 
     const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorOtherTask(event.currentTarget);
-      };
+    };
+
+    const handleMenuItemSort = (event : React.MouseEvent<HTMLElement>) => {
+      
+        event.preventDefault();
+        setMenuSortOpen(true);
+    }
 
     /* 
         Fetch info of the tasks from the database and sort it based on date and completed.
@@ -93,16 +99,19 @@ export default function TaskScreen() {
     return (
         <Container>
             <Stack direction='column'> 
-                <Stack mt={5} direction='row' sx={{display: "flex", justifyContent: 'flex-end'}} >
+                <Stack mt={3} direction='row' sx={{display: "flex", justifyContent: 'flex-end'}} >
                     <Button onClick={handleMenuClick}> 
                         other tasks 
                     </Button>
                     <IconButton onClick={() => setMenuFilterOpen(true)}>
                         <Search />
                     </IconButton>
+                    <IconButton onClick={handleMenuItemSort}>
+                        <Sort />
+                    </IconButton>
                 </Stack>
                 
-                <Grid container direction="row" spacing={5} width="100%" marginTop='10px' pl='1em' pr='1em' display='flex'>
+                <Grid container direction="row" spacing={5} width="100%" pl='1em' pr='1em' display='flex'>
                     <CssBaseline />
                         <Grid item xs={12} sm={6} sx={{ height: '75vh', borderRadius: '16px'}}> 
                             <TaskManager 

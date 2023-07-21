@@ -52,7 +52,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
             range = task.dueDate === null;
         }
         
-        return contain && range && type;
+        return contain || range || type;
     }
 
     const filteredTaskList = tasks.filter(tasksFilterPredicate);

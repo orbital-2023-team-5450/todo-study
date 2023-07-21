@@ -15,6 +15,9 @@ export default function ExpiredTaskDialog({ open, onClose, expired, setExpiredTa
         
         event.preventDefault();
         setExpiredTask([]);
+        expired.map((task : Task) => { 
+            handleTaskDelete(task.id)
+        })
     }
 
     /* 
