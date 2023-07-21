@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import dayjs, { Dayjs } from "dayjs";
-import { Box, Button, Icon, IconButton, Stack, TextField, Typography } from "@mui/material";
-import supabase from "../../supabase";
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Box, Button, Dialog, DialogContent, DialogTitle, FormControl, Icon, IconButton, 
+         InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
+import supabase from "../../../supabase";
 import { PickerChangeHandlerContext } from "@mui/x-date-pickers/internals/hooks/usePicker/usePickerValue.types";
 import { DateTimeValidationError } from "@mui/x-date-pickers";
-import { Clear } from "@mui/icons-material";
+import SortTaskFilter from "../SortTaskFilter";
+import DueDateSelect from "../DueDateSelect";
+import FieldInDialog from "./FieldInDialog";
 
 /**
  * A component that is displayed to facilitate the creation and update of a task.
@@ -26,11 +25,10 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [dueDate, setDueDate] = useState<string | null>(null);
-    const [type, setType] = useState<string>("");
+    const [type, setType] = useState<string>("none");
     const [completed, setCompleted] = useState(false);
     const [expired, setExpired] = useState(false);
     const [taskCollectionId, setTaskCollectionId] = useState();
-
     const [isDisabled, setIsDisabled] = useState(false);
 
     /*
@@ -81,8 +79,15 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         getUserID().then((userId : string) => {
 
             if (title === "") {
+
                 alert("Please set a name for the title.")
+                setIsDisabled(false);
+            } else if (type === "") {
+
+                alert("Please set a type for the task.")
+                setIsDisabled(false);
             } else {
+
                 reset();
                 const submitInfo = {
 
@@ -124,6 +129,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         onClose();
         setTitle("");
         setDescription("");
+        setType("none")
         setDueDate(null);
         setIsDisabled(false);
     }
@@ -163,84 +169,75 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         setDueDate(null);
     }
 
-    return ( open ? 
-        <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", height: "100vh", backgroundColor: "rgba(50, 50, 50, 0.9)", 
-                  display: "flex", justifyContent: "center", alignItems: "center", filter: "blur"}} 
-             component="div" 
-             onClick={reset}
-        >
-             <Box sx={{position: "relative", padding: "32px", width: "100%", maxWidth: "640px", backgroundColor: "white"}}
-                  component="form"
-                  onSubmit={submitTask} 
-                  onClick={(e) => e.stopPropagation()}
-             >
+    const handleChangeSelect = (event: SelectChangeEvent) => {
+        setType(event.target.value);
+    }
+
+    return (
+        <Dialog open={open} onClose={reset}>
+            <DialogTitle>
+                <Typography component="h4" variant="h4" marginBottom={3}>
+                    {taskType === 'Create' ? ' Create new task' : 'Update task'}
+                </Typography>
+            </DialogTitle>
+            <DialogContent sx={{width: '600px'}}>
                 <Stack direction="column">
-                    <Typography component="h4" variant="h4" marginBottom={3}>
-                        {taskType} new task
-                    </Typography>
 
                     <Typography component="h6" variant="h6" align="left" marginBottom='1vh'> Title </Typography>
-                    <TextField
-                        type="text"
-                        label="Title"
-                        variant="outlined"
-                        value={title}
-                        onChange={handleTitleTextChange} 
-                        required
-                    />
+                    <FieldInDialog name={title} handleNameChange={handleTitleTextChange} type='Title' />
 
                     <Typography component="h6" variant="h6" align="left" marginTop="2vh" marginBottom='1vh'> Description </Typography>
-                    <TextField
-                        type="text"
-                        label="Description"
-                        variant="outlined"
-                        value={description}
-                        onChange={handleDescriptionTextChange} 
-                        size="medium"
-                    />
+                    <FieldInDialog name={description} handleNameChange={handleDescriptionTextChange} type='Description' />
 
                     <Stack direction='row'> 
-                        <Typography component="h6" variant="h6" align="left" marginTop="3vh" flexGrow={0.5}> 
-                            Date and Time 
-                        </Typography>
+                        <Stack direction='column'> 
+                            <Typography component="h6" variant="h6" align="left" marginTop="3vh" flexGrow={1}> 
+                                Date and Time 
+                            </Typography>
+
+                            <Stack direction='row'>
+                                <DueDateSelect searchDate={dueDate} handleDate={handleDateTimeChange} />
+
+                                <Button onClick={handleClear} sx={{color: '#00bf63'}}> 
+                                    Clear
+                                </Button>
+                            </Stack>
+                        </Stack>
+
+                        <Stack direction='column' marginTop="3vh" marginLeft='3vh'>
+                            <Typography variant='h6'>
+                                Type of the task
+                            </Typography>
+
+                            <SortTaskFilter searchType={type} handleChangeSelect={handleChangeSelect} />
+                        </Stack>
                     </Stack>
 
-                    <Stack direction='row'> 
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DemoContainer components={['DesktopDatePicker']} sx={{display: 'flex'}}> 
-                                <DemoItem>
-                                    <DateTimePicker 
-                                        defaultValue={dayjs((new Date()))} 
-                                        value={dayjs(dueDate)} 
-                                        onChange={handleDateTimeChange}
-                                        minDateTime={dayjs(new Date())}
-                                    />
-                                </DemoItem>
-                            </DemoContainer>
-                        </LocalizationProvider>
-
-                        <Button onClick={handleClear} sx={{color: '#00bf63'}}> 
-                            Clear
-                        </Button>
-                    </Stack>
-
-                    <Typography display='flex' flexGrow={0.5} fontSize='1.5vh'> The year selected must be within current year to 2099 (inclusive) </Typography>
+                    <Typography display='flex' flexGrow={0.5} fontSize='1.5vh'> 
+                        The year selected must be within 
+                        <br/>current year to 2099 (inclusive) 
+                    </Typography>
                     
+
                 </Stack>
 
-                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
-                         onClick={reset}
-                         disabled={isDisabled}
-                 > 
-                    close 
-                 </Button>
-                 <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
-                         disabled={isDisabled}
-                         type='submit'
-                 >
-                    {taskType}
-                 </Button>
-             </Box>
-        </Box> : null
+                <Stack direction='row' sx={{justifyContent: 'right'}}> 
+                    <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
+                            onClick={reset}
+                            disabled={isDisabled}
+                    > 
+                        close 
+                    </Button>
+                    <Button sx={{position: "relative", top: "1px", right: "1px", marginTop: '5vh', color: '#00bf63'}} 
+                            disabled={isDisabled}
+                            onClick={submitTask}
+                    >
+                        {taskType}
+                    </Button>
+                </Stack>
+                 
+            </DialogContent>
+        </Dialog> 
+            
     );
 }

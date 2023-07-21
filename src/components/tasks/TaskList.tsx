@@ -3,7 +3,7 @@ import { Card, Checkbox, Typography, Stack, IconButton } from "@mui/material";
 import { DeleteOutline } from "@mui/icons-material";
 import { Task } from "../../utils/taskUtils";
 import { format, formatDistance } from "date-fns";
-import { cursorTo } from "readline";
+import TaskCard from "./TaskCard";
 
 /**
  * A component that displays the list of tasks in the todo-list.
@@ -14,8 +14,7 @@ import { cursorTo } from "readline";
  * @returns The list of the tasks
  */
 export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit } : 
-                                 { tasks : Task[], 
-                                   onTaskChange : (i : number) => void, onTaskDelete : (i : number) => void,
+                                 { tasks : Task[], onTaskChange : (i : number) => void, onTaskDelete : (i : number) => void,
                                    onTaskEdit : (i : number) => void }) {
 
     /* 
@@ -39,20 +38,18 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
         onTaskEdit(id);
     }
 
-      return (
+    return (    
         <>
           <Stack marginTop={3} direction='column'>
+            
               {tasks.map((task) => {
                   return (
                     <>
                       <Card 
                         key={task.id} 
-                        sx={{ marginLeft: 3, marginRight: 5, marginBottom: 3, marginTop: 0.7,
-                              '&:hover': {backgroundColor: !task.expired ? task.completed ? '#00cc00' : '#d9d9d9' : '#ff6680', 
-                              opacity: [0.9, 0.8, 0.7] }, borderRadius: '10px', height: '70px', 
-                              backgroundColor: !task.expired ? task.completed ? 'lightGreen' : '#f2f2f2' : 'pink', 
+                        sx={{ marginLeft: 3, marginRight: 5, marginBottom: 2, marginTop: 0.7,
+                              '&:hover': { opacity: [0.9, 0.8, 0.7] }, borderRadius: '10px', height: '70px', borderWidth: '1px',  
                               cursor: 'pointer'}} 
-  
                       >
                           <Stack direction="row" alignItems="center">
                               <Checkbox
@@ -76,7 +73,7 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                                                             </Typography>}
 
                                   <Typography> 
-                                      {task.dueDate !== null ? format(new Date(task.dueDate), 'dd/MMM/yyyy, hh:mm a, eee') 
+                                      {task.dueDate !== null ? format(new Date(task.dueDate), 'dd MMM yyyy, eee, hh:mm a') 
                                                              : "No due date"}
                                   </Typography>
                               </Stack>
