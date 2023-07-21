@@ -8,6 +8,6 @@ import { Typography } from "@mui/material";
  */
 export default function EmptyState() {
     return (
-        <Typography variant="h3" component="h2" marginTop={5}> There isn't any task yet....</Typography>
+        <Typography textAlign="center" variant="h6" component="h2" marginTop={5}> There isn't any task yet...</Typography>
     )
 }

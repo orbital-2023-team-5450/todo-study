@@ -62,6 +62,7 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
         setSearchDateTill("");
         setSearchType("none");
         setSwitchDueDate(true);
+        setSwitchIncludeTask(true);
     }
 
     const handleChangeSelect = (event: SelectChangeEvent) => {

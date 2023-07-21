@@ -44,6 +44,15 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
             
               {tasks.map((task) => {
                   return (
+                    <TaskCard
+                      task={task}
+                      popUpUpdate={() => {}}
+                      setWhichTask={(id : number) => { handleTaskEdit(id)() }}
+                      onTaskChange={ onTaskChange }
+                      onTaskDelete={ onTaskDelete }
+                    />
+                  );
+                  /*
                     <>
                       <Card 
                         key={task.id} 
@@ -84,7 +93,7 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                           </Stack>
                       </Card>
                     </>
-                  );
+                  );*/
                 })} 
           </Stack> 
         </>

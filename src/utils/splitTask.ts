@@ -27,42 +27,44 @@ export function processTaskList(taskList : Task[], sort: string) {
 export function sortTask(tasks : Task[], sort : string) {
 
     processTaskList(tasks, sort);
-    return splitTask(tasks);
+    return splitTask(tasks, sort === 'dsee');
 }
 
 /**
- * A function that sorts the tasks based on the due date and assign to 3 lists according to their status.
+ * A function that sorts the tasks based on the due date and assign to 4 lists according to their status.
  * 
  * @param tasks A list of tasks. 
- * @returns A tuple of 3 task lists. 
+ * @returns A tuple of 4 task lists. 
  */
-export function splitTask(tasks : Task[]) {
+export function splitTask(tasks : Task[], append : boolean) {
 
     const now : Task[] = [];
     const later : Task[] = [];
+    const none : Task[] = []
     const expired : Task[] = [];
     const completed : Task[] = [];
-    const none : Task[] = [];
     let tdy = new Date();
     
     tasks.map((task) => {
-
-        if (task.dueDate === null) {
-          none.push(task);
-        } else if (task.completed) {
-
+        if (task.completed) {
           completed.push(task); 
-        } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) <= 1){
-            now.push(task);
-        } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) > 1) {
+        } else if (task.dueDate === null) {
+          
+          if (append) {
+            none.push(task);              
+          } else {
             later.push(task);
+          }
+        } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) <= 1){
+          now.push(task);
+        } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) > 1) {
+          later.push(task);
         } else {
-
-            task.expired = true;
-            expired.push(task);
+          task.expired = true;
+          expired.push(task);
         } 
     });
-    return [now, later.concat(none), expired, completed];
+    return [now, append ? later.concat(none) : later, expired, completed];
 }
 
 /*
