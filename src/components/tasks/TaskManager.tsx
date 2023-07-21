@@ -75,11 +75,10 @@ export default function TaskManager({ taskType, tasks, fetchTask, popUpUpdate, s
   
     return (
         <Stack component="main" gap={2} marginTop={2} direction='column' sx={{border: '1px solid', borderRadius: '20px'}}>
-            <Stack direction='row' marginLeft='3vh'> 
+            <Stack direction='row' marginLeft='3vh' display="flex" alignItems="center"> 
                 <Typography variant="h4" component="h2" marginTop={7} display='flex' flexGrow='0.95'>
                     {taskType === 0 ? "Due in a Day" : "Due soon"}
                 </Typography> 
-
                 <IconButton sx={{marginTop: '4vh'}} onClick={handleMenuItemSort}>
                     <Sort />
                 </IconButton>

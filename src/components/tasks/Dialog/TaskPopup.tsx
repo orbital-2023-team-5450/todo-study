@@ -209,7 +209,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
                                 Type of the task
                             </Typography>
 
-                            <SortTaskFilter searchType={type} handleChangeSelect={handleChangeSelect} />
+                            <SortTaskFilter showAllTasks={false} searchType={type} handleChangeSelect={handleChangeSelect} />
                         </Stack>
                     </Stack>
 

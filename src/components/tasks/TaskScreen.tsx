@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from "react";
-import {Box, Button, CssBaseline, IconButton, Menu, MenuItem, Stack, Typography} from "@mui/material";
+import {Box, Button, Container, CssBaseline, Grid, IconButton, Menu, MenuItem, Stack, Typography} from "@mui/material";
 import supabase from "../../supabase";
 import TaskManager from "./TaskManager";
 import { sortTask } from "../../utils/splitTask";
@@ -91,115 +91,116 @@ export default function TaskScreen() {
       }, [sortType]);
 
     return (
-
-        <Stack direction='column'> 
-            <Stack direction='row' sx={{display: "flex", justifyContent: 'flex-end'}} >
-                <Button onClick={handleMenuClick}> 
-                    other tasks 
+        <Container>
+            <Stack direction='column'> 
+                <Stack mt={5} direction='row' sx={{display: "flex", justifyContent: 'flex-end'}} >
+                    <Button onClick={handleMenuClick}> 
+                        other tasks 
+                    </Button>
+                    <IconButton onClick={() => setMenuFilterOpen(true)}>
+                        <Search />
+                    </IconButton>
+                </Stack>
+                
+                <Grid container direction="row" spacing={5} width="100%" marginTop='10px' pl='1em' pr='1em' display='flex'>
+                    <CssBaseline />
+                        <Grid item xs={12} sm={6} sx={{ height: '75vh', borderRadius: '16px'}}> 
+                            <TaskManager 
+                                taskType={task_type.DUE_SOON} 
+                                tasks={tasks}
+                                fetchTask={fetchTasks} 
+                                popUpUpdate={setPopUpUpdate}
+                                setWhichTask={setWhichTask}
+                                setMenuSortOpen={setMenuSortOpen}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} sx={{ height: '75vh', borderRadius: '16px' }}> 
+                            <TaskManager 
+                                taskType={task_type.FUTURE_ASSIGNMENT} 
+                                tasks={futureTasks}
+                                fetchTask={fetchTasks}
+                                popUpUpdate={setPopUpUpdate}
+                                setWhichTask={setWhichTask}
+                                setMenuSortOpen={setMenuSortOpen}
+                            />
+                        </Grid>
+                </Grid>
+    
+                <Button
+                    type="submit"
+                    variant="contained"
+                    size="medium"
+                    onClick={handleNewTaskSubmit}
+                    sx={{ width: '50%', margin: '1vh auto', height: '7vh', borderRadius: '10px', 
+                        backgroundColor: '#00bf63', '&:hover': { backgroundColor: '#018547', opacity: [0.9, 0.8, 0.7]}}}
+                >
+                    <Typography variant='h6'> + Add new task </Typography>
                 </Button>
 
-                <IconButton onClick={() => setMenuFilterOpen(true)}>
-                  <Search />
-                </IconButton>
+                <MenuFilterDialog 
+                    menuFilterOpen={menuFilterOpen} 
+                    setMenuFilterOpen={setMenuFilterOpen} 
+                    openMenu={setAnchorMenu}
+                    tasks={switchIncludeTask ? tasks.concat(futureTasks).concat(completedTask).concat(expiredTask)
+                                            : tasks.concat(futureTasks)} 
+                    popUpUpdate={setPopUpUpdate}
+                    setWhichTask={setWhichTask}
+                    switchIncludeTask={switchIncludeTask}
+                    setSwitchIncludeTask={setSwitchIncludeTask}
+                    fetchTasks={fetchTasks}
+                />
+                <MenuSortDialog 
+                    menuSortOpen={menuSortOpen} 
+                    setMenuSortOpen={setMenuSortOpen} 
+                    sortType={sortType} 
+                    setSortType={setSortType} 
+                />
+
+                <Menu
+                    id="basic-menu"
+                    anchorEl={anchorOtherTask}
+                    open={Boolean(anchorOtherTask)}
+                    onClose={() => setAnchorOtherTask(null)}
+                    MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                    }}
+                >
+                    <MenuItem onClick={handleExpiredDialog}>Expired tasks</MenuItem>
+                    <MenuItem onClick={handleCompleteDialog}>Completed tasks</MenuItem>
+                </Menu>
+
+                <ExpiredTaskDialog 
+                    open={expiredDialog}
+                    onClose={() => setExpiredDialog(false)}
+                    expired={expiredTask}
+                    setExpiredTask={setExpiredTask}
+                    setPopUpUpdate={setPopUpUpdate}
+                    setWhichTask={setWhichTask}
+                    fetchTasks={fetchTasks}
+                />
+                <CompletedTaskDialog 
+                    open={completedDialog}
+                    onClose={() => setCompletedDialog(false)}
+                    completed={completedTask}
+                    setCompletedTask={setCompletedTask}
+                    setPopUpUpdate={setPopUpUpdate}
+                    setWhichTask={setWhichTask}
+                    fetchTasks={fetchTasks}
+                />
+
+                <TaskPopUp open={isPopUpUpdate} 
+                        onClose={() => setPopUpUpdate(false)} 
+                        fetchTask={fetchTasks} 
+                        taskType={'Update'} 
+                        id={whichTask}
+                />
+                <TaskPopUp open={isPopUpCreate} 
+                        onClose={() => setPopUpCreate(false)} 
+                        fetchTask={fetchTasks} 
+                        taskType={'Create'} 
+                        id={-1}
+                />
             </Stack>
-            
-            <Stack direction="row" marginTop='10px' marginLeft='20vh' marginRight='20vh' display='flex'>
-                <CssBaseline />
-                    <Box sx={{ height: '75vh', borderRadius: '16px', width: "80vh", marginRight: '10px'}}> 
-                        <TaskManager 
-                            taskType={task_type.DUE_SOON} 
-                            tasks={tasks}
-                            fetchTask={fetchTasks} 
-                            popUpUpdate={setPopUpUpdate}
-                            setWhichTask={setWhichTask}
-                            setMenuSortOpen={setMenuSortOpen}
-                        />
-                    </Box>
-
-                    <Box sx={{ height: '75vh', borderRadius: '16px', width: "80vh", marginLeft: '0.6vh' }}> 
-                        <TaskManager 
-                            taskType={task_type.FUTURE_ASSIGNMENT} 
-                            tasks={futureTasks}
-                            fetchTask={fetchTasks}
-                            popUpUpdate={setPopUpUpdate}
-                            setWhichTask={setWhichTask}
-                            setMenuSortOpen={setMenuSortOpen}
-                        />
-                    </Box>
-            </Stack>
- 
-            <Button
-                type="submit"
-                variant="contained"
-                size="medium"
-                onClick={handleNewTaskSubmit}
-                sx={{marginLeft: "20vh", marginRight: "21vh", marginTop: '1vh', height: '9vh', borderRadius: '10px', 
-                     backgroundColor: '#00bf63', '&:hover': { backgroundColor: '#018547', opacity: [0.9, 0.8, 0.7]}}}
-            >
-                 <Typography variant='h6'> + Add new task </Typography>
-            </Button>
-
-            <MenuFilterDialog 
-                menuFilterOpen={menuFilterOpen} 
-                setMenuFilterOpen={setMenuFilterOpen} 
-                openMenu={setAnchorMenu}
-                tasks={switchIncludeTask ? tasks.concat(futureTasks).concat(completedTask).concat(expiredTask)
-                                         : tasks.concat(futureTasks)} 
-                popUpUpdate={setPopUpUpdate}
-                setWhichTask={setWhichTask}
-                switchIncludeTask={switchIncludeTask}
-                setSwitchIncludeTask={setSwitchIncludeTask}
-            />
-            <MenuSortDialog 
-                menuSortOpen={menuSortOpen} 
-                setMenuSortOpen={setMenuSortOpen} 
-                sortType={sortType} 
-                setSortType={setSortType} 
-            />
-
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorOtherTask}
-                open={Boolean(anchorOtherTask)}
-                onClose={() => setAnchorOtherTask(null)}
-                MenuListProps={{
-                'aria-labelledby': 'basic-button',
-                }}
-            >
-                <MenuItem onClick={handleExpiredDialog}> Expired tasks </MenuItem>
-                <MenuItem onClick={handleCompleteDialog}> Completed tasks </MenuItem>
-            </Menu>
-
-            <ExpiredTaskDialog 
-                open={expiredDialog}
-                onClose={() => setExpiredDialog(false)}
-                expired={expiredTask}
-                setExpiredTask={setExpiredTask}
-                setPopUpUpdate={setPopUpUpdate}
-                setWhichTask={setWhichTask}
-                
-            />
-            <CompletedTaskDialog 
-                open={completedDialog}
-                onClose={() => setCompletedDialog(false)}
-                completed={completedTask}
-                setCompletedTask={setCompletedTask}
-                setPopUpUpdate={setPopUpUpdate}
-                setWhichTask={setWhichTask}
-            />
-
-            <TaskPopUp open={isPopUpUpdate} 
-                       onClose={() => setPopUpUpdate(false)} 
-                       fetchTask={fetchTasks} 
-                       taskType={'Update'} 
-                       id={whichTask}
-            />
-            <TaskPopUp open={isPopUpCreate} 
-                       onClose={() => setPopUpCreate(false)} 
-                       fetchTask={fetchTasks} 
-                       taskType={'Create'} 
-                       id={-1}
-            />
-        </Stack>
+        </Container>
     );
 }

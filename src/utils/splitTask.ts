@@ -46,20 +46,17 @@ export function splitTask(tasks : Task[]) {
     let tdy = new Date();
     
     tasks.map((task) => {
-
-        if (task.dueDate === null) {
-          none.push(task);
-        } else if (task.completed) {
-
+        if (task.completed) {
           completed.push(task); 
+        } else if (task.dueDate === null) {
+          none.push(task);
         } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) <= 1){
-            now.push(task);
+          now.push(task);
         } else if (new Date(task.dueDate) > tdy && getDayDifference(new Date(task.dueDate), tdy) > 1) {
-            later.push(task);
+          later.push(task);
         } else {
-
-            task.expired = true;
-            expired.push(task);
+          task.expired = true;
+          expired.push(task);
         } 
     });
     return [now, later.concat(none), expired, completed];
