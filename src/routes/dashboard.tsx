@@ -90,7 +90,7 @@ export default function Dashboard() {
                                 <DashboardPanel title="Timer" href="/timer" onSettingsClick={ () => { setTimerDialogOpen(true) } } tooltip="Change timer template">
                                     <MiniTimerPanel open={ timerDialogOpen } onOpen={ () => { setTimerDialogOpen(false) } } />
                                 </DashboardPanel>
-                                <DashboardPanel title="Canvas Downloader" href="">
+                                <DashboardPanel title="Canvas Downloader" href="/canvas-downloader">
                                     <CanvasDownloaderPanel />
                                 </DashboardPanel>
                             </DashboardPanelGridItem>
@@ -99,7 +99,7 @@ export default function Dashboard() {
                                     <NotesPanel settings={ noteSortSettings } />
                                     <DashboardNoteSortDialog open={ noteSortDialogOpen } handleClose={ () => { setNoteSortDialogOpen(false) } } value={ noteSortSettings } onChange={ setNoteSortSettings } />  
                                 </DashboardPanel>
-                                <DashboardPanel title="Telegram Bot" href="">
+                                <DashboardPanel title="Telegram Bot" href="https://t.me/TODO_STUDY_bot" buttonTitle="Go to Telegram bot">
                                     <TelegramBotPanel />
                                 </DashboardPanel>
                                 <DashboardPanel title="Random Quote of the Day" href="" onClick={ () => { fetchRandomQuote(setQuote) } } buttonTitle="Refresh Quote">
