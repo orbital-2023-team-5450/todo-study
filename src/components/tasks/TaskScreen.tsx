@@ -7,8 +7,9 @@ import TaskPopUp from "./Dialog/TaskPopup";
 import { Task } from "../../utils/taskUtils";
 import MenuFilterDialog from "./Dialog/MenuFilterDialog";
 import MenuSortDialog from "./Dialog/MenuSortDialog";
-import OtherTaskDialog from "./Dialog/OtherTaskDialog";
 import { Search } from "@mui/icons-material";
+import CompletedTaskDialog from "./Dialog/CompletedTaskDialog";
+import ExpiredTaskDialog from "./Dialog/ExpiredTaskDialog";
 
 /*
     The enum for the type of the tasks.
@@ -32,9 +33,11 @@ export default function TaskScreen() {
     const [menuSortOpen, setMenuSortOpen] = useState(false);
     const [sortType, setSortType] = useState("");
     const [expiredTask, setExpiredTask] = useState<Task[]>([]);
-    const [doneTask, setDoneTask] = useState<Task[]>([]);
-    const [otherTaskMenu, setOtherTaskMenu] = useState(false);
+    const [completedTask, setCompletedTask] = useState<Task[]>([]);
+    const [anchorOtherTask, setAnchorOtherTask] = React.useState<null | HTMLElement>(null);
     const [switchIncludeTask, setSwitchIncludeTask] = useState(false);
+    const [completedDialog, setCompletedDialog] = useState(false);
+    const [expiredDialog, setExpiredDialog] = useState(false);
     
     /*
         Handle the event of submitting new task.
@@ -44,6 +47,22 @@ export default function TaskScreen() {
         event.preventDefault();
         setPopUpCreate(true);
     }; 
+
+    const handleExpiredDialog = (event : React.MouseEvent<HTMLElement>) => {
+
+        event.preventDefault();
+        setExpiredDialog(true);
+    }
+
+    const handleCompleteDialog = (event : React.MouseEvent<HTMLElement>) => {
+
+        event.preventDefault();
+        setCompletedDialog(true);
+    }
+
+    const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorOtherTask(event.currentTarget);
+      };
 
     /* 
         Fetch info of the tasks from the database and sort it based on date and completed.
@@ -61,7 +80,7 @@ export default function TaskScreen() {
                         const [now, later, expired, completed] = sortTask(result.data as Task[], sortType);
                         setFutureTasks(later);
                         setTasks(now);
-                        setDoneTask(completed);
+                        setCompletedTask(completed);
                         setExpiredTask(expired);
                     }  
                 })
@@ -75,7 +94,7 @@ export default function TaskScreen() {
 
         <Stack direction='column'> 
             <Stack direction='row' sx={{display: "flex", justifyContent: 'flex-end'}} >
-                <Button onClick={() => setOtherTaskMenu(true)}> 
+                <Button onClick={handleMenuClick}> 
                     other tasks 
                 </Button>
 
@@ -124,8 +143,8 @@ export default function TaskScreen() {
                 menuFilterOpen={menuFilterOpen} 
                 setMenuFilterOpen={setMenuFilterOpen} 
                 openMenu={setAnchorMenu}
-                tasks={switchIncludeTask ? tasks.concat(futureTasks).concat(doneTask).concat(expiredTask)
-                                         : tasks.concat(futureTasks)} //watch out
+                tasks={switchIncludeTask ? tasks.concat(futureTasks).concat(completedTask).concat(expiredTask)
+                                         : tasks.concat(futureTasks)} 
                 popUpUpdate={setPopUpUpdate}
                 setWhichTask={setWhichTask}
                 switchIncludeTask={switchIncludeTask}
@@ -138,11 +157,33 @@ export default function TaskScreen() {
                 setSortType={setSortType} 
             />
 
-            <OtherTaskDialog 
-                open={otherTaskMenu} 
-                onClose={() => setOtherTaskMenu(false)} 
+            <Menu
+                id="basic-menu"
+                anchorEl={anchorOtherTask}
+                open={Boolean(anchorOtherTask)}
+                onClose={() => setAnchorOtherTask(null)}
+                MenuListProps={{
+                'aria-labelledby': 'basic-button',
+                }}
+            >
+                <MenuItem onClick={handleExpiredDialog}> Expired tasks </MenuItem>
+                <MenuItem onClick={handleCompleteDialog}> Completed tasks </MenuItem>
+            </Menu>
+
+            <ExpiredTaskDialog 
+                open={expiredDialog}
+                onClose={() => setExpiredDialog(false)}
                 expired={expiredTask}
-                completed={doneTask}
+                setExpiredTask={setExpiredTask}
+                setPopUpUpdate={setPopUpUpdate}
+                setWhichTask={setWhichTask}
+                
+            />
+            <CompletedTaskDialog 
+                open={completedDialog}
+                onClose={() => setCompletedDialog(false)}
+                completed={completedTask}
+                setCompletedTask={setCompletedTask}
                 setPopUpUpdate={setPopUpUpdate}
                 setWhichTask={setWhichTask}
             />

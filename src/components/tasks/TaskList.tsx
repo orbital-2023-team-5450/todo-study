@@ -48,11 +48,8 @@ export default function TaskList({ tasks, onTaskChange, onTaskDelete, onTaskEdit
                       <Card 
                         key={task.id} 
                         sx={{ marginLeft: 3, marginRight: 5, marginBottom: 2, marginTop: 0.7,
-                              '&:hover': {backgroundColor: !task.expired ? task.completed ? '#00cc00' : '#d9d9d9' : '#ff6680', 
-                              opacity: [0.9, 0.8, 0.7] }, borderRadius: '10px', height: '70px', 
-                              backgroundColor: !task.expired ? task.completed ? 'lightGreen' : '#f2f2f2' : 'pink', 
+                              '&:hover': { opacity: [0.9, 0.8, 0.7] }, borderRadius: '10px', height: '70px', borderWidth: '1px',  
                               cursor: 'pointer'}} 
-  
                       >
                           <Stack direction="row" alignItems="center">
                               <Checkbox

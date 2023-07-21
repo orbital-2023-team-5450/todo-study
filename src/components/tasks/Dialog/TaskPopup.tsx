@@ -25,7 +25,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [dueDate, setDueDate] = useState<string | null>(null);
-    const [type, setType] = useState<string>("");
+    const [type, setType] = useState<string>("none");
     const [completed, setCompleted] = useState(false);
     const [expired, setExpired] = useState(false);
     const [taskCollectionId, setTaskCollectionId] = useState();
@@ -129,6 +129,7 @@ export default function TaskPopUp({ open, onClose, taskType, id, fetchTask } :
         onClose();
         setTitle("");
         setDescription("");
+        setType("none")
         setDueDate(null);
         setIsDisabled(false);
     }

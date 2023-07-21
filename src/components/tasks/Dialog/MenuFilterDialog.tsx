@@ -21,7 +21,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
     const [searchType, setSearchType] = useState("none");
     const [isBlurred, setIsBlurred] = useState(false);
     const [filterOpen, setFilterOpen] = useState(false);
-    const [switchDueDate, setSwitchDueDate] = useState(false);
+    const [switchDueDate, setSwitchDueDate] = useState(true);
 
     const handleSearchBarChange = createTextEventHandler(setSearchValue);
     const handleSearchBarSubmit = (event : React.FormEvent<HTMLFormElement>) => {
