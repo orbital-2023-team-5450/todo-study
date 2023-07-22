@@ -20,13 +20,16 @@ type Variant = 	'body1'
 | 'subtitle1'
 | 'subtitle2';
 
-export default function TimerView({ pattern, showMs, onChange, textVariant = "h1", showConfigButton = true } : { pattern : WorkRestCycle, showMs : boolean, onChange : () => void, textVariant? : Variant, showConfigButton? : boolean }) {
+export default function TimerView({ pattern, showMs, onChange, textVariant = "h1", showConfigButton = true, displayTitle = true, onRun=()=>{}, onReset=()=>{} } : { pattern : WorkRestCycle, showMs : boolean, onChange : () => void, textVariant? : Variant, showConfigButton? : boolean, displayTitle? : boolean, onRun? : () => void, onReset? : () => void }) {
 
     const [ dialogOpen, setDialogOpen ] = useState(false);
     const [ timerConfigOpen, setTimerConfigOpen ] = useState(false);
 
     function showDialog() {
-        if (!dialogOpen) setDialogOpen(true);
+        if (!dialogOpen) {
+            setDialogOpen(true);
+            onReset();
+        }
     }
 
     function handleTimeUpDialogClose() {
@@ -39,18 +42,21 @@ export default function TimerView({ pattern, showMs, onChange, textVariant = "h1
         if (isRunning) {
             stop();
         } else {
+            if (!isPaused) onRun();
             start();
         }
     }
 
     const timerDisplay = timerToString(displayedTime, showMs);
 
-    if (isRunning) { 
-        document.title = timerDisplay + " - Study Timer // TODO: Study";
-    } else if (isPaused) {
-        document.title = "[PAUSED] " + timerDisplay + " - Study Timer // TODO: Study";
-    } else {
-        document.title = "Study Timer // TODO: Study";
+    if (displayTitle) {
+        if (isRunning) { 
+            document.title = timerDisplay + " - Study Timer // TODO: Study";
+        } else if (isPaused) {
+            document.title = "[PAUSED] " + timerDisplay + " - Study Timer // TODO: Study";
+        } else {
+            document.title = "Study Timer // TODO: Study";
+        }
     }
 
     const handleTimerConfigOpen = () => {
@@ -73,6 +79,11 @@ export default function TimerView({ pattern, showMs, onChange, textVariant = "h1
         }
     }
 
+    const handleReset = () => {
+        reset();
+        onReset();
+    }
+
     return (
         <Stack gap={3} component="section">
             <Typography textAlign="center" variant={ textVariant } component="h2">
@@ -84,7 +95,7 @@ export default function TimerView({ pattern, showMs, onChange, textVariant = "h1
             <Stack gap={5} direction="row" justifyContent="center">
                 <Button variant="outlined" onClick={ handleTimer }>
                     { isRunning ? "Pause" : "Start" } Timer</Button>
-                <Button variant="outlined" onClick={reset}>Reset Timer</Button>
+                <Button variant="outlined" onClick={ handleReset }>Reset Timer</Button>
             </Stack>
             { showConfigButton ? (
             <Stack gap={5} alignItems="center">
