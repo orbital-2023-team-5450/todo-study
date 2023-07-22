@@ -13,11 +13,14 @@ import NotesSortSettingsMenu from './dialogs/NotesSortSettingsMenu';
  * @param {Object.<Note[]>} props The props that can be passed in. There is only one prop,
  *                                noteList.
  * @param {Note[]} props.noteList An array of Note entries to be displayed in the sidebar.
- * @param {number} props.width The width of the given sidebar to be displayed.
+ * @param {string | number} props.width The width of the given sidebar to be displayed.
+ * @param {(noteId : number) => void} props.edit The handler when a note is edited.
+ * @param {(id : number) => void} props.onNoteDelete The handler when a note is deleted.
+ * @param {number} props.selectedNote The current Note loaded in the editor.
  * @returns A React component representing a sidebar to appear in the left side of the Notes
  *          app.
  */
-export default function NoteNavigation( { noteList, width, edit, onNoteDelete } : { noteList : Note[], width: (string | number), edit : ( noteId : number ) => void, onNoteDelete : (id : number) => void } ) {
+export default function NoteNavigation( { noteList, width, edit, onNoteDelete, selectedNote } : { noteList : Note[], width: (string | number), edit : ( noteId : number ) => void, onNoteDelete : (id : number) => void, selectedNote : number } ) {
     
     const [ isBlurred, setIsBlurred ] = useState(false);
     const [ windowWidth, minimumDesktopWidth, windowHeight ] = useWindowParams(true, true);
@@ -104,8 +107,8 @@ export default function NoteNavigation( { noteList, width, edit, onNoteDelete } 
                         (note : Note) => {
                             return (
                                 <>
-                                    <ListItem key={note.note_id}>
-                                        <ListItemButton onFocus={ () => setIsBlurred(false) } onBlur={ () => setIsBlurred(true) } onClick={ () => { edit(note.note_id); } }>
+                                    <ListItem sx={{padding: 0}} key={note.note_id}>
+                                        <ListItemButton sx={{padding: '1em 2em'}} selected={note.note_id === selectedNote} onFocus={ () => setIsBlurred(false) } onBlur={ () => setIsBlurred(true) } onClick={ () => { edit(note.note_id); } }>
                                             <NoteEntry note={note} handleNoteDelete={ () => onNoteDelete(note.note_id) } />
                                         </ListItemButton>
                                     </ListItem> 

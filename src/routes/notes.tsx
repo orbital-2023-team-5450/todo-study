@@ -75,7 +75,14 @@ export default function Notes() {
 
         if (!error) {
             if (data !== null && data[0] !== null) {
-                setMainEditorId(data[0].note_id);
+                const id = data[0].note_id;
+                if (notesSettings.autosave) {
+                    setToSave(true);
+                    setNextId(id);
+                } else {
+                    setNextId(id);
+                    setToCheck(true);
+                }
             }
             fetchNotes(setNoteList);
         }
@@ -187,7 +194,7 @@ export default function Notes() {
                     </Box>
                     { (windowWidth >= minimumDesktopWidth) ? (
                         <Stack width="100%" flex={4} direction="row" divider={<Divider orientation="vertical" flexItem />}>
-                            <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
+                            <NoteNavigation selectedNote={ mainEditorId } noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
                             { (mainEditorId !== -1) ? 
                                 <MainEditor onExit={ () => handleEdit(-1) } width={widthStyle} toCheck={ toCheck } onDoneChecking={ handleDoneChecking } toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/> :
                                 <EmptyNoteState width={widthStyle} onLinkClick={addNote} />
@@ -196,7 +203,7 @@ export default function Notes() {
                     ) : (mainEditorId !== -1) ? (
                         <MainEditor onExit={ () => handleEdit(-1) } width={widthStyle} toCheck={ toCheck } onDoneChecking={ handleDoneChecking } toSave={toSave} onStartSaving={() => setToSave(true)} beforeDoneSaving={ beforeDoneSaving } onDoneSaving={ handleDoneSaving } noteId={ mainEditorId } onNoteChange={() => fetchNotes(setNoteList)} onOpenSettings={ () => setNotesConfigOpen(true) }/>
                     ) : (
-                        <NoteNavigation noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
+                        <NoteNavigation selectedNote={ mainEditorId } noteList={ noteList } width={drawerWidth} edit={ handleEdit } onNoteDelete={ deleteNoteHandler } />
                     ) }
                     <NotesConfigDialog open={notesConfigOpen} handleClose={() => setNotesConfigOpen(false)} onChange={ () => fetchNotesSettings(setNotesSettings) } /> 
                     <NotesLeavePageDialog open={showLeavePageDialog as boolean} id={nextId} handleConfirm={ handleConfirm } handleCancel={ handleCancel } />
