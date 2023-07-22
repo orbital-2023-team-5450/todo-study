@@ -1,7 +1,7 @@
 import { Box, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import React from "react";
 
-export default function SortTaskMenu({ searchType, handleChangeSelect, showAllTasks = true } : 
+export default function SortTaskFilter({ searchType, handleChangeSelect, showAllTasks = true } : 
                                      { searchType : string, handleChangeSelect : (event: SelectChangeEvent) => void,
                                         showAllTasks? : boolean,
                                         }) {

@@ -10,13 +10,12 @@ import SortTaskFilter from '../SortTaskFilter';
 import DueDateSelect from '../DueDateSelect';
 
 export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, searchDateTill, setSearchDateFrom, 
-                                       setSearchDateTill, searchType, setSearchType, switchDueDate, setSwitchDueDate,
+                                       setSearchDateTill, searchType, setSearchType,  
                                        switchIncludeTask, setSwitchIncludeTask } : 
                                      { filterOpen : boolean, filterClose : (arg : boolean) => void, 
                                         setSearchDateFrom : (arg : string) => void, setSearchDateTill: (arg : string) => void,
                                         searchDateFrom : string, searchDateTill : string, searchType: string, 
-                                        setSearchType: (arg : string) => void, switchDueDate : boolean, 
-                                        setSwitchDueDate : (arg : boolean) => void, switchIncludeTask : boolean, 
+                                        setSearchType: (arg : string) => void, switchIncludeTask : boolean, 
                                         setSwitchIncludeTask : (arg : boolean) => void}) {
     
     const handleDateFrom = (value: Dayjs | null, content: PickerChangeHandlerContext<DateTimeValidationError>) => {  
@@ -48,7 +47,7 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
     const handleFilterOk = (event : React.MouseEvent<HTMLElement>) => {
 
         event.preventDefault();
-        if (switchDueDate && !checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill))) {
+        if (!checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill))) {
             alert("The start date should not be later than the end date!")
         } else {
             filterClose(true);
@@ -60,8 +59,7 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
         event.preventDefault();
         setSearchDateFrom("");
         setSearchDateTill("");
-        setSearchType("none");
-        setSwitchDueDate(true);
+        setSearchType("all");
         setSwitchIncludeTask(true);
     }
 
@@ -70,10 +68,6 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
     }
 
     const handleSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSwitchDueDate(event.target.checked);
-    }
-
-    const handleSwitch2 = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSwitchIncludeTask(event.target.checked);
     }
     
@@ -100,43 +94,27 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
                     <FormControl component="fieldset" variant="standard">
                         <FormGroup>
                             <FormControlLabel
-                                control={<Switch checked={ switchDueDate } onChange={ handleSwitch } />}
-                                label="With due date"
-                            />
-                        </FormGroup>
-
-                        <FormGroup>
-                            <FormControlLabel
-                                control={<Switch checked={ switchIncludeTask } onChange={ handleSwitch2 } />}
+                                control={<Switch checked={ switchIncludeTask } onChange={ handleSwitch } />}
                                 label="With expired and completed tasks"
                             />
                         </FormGroup>
                     </FormControl>
                     
-                    {switchDueDate 
-                        ? <>
-                            <Stack direction='row'>
-                                <Typography sx={{marginBottom: '5px', flexGrow: '0.5'}}>
-                                    From
-                                </Typography>
-                                <Typography sx={{marginBottom: '5px'}}>
-                                    To
-                                </Typography>
-                            </Stack>
+                    <>
+                        <Stack direction='row'>
+                            <Typography sx={{marginBottom: '5px', flexGrow: '0.5'}}>
+                                From
+                            </Typography>
+                            <Typography sx={{marginBottom: '5px'}}>
+                                To
+                            </Typography>
+                        </Stack>
 
-                            <Stack direction='row' sx={{marginBottom: '5vh'}}>
-                                <DueDateSelect
-                                    searchDate={searchDateFrom}
-                                    handleDate={handleDateFrom}
-                                />
-
-                                <DueDateSelect
-                                    searchDate={searchDateTill}
-                                    handleDate={handleDateTill}
-                                />
-                            </Stack> 
-                            </>
-                        : <></>}
+                        <Stack direction='row' sx={{marginBottom: '5vh'}}>
+                            <DueDateSelect searchDate={searchDateFrom} handleDate={handleDateFrom} />
+                            <DueDateSelect searchDate={searchDateTill} handleDate={handleDateTill} />
+                        </Stack> 
+                    </>
 
                     {!checkDateDifference(new Date(searchDateFrom), new Date(searchDateTill)) && 
                         <Typography> The start date should not be later than the end date! </Typography>}
@@ -147,7 +125,9 @@ export default function FilterDialog({ filterOpen, filterClose, searchDateFrom, 
 
                     <SortTaskFilter searchType={searchType} handleChangeSelect={handleChangeSelect} />
 
-                    <Button onClick={handleFilterOk} sx={{justifyContent: 'right', marginTop: '1vh'}}> ok </Button>
+                    <Stack direction='row' sx={{justifyContent: 'right'}}>
+                        <Button onClick={handleFilterOk} sx={{position: 'relative', marginTop: '1vh'}}> ok </Button>
+                    </Stack>
                 </Stack>
             </DialogContent>
         </Dialog>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Checkbox, IconButton, Stack, Typography, } from '@mui/material';
 import { Task } from '../../utils/taskUtils';
-import { format, formatDistance } from "date-fns";
+import { format } from "date-fns";
 import { DeleteOutline } from '@mui/icons-material';
 
 export default function TaskCard({ task, popUpUpdate, setWhichTask, onTaskChange, onTaskDelete } : 

@@ -7,7 +7,7 @@ export default function MenuSortDialog({ menuSortOpen, setMenuSortOpen, sortType
     
     const sortSettings = [
         { label: "Due soonest (excl. expired tasks and completed)", value: "dsee" },
-        { label: "The type of the task", value: "type" },
+        // { label: "The type of the task", value: "type" },
         { label: "Alphabetical order (A-Z)", value: "abc" },
         { label: "Reverse alphabetical order (Z-A)", value: "zyx" },
     ]
@@ -25,7 +25,7 @@ export default function MenuSortDialog({ menuSortOpen, setMenuSortOpen, sortType
     }
 
     return (
-        <Dialog open={menuSortOpen} onClose={() => setMenuSortOpen(false)}> 
+        <Dialog open={menuSortOpen} onClose={() => setMenuSortOpen(false)} fullWidth maxWidth='xs'> 
             <DialogTitle>
                 <Typography variant="h5" sx={{marginBottom: '1vh'}}> Sort task</Typography>
             </DialogTitle>
@@ -44,9 +44,11 @@ export default function MenuSortDialog({ menuSortOpen, setMenuSortOpen, sortType
                         ))}
                     </TextField>
 
-                    <Button onClick={handleSortOk}> 
-                        ok
-                    </Button>
+                    <Stack direction='row' sx={{justifyContent: 'right'}}>
+                        <Button onClick={handleSortOk} sx={{position: 'relative', marginTop: '1vh'}}> 
+                            ok
+                        </Button>
+                    </Stack>
                 </Stack>
             </DialogContent>
         </Dialog>

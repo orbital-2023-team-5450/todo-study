@@ -7,11 +7,11 @@ export function processTaskList(taskList : Task[], sort: string) {
       case 'dsee':
         return taskList.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
-      case 'type': //watch out 
-        return taskList
-          .filter((task) => task.dueDate !== null)
-          .filter((task) => isExpired(task))
-          .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+      // case 'type': //watch out 
+      //   return taskList
+      //     .filter((task) => task.dueDate !== null)
+      //     .filter((task) => isExpired(task))
+      //     .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
           
       case 'abc': 
         return taskList.sort((a, b) => a.title.localeCompare(b.title));

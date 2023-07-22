@@ -57,34 +57,30 @@ export default function CompletedTaskDialog({ open, onClose, completed, setCompl
       };
 
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
             <DialogTitle>
-                Completed tasks                     
-            </DialogTitle>
-            <DialogContent>
-                                            
-                <Stack direction='column'> 
-                    <Stack direction='row'>
-                        <Button variant="contained" color="error" onClick={handleDeleteCompleted}>
+              <Stack direction='row'>
+                  <Typography variant='h5' flexGrow={1}> Completed tasks </Typography> 
+                  <Button variant="contained" color="error" onClick={handleDeleteCompleted}>
                             <Stack direction="row" spacing={1}>
                                 <Clear />
                                 <Typography variant="button"> Delete all </Typography>
                             </Stack>
-                        </Button>
-                    </Stack>
-                                            
-                    {completed.length !== 0 ? completed.map((task : Task) => {
+                  </Button>
+              </Stack>          
+            </DialogTitle>
+            <DialogContent>                          
+              {completed.length !== 0 ? completed.map((task : Task) => {
                                                 return <TaskCard 
-                                                            task={task} 
-                                                            popUpUpdate={setPopUpUpdate} 
-                                                            setWhichTask={setWhichTask}
-                                                            onTaskChange={ handleTaskChange }
-                                                            onTaskDelete={ handleTaskDelete }
+                                                          task={task} 
+                                                          popUpUpdate={setPopUpUpdate} 
+                                                          setWhichTask={setWhichTask}
+                                                          onTaskChange={ handleTaskChange }
+                                                          onTaskDelete={ handleTaskDelete }
                                                         />;
-                                                })
-                                            : <EmptyState />
-                    }
-                </Stack>                                                                                     
+                                               })
+                                      : <EmptyState />
+              }                                                                                     
             </DialogContent>
         </Dialog>
     );

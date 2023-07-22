@@ -56,35 +56,31 @@ export default function ExpiredTaskDialog({ open, onClose, expired, setExpiredTa
       };
 
     return (
-        <Dialog open={open} onClose={onClose}>
-            <DialogTitle>
-                Expired Tasks                  
-            </DialogTitle>
-            <DialogContent>
-                                            
-                <Stack direction='column'> 
-                    <Stack direction='row'>
-                        <Button variant="contained" color="error" onClick={handleDeleteExpired}>
-                            <Stack direction="row" spacing={1}>
-                                <Clear />
-                                <Typography variant="button"> Delete all </Typography>
-                            </Stack>
-                        </Button>
-                    </Stack>
-                                            
-                    {expired.length !== 0 ? expired.map((task : Task) => {
-                                                return <TaskCard 
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+          <DialogTitle>
+            <Stack direction='row'>
+                <Typography variant='h5' flexGrow={1}> Expired tasks </Typography> 
+                <Button variant="contained" color="error" onClick={handleDeleteExpired}>
+                          <Stack direction="row" spacing={1}>
+                              <Clear />
+                              <Typography variant="button"> Delete all </Typography>
+                          </Stack>
+                </Button>
+            </Stack>          
+          </DialogTitle>
+          <DialogContent>                          
+            {expired.length !== 0 ? expired.map((task : Task) => {
+                                              return <TaskCard 
                                                         task={task} 
                                                         popUpUpdate={setPopUpUpdate} 
                                                         setWhichTask={setWhichTask}
                                                         onTaskChange={ handleTaskChange }
                                                         onTaskDelete={ handleTaskDelete }
-                                                        />;
-                                                })
-                                            : <EmptyState />
-                    }
-                </Stack>                                         
-            </DialogContent>
-        </Dialog>
+                                                      />;
+                                            })
+                                    : <EmptyState />
+            }                                                                                     
+          </DialogContent>
+      </Dialog>
     );
 }
