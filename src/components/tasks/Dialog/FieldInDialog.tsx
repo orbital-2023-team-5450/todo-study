@@ -13,7 +13,7 @@ export default function FieldInDialog({ name, handleNameChange, type } :
             value={name}
             onChange={handleNameChange} 
             required={type === 'Title'}
-            size="medium"
+            size={type === 'Description' ? 'medium' : 'small'}
         />
     );
 }

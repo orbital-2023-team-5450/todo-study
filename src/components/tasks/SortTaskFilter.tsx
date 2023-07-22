@@ -1,9 +1,8 @@
 import { Box, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import React from "react";
 
-export default function SortTaskMenu({ searchType, handleChangeSelect, showAllTasks = true } : 
-                                     { searchType : string, handleChangeSelect : (event: SelectChangeEvent) => void,
-                                        showAllTasks? : boolean,
+export default function SortTaskMenu({ searchType, handleChangeSelect } : 
+                                     { searchType : string, handleChangeSelect : (event: SelectChangeEvent) => void 
                                         }) {
     
     return (
@@ -17,7 +16,6 @@ export default function SortTaskMenu({ searchType, handleChangeSelect, showAllTa
                         label="Type"
                         onChange={handleChangeSelect}
                     >
-                        { showAllTasks ? <MenuItem value={"all"}> All types </MenuItem> : <></> }
                         <MenuItem value={"assignment"}> Assignment </MenuItem>
                         <MenuItem value={"house chore"}> House work </MenuItem>
                         <MenuItem value={"sport"}> Sport </MenuItem>

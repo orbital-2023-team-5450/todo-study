@@ -6,16 +6,14 @@ import { createTextEventHandler } from '../../../utils/textInputUtils';
 import SearchBar from "../../SearchBar";
 import TaskCard from "../TaskCard";
 import FilterDialog from "./FilterDialog";
-import supabase from "../../../supabase";
 
 export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, openMenu, tasks, popUpUpdate, setWhichTask,
-                                           switchIncludeTask, setSwitchIncludeTask, fetchTasks } : 
+                                           switchIncludeTask, setSwitchIncludeTask} : 
                                          { menuFilterOpen : boolean, 
                                           setMenuFilterOpen : (arg : boolean) => void, 
                                           openMenu : (arg : null | HTMLElement) => void, tasks : Task[], 
                                           popUpUpdate : (arg : boolean) => void, setWhichTask : (arg : number) => void, 
-                                          switchIncludeTask : boolean, setSwitchIncludeTask : (arg : boolean) => void,
-                                          fetchTasks : () => void }) {
+                                          switchIncludeTask : boolean, setSwitchIncludeTask : (arg : boolean) => void}) {
 
     const [searchValue, setSearchValue] = useState("");
     const [searchDateFrom, setSearchDateFrom] = useState("");
@@ -34,7 +32,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
 
         const contain = (task.title.toLowerCase().includes(searchValue.toLowerCase()) ||
                             task.description.toLowerCase().includes(searchValue.toLowerCase()));
-        const type = task.type === searchType || searchType === "all";
+        const type = task.type === searchType;
         let range: boolean;
 
         if (switchDueDate) {
@@ -52,46 +50,10 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
             range = task.dueDate === null;
         }
         
-        return contain || range || type;
+        return contain && range && type;
     }
 
     const filteredTaskList = tasks.filter(tasksFilterPredicate);
-
-    /* 
-      Handle the change of status of completed of the task in the database.
-    */
-      const handleTaskChange = (id : number) => {
-      
-        const task = tasks.find((task : Task) => task.id === id);
-        if (task === undefined) {
-          alert("There is no such task. It might not exist or it is deleted");
-        } else {
-          supabase.from("tasks").update({ completed: !task.completed }).eq("id", id)
-            .then((result) => {
-              if (result.error !== null) {
-                alert("Failed to update task!");
-              } else {
-                fetchTasks();
-              }
-            });
-        }  
-      };
-
-
-          /* 
-      Handle the deletion of the task in the database.
-    */
-    const handleTaskDelete = (id : number) => {
-
-        supabase.from("tasks").delete().eq("id", id)
-            .then((result) => {
-              if (result.error) {
-                alert("Failed to delete task!");
-              } else {
-                fetchTasks();
-              }
-            });
-      };
 
     const handleCloseDialog = () => {
 
@@ -123,13 +85,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
                         (task : Task) => {
                             return (
                                 <>
-                                    <TaskCard 
-                                        onTaskChange={ handleTaskChange }
-                                        onTaskDelete={ handleTaskDelete }
-                                        task={task}
-                                        popUpUpdate={popUpUpdate}
-                                        setWhichTask={setWhichTask}
-                                    />
+                                    <TaskCard task={task} popUpUpdate={popUpUpdate} setWhichTask={setWhichTask}/>
                                     <Divider />
                                 </>
                             );
