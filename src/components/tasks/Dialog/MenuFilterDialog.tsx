@@ -20,10 +20,9 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
     const [searchValue, setSearchValue] = useState("");
     const [searchDateFrom, setSearchDateFrom] = useState("");
     const [searchDateTill, setSearchDateTill] = useState("");
-    const [searchType, setSearchType] = useState("none");
+    const [searchType, setSearchType] = useState("all");
     const [isBlurred, setIsBlurred] = useState(false);
     const [filterOpen, setFilterOpen] = useState(false);
-    const [switchDueDate, setSwitchDueDate] = useState(true);
 
     const handleSearchBarChange = createTextEventHandler(setSearchValue);
     const handleSearchBarSubmit = (event : React.FormEvent<HTMLFormElement>) => {
@@ -34,25 +33,27 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
 
         const contain = (task.title.toLowerCase().includes(searchValue.toLowerCase()) ||
                             task.description.toLowerCase().includes(searchValue.toLowerCase()));
-        const type = task.type === searchType || searchType === "all";
+        let type : boolean;
         let range: boolean;
 
-        if (switchDueDate) {
-
-            if (searchDateFrom !== "" && searchDateTill !== "") {
-                range = new Date(task.dueDate) >= new Date(searchDateFrom) && new Date(task.dueDate) <= new Date(searchDateTill);
-            } else if (searchDateFrom !== "" && searchDateTill === "") {
-                range = new Date(task.dueDate) >= new Date(searchDateFrom);
-            } else if (searchDateFrom === "" && searchDateTill !== "") {
-                range = new Date(task.dueDate) <= new Date(searchDateTill);
-            } else {
-                range = true;
-            }
+        if (task.dueDate === null && (searchDateFrom !== "" || searchDateTill !== "")) {
+            return false;
+        } else if (searchDateFrom !== "" && searchDateTill !== "") {
+            range = new Date(task.dueDate) >= new Date(searchDateFrom) && new Date(task.dueDate) <= new Date(searchDateTill);
+        } else if (searchDateFrom !== "" && searchDateTill === "") {
+            range = new Date(task.dueDate) >= new Date(searchDateFrom);
+        } else if (searchDateFrom === "" && searchDateTill !== "") {
+            range = new Date(task.dueDate) <= new Date(searchDateTill);
         } else {
-            range = task.dueDate === null;
+            range = true;
         }
-        
-        return contain || range || type;
+
+        if (searchType !== "all") {
+            type = task.type === searchType;
+        } else {
+            type = true;
+        }
+        return (contain && range && type);
     }
 
     const filteredTaskList = tasks.filter(tasksFilterPredicate);
@@ -77,8 +78,7 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
         }  
       };
 
-
-          /* 
+    /* 
       Handle the deletion of the task in the database.
     */
     const handleTaskDelete = (id : number) => {
@@ -148,8 +148,6 @@ export default function MenuFilterDialog({ menuFilterOpen, setMenuFilterOpen, op
                 setSearchDateTill={setSearchDateTill}
                 searchType={searchType}
                 setSearchType={setSearchType}
-                switchDueDate={switchDueDate}
-                setSwitchDueDate={setSwitchDueDate}
                 switchIncludeTask={switchIncludeTask}
                 setSwitchIncludeTask={setSwitchIncludeTask}
             />

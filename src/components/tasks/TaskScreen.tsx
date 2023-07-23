@@ -31,7 +31,7 @@ export default function TaskScreen() {
     const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
     const [menuFilterOpen, setMenuFilterOpen] = useState(false);
     const [menuSortOpen, setMenuSortOpen] = useState(false);
-    const [sortType, setSortType] = useState("");
+    const [sortType, setSortType] = useState("dsee");
     const [expiredTask, setExpiredTask] = useState<Task[]>([]);
     const [completedTask, setCompletedTask] = useState<Task[]>([]);
     const [anchorOtherTask, setAnchorOtherTask] = React.useState<null | HTMLElement>(null);
