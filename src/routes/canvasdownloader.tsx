@@ -81,6 +81,12 @@ export default function CanvasDownloader() {
     ] as Course[];
   }
 
+  async function getCourseFoldersTest(id : number) {
+    return [
+      { id: -1, "files_url": 'minus one' },
+    ] as CanvasFolder[];
+  }
+
   async function getCourseFolders( courseId : number ) {
     try {
       const response = await fetchCanvasAPI('courses/' + courseId.toString() + '/folders');
