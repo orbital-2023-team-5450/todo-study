@@ -15,6 +15,7 @@ import ModifyAccount from './routes/modifyaccount';
 import fetchUserInfo, { UserInfo } from './utils/fetchUserInfo';
 import NotesPreview from './routes/notespreview';
 import CanvasDownloader from './routes/canvasdownloader';
+import NotesExport from './routes/notesexport';
 
 const defaultTheme = {
   palette: {
@@ -104,6 +105,7 @@ function App() {
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/canvas-downloader" element={<CanvasDownloader />} />
           <Route path="/preview/:id" element={<NotesPreview />} />
+          <Route path="/export/:id" element={<NotesExport />} />
           <Route path="*" element={<ErrorPage error="404 Not Found" errorDesc="The page requested could not be found." />} />
         </Routes> 
       </ThemeProvider>
