@@ -60,21 +60,45 @@ export default function CanvasDownloader() {
   async function fetchCourses() {
     try {
       const response = await fetchCanvasAPI('courses');
-      const text = await response.json();
-      return (text as Course[]).filter(course => course.name !== undefined);
+      if (response.status === 200) {
+        const text = await response.json();
+        return (text as Course[]).filter(course => course.name !== undefined);
+      } else {
+        console.log("Could not fetch courses!");
+        return [] as Course[];
+      }
     } catch (error) {
-      alert("Failed to fetch!ss " + error);
+      alert("Failed to fetch! " + error);
       return [] as Course[];
     }
+  }
+
+  async function fetchCoursesTest() {
+    return [
+      { id: -1, name: 'minus one' },
+      { id: 12345, name: 'invalid course' },
+      { id: 41924, name: 'teaching course' },
+    ] as Course[];
+  }
+
+  async function getCourseFoldersTest(id : number) {
+    return [
+      { id: -1, "files_url": 'minus one' },
+    ] as CanvasFolder[];
   }
 
   async function getCourseFolders( courseId : number ) {
     try {
       const response = await fetchCanvasAPI('courses/' + courseId.toString() + '/folders');
-      const text = await response.json();
-      return (text as CanvasFolder[]);
+      if (response.status === 200) {
+        const text = await response.json();
+        return (text as CanvasFolder[]);
+      } else {
+        console.log("Could not fetch folders from course ID " + courseId.toString());
+        return [] as CanvasFolder[];
+      }
     } catch (error) {
-      alert("Failed to fetch!ss " + error);
+      console.log("Failed to fetch! " + error);
       return [] as CanvasFolder[];
     }
   }
@@ -117,8 +141,13 @@ export default function CanvasDownloader() {
   async function getFilesFromFolder(folderId : number) {
     try {
       const response = await fetchCanvasAPI('folders/' + folderId.toString() + '/files');
-      const text = await response.json();
-      return text as CanvasFile[];
+      if (response.status === 200) {
+        const text = await response.json();
+        return text as CanvasFile[];
+      } else {
+        console.log("Could not fetch files from folder ID " + folderId.toString());
+        return [] as CanvasFile[];
+      }
     } catch (error) {
       alert("Failed to fetch! " + error);
       return [] as CanvasFile[];
