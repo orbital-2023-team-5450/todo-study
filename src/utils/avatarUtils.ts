@@ -9,7 +9,7 @@
  * @param lum The amount to darken a hex colour by
  * @returns The darkened colour of hex by lum%
  */
-function darkenColor(hex : string, lum : number) : string {
+export function darkenColor(hex : string, lum : number) : string {
     // validate hex string
     hex = String(hex).replace(/[^0-9a-f]/gi, '');
 

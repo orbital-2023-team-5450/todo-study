@@ -77,6 +77,7 @@
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
     "@types/jszip": "^3.4.1",
-    "@types/lodash": "^4.14.195"
+    "@types/lodash": "^4.14.195",
+    "jest": "^27.5.1"
   }
 }
