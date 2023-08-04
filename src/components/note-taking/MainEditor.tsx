@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, TextField } from '@mui/material';
 import TextEditor from './TextEditor';
-import { Note, fetchNoteInfoFromId } from '../../utils/noteUtils';
+import { Note, fetchNoteInfoFromId, isEqualContentState } from '../../utils/noteUtils';
 import { EditorState, convertToRaw } from 'draft-js';
 import _ from "lodash";
 
@@ -31,12 +31,9 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
     }
 
     function check( editorState : EditorState ) {
-        console.log("check");
-        // Lodash's static isEqual method recursively compares values in a JavaScript object,
-        // allowing for comparing JavaScript objects by value. 
 
-        // if both content and title are equal, don't update information to database for efficiency reasons.
-        if (_.isEqual(noteInfo.content_state, convertToRaw(editorState.getCurrentContent()))
+        // if both content and title are equal, don't have to prompt user for efficiency reasons.
+        if (isEqualContentState(noteInfo.content_state, convertToRaw(editorState.getCurrentContent()))
             && noteInfo.title === origTitle
         ) {
             onDoneChecking(false);
@@ -50,7 +47,7 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
         // allowing for comparing JavaScript objects by value. 
 
         // if both content and title are equal, don't update information to database for efficiency reasons.
-        if (_.isEqual(noteInfo.content_state, convertToRaw(editorState.getCurrentContent()))
+        if (isEqualContentState(noteInfo.content_state, convertToRaw(editorState.getCurrentContent()))
             && noteInfo.title === origTitle
         ) {
             return;
@@ -63,6 +60,7 @@ export default function MainEditor( { noteId, width, onNoteChange, toSave, toChe
             last_modified: ((new Date()).toISOString()),
         }
         setNoteInfo(newNoteInfo);
+        setOrigTitle(noteInfo.title);
         
         async function performUpdate() {
             const { error } = await supabase.from('notes').update(newNoteInfo).eq("note_id", newNoteInfo.note_id);
