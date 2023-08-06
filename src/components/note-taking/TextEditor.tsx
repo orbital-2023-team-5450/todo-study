@@ -62,7 +62,6 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
 
   useEffect(() => {
     if (initContentState === null || initContentState === undefined) { 
-      console.log("done");
       setEditorState(EditorState.createEmpty());
     } else {
       setEditorState(EditorState.createWithContent(convertFromRaw(initContentState)));
@@ -75,7 +74,7 @@ export default function TextEditor({ onSave, onCheck, toCheck, initContentState,
       setEditorState(EditorState.createWithContent(initState));
       */
     }
-  }, [initContentState]);
+  }, [initContentState, noteId]);
 
   const handlePreview = () => {
     window.open("/preview/" + noteId.toString());

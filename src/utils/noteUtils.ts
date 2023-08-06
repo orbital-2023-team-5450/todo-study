@@ -2,6 +2,7 @@ import { EditorState, RawDraftContentState, convertToRaw } from "draft-js";
 import supabase from "../supabase";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../components/note-taking/textEditor.css';
+import _ from "lodash";
 
 /**
  * A type representing the users' settings for the Notes application, as
@@ -135,6 +136,43 @@ export async function fetchNotesSettings(setData : React.Dispatch<React.SetState
             setData(result.data[0]);
         }
     });
+}
+
+/**
+ * Checks if the given content states are equal. If one of them are null, checks whether the other one is either
+ * null or empty.
+ * 
+ * @param cs1 The first content state to test equality.
+ * @param cs2 The second content state to test equality.
+ * @returns True if the given content states are equal in content (for non-empty content states), or both are either null
+ *          or an empty content state. False otherwise.
+ */
+export function isEqualContentState( cs1 : RawDraftContentState | null, cs2 : RawDraftContentState | null ) : boolean {
+  // Lodash's static isEqual method recursively compares values in a JavaScript object,
+  // allowing for comparing JavaScript objects by value. This is seen as calls to
+  // _.isEqual(). 
+
+  const EMPTY_CONTENT_STATE = convertToRaw(EditorState.createEmpty().getCurrentContent());
+
+  // this is required as comparing the first block directly won't work due to Draft generating a different key for every
+  // block. This function blanks out the key of the first block as an empty string. We are checking the first block as
+  // empty RawDraftContentState generated should have exactly one block.
+  function firstBlock(cs : RawDraftContentState | null) {
+    if (cs === null) return null;
+    return {...cs.blocks[0], key: ''};
+  }
+
+  console.log(cs1);
+  console.log(cs2);
+  console.log(EMPTY_CONTENT_STATE);
+
+  return (cs1 === cs2)
+    || (_.isEqual(cs1, cs2))
+    || (cs1 === null && cs2 === null)
+    || (cs1 === null && _.isEqual(firstBlock(cs2), firstBlock(EMPTY_CONTENT_STATE)))
+    || (cs2 === null && _.isEqual(firstBlock(cs1), firstBlock(EMPTY_CONTENT_STATE)))
+    || (_.isEqual(firstBlock(cs1), firstBlock(EMPTY_CONTENT_STATE)) &&
+          _.isEqual(firstBlock(cs2), firstBlock(EMPTY_CONTENT_STATE)));
 }
 
 /**
