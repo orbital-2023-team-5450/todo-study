@@ -139,13 +139,18 @@ export function getCycleFromTemplate(template : FullWorkRestCycle) : WorkRestCyc
 }
 
 /**
- * Converts the number of hours/minutes/seconds to a string with padded zeros.
+ * Converts the number of hours/minutes/seconds to a string with padded zeros. If number is not a natural
+ * number, this will just return the string representation of the number.
  * @param time The number of hours/minutes/seconds.
  * @param digits The number of digits to round to (default 2).
- * @returns The number of hours/minutes/seconds as a string with padded zeros.
+ * @returns The number of hours/minutes/seconds as a string, with padded zeros if they are a natural number.
  */
-function padTime(time : number, digits : number = 2) : string {
-  return time.toString().padStart(digits, "0");
+export function padTime(time : number, digits : number = 2) : string {
+  if (Number.isInteger(time) && time >= 0) {
+    return time.toString().padStart(digits, "0");
+  } else {
+    return time.toString();
+  }
 }
 
 /**
@@ -161,6 +166,9 @@ export function timerToString(timeInMs : number, isMsShown : boolean = false, is
 
   // negative timing doesn't exist.
   if (timeInMs < 0) timeInMs = 0;
+
+  // infinite timing should just print infinite
+  if (timeInMs === Infinity) return "Infinity";
 
   // shows exact millisecond values if millisecond option is shown.
   // else, follows a format similar to Apple's timer functionality which
@@ -204,7 +212,7 @@ export function timerToString(timeInMs : number, isMsShown : boolean = false, is
         if (seconds === 0 && ms === 0) return hours + "h";
         else return hours + "h 0min " + secondsDisplay;
       } else {
-        return hours + "h " + minutes + "min " + ((seconds === 0 && ms === 0) ? "" : " " + secondsDisplay);
+        return hours + "h " + minutes + "min" + ((seconds === 0 && ms === 0) ? "" : " " + secondsDisplay);
       }
     }
   }
