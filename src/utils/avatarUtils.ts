@@ -23,7 +23,11 @@ export function darkenColor(hex : string, lum : number) : string {
 
     for (let i = 0; i < 3; i++) {
       const c = parseInt(hex.substring(i*2, i*2+2), 16);
-      const cc = Math.round(Math.min(Math.max(0, c - (c * lum / 100)), 255)).toString(16);
+
+      // this is necessary as 0 * ±Infinity in JS is NaN
+      const cc = (c === 0 && (lum === Infinity || lum === -Infinity))
+        ? "00"
+        : Math.round(Math.min(Math.max(0, c - (c * lum / 100)), 255)).toString(16);
       rgb += ("00"+cc).substring(cc.length);
     }
   
